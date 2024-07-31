@@ -230,32 +230,48 @@ Create methods for basic PercentVBus rotation of the motors, as well as methods 
 
 Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, rotates the motors.
 
-For the code to be finished:
-- [ ] make sure you have
-  - [ ] a way to rotate the motors based on PercentVBus
-  - [ ] a way to stop the motor rotation
-  - [ ] a way to access velocity of each motor (methods)
-  - [ ] prints of all sensor information to the dashboard
-  - [ ] your command uses an `XboxController` axis to rotate the motors (the choice of axis is yours).
-- [ ] run the command and test system motion
-  - [ ] make sure the motors all rotate outwards from the system at differing speeds depending on the `XboxController` state.
-- [ ] test sensor values
-  - [ ] make sure all the encoders show expected velocity measurements
-  - [ ] values should be rather similar
-  - [ ] test for different speeds
-  - [ ] velocities for the different motors should be similar to each other
-- [ ] try inserting a note and rotate the motors to shoot it
-  - [ ] note the affect the note has on the speed of the motors
-  - [ ] try different speeds and see how far you can shoot the note
-    - [ ] list in a comment in you code the maximum distance and minimum distance you managed to acheive
-  - [ ] test and note the lowest speed at which a note will be fired and how far it reaches
-  - [ ] test and note the maximum speed of the motors and how stable the system is when running it these speeds.
-- [ ] final result
-  - [ ] remove axis-based `XboxController` command
-  - [ ] create a command to rotate all motors at a constant speed. Bind this to the `X` button, so that while it is held the commands run
-    - determine the speed yourself, based on testing. Find a speed which is capable of firing the notes quickly and 1-2 meters away, but not damage them. 
-  - [ ] accurate information from the sensors is displayed on the shuffleboard
-    - Velocity from each NEO encoder
+Guidelines:
+- Subsystem creation
+  - Define all motor controllers and sensors used in the system
+  - Construct these components in the constructor
+  - Remember to configure the controller properly
+    - at the very least reset to factory default
+  - You will need to have the following set of method
+    - a way to rotate the motor based on PercentVBus
+      - you should have constant speeds for rotation
+    - a way to stop the motor rotation
+    - a way to access velocity information for each information
+    - avoid using follow here, to allow independent control for each controller in later phases
+  - Remember to add print of sensors information to the dashboard
+- Create Command
+  - You'll need a command to run your system with an xbox controller.
+  - Create a command and attach it to buttons. At the very least: one button needs to shoot out.
+  - Configure it so that holding the buttons is required. This eliminates our need for a `isFinished` for the moment
+- Testing
+  - Make sure the system moves as expected in both speed and direction
+    - due to the configuration of the system, two motors will be inverted 
+  - Make sure all the encoders show expected velocity measurements
+    - The speeds should be similar between the motors, but not exactly the same
+  - Try running the motors at different velocities
+    - Insert a note and look at the ranges for shooting depending on the speed of the motor
+    - Select an initial constant speed to use for testing for now
+    - Check the minimum speed for the shooter to shoot at all (note this in code comments)
+    - Make sure all motors are relatively rotating at the same speeds  
+
+Requirements:
+- Finished Subsystem code
+  - Rotate out capability with PercentVBus and stop
+    - use a constant speed for out for now
+  - Methods to access sensor information
+    - Velocity for each motor
+  - Dashboard prints of sensor information
+  - Accurate sensor information
+- Command
+  - A command to rotate the shooter out
+    - the commands should not finish
+- Robot code
+  - Code in robot class that creates the system and runs the commnad
+    - attach command to button such that: holding `X` shoots out
       
 #### Arm
 
@@ -265,32 +281,53 @@ Create methods for basic PercentVBus rotation of the motor to move the arm up an
 
 Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, raises the arm, and down lowers the arm. Use the speed parameter from the axis but be wary of high values as we don't want to damage the arm (you may wish to limit the values up to 0.5).
 
-For the code to be finished:
-- [ ] make sure you have
-  - [ ] a way to rotate the motor based on PercentVBus
-  - [ ] a way to stop the motor rotation
-  - [ ] a way to access position based on both encoders (methods)
-  - [ ] a way to access velocity based on NEO encoder.
-  - [ ] prints of all sensor information to the dashboard
-  - [ ] your command uses an `XboxController` axis to move the arm up and down (the choice of axis is yours).
-- [ ] run the command and test system motion
-  - [ ] make sure the arm is capabile of moving up and down
-  - [ ] note the limits of motion for the arm (how far it can go in each direction)
-  - [ ] try moving the arm at different speeds, note the slowest speed for the arm to even move and the fastest speed in which the arm moves without damaging anything.
-- [ ] test sensor values
-  - [ ] check that the position information from both encoders updates consistently and reflects the actual position of the arm
-  - [ ] note the differences between information from the through-bore and information from the NEO encoder.
-  - [ ] find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value
-- [ ] final result
-  - [ ] remove axis-based `XboxController` command
-  - [ ] create a command (or more) to allow controlling the arm via the DPad of the `XboxController`. holding DPad up (0) will raise the arm at a constant speed; holding DPad down (180) will lower the arm at a constant speed.
-    - determine the best speed yourself. It must not be too fast as to damage the arm, or too slow as to fail to raise the arm.
-  - [ ] The Through-Bore Encoder has its 0 position when the arm is on the floor. Raising the arm will increase the angle value.
-  - [ ] Software checks limit the motion of the arm from exceeding its mechanical limitations.
-    - Use information from the Through-Bore Encoder to limit this motion.
-  - [ ] accurate information from the sensors is displayed on the shuffleboard
+Guidelines:
+- Subsystem creation
+  - Define all motor controllers and sensors used in the system
+  - Construct these components in the constructor
+  - Remember to configure the controller properly
+    - at the very least reset to factory default
+  - You will need to have the following set of method
+    - a way to rotate the motor based on PercentVBus
+      - you should have constant speeds for up and down (in and out doesn't have to be the same) 
+    - a way to stop the motor rotation
+    - a way to access sensor information
+      - Position and velocity from NEO Encoder
+      - Position from Through-Bore encoder
+  - Remember to add print of sensors information to the dashboard
+- Create Command
+  - You'll need a command to run your system with an xbox controller.
+  - Create a command or more and attach them to buttons. At the very least: one button needs to raise arm and one to lower arm.
+  - Configure it so that holding the buttons is required. This eliminates our need for a `isFinished` for the moment
+- Testing
+  - Make sure the system moves as expected in both speed and direction
+  - Check and comment in code on how far the arm can move in each direction
+    - Be careful as to not damage the system while doing this
+  - Try moving the arm at different speeds, note the slowest speed for the arm to even move and the fastest speed in which the arm moves without damaging anything.
+  - Check that the position information from both encoders updates consistently and reflects the actual position of the arm
+    - Since the Through-Bore is an absolute encoder, you will want to check how its values are distributed over the motion arc of the arm
+    - We would want the Through-Bore to report 0 when the arm is on the floor and for the angle to increase as the arm raises. This makes the values intuitive to the real position of the arm. Check what the encoder normally report and see if it needs changes. Figure out how to change this. 
+
+
+Requirements:
+- Finished Subsystem code
+  - Rotate out capability with PercentVBus and stop
+    - use a constant speed for up and down (not necessarily the same speed)
+  - Methods to access sensor information
     - Position and velocity from NEO encoder
-    - Position from Through-Bore encoder  
+    - Position from Through-Bore encoder
+  - Dashboard prints of sensor information
+  - Accurate sensor information
+    - The Through-Bore Encoder should have its 0 position when the arm is on the floor. Raising the arm will increase the angle value.
+  - Software checks limit the motion of the arm from exceeding its mechanical limitations.
+    - Use information from the Through-Bore Encoder to limit this motion.
+- Command
+  - A command (or several) to raise the arm and lower the arm
+    - the commands should not finish
+    - use a speed for the arm that allow for rapid motion, but does not damage the arm or the system.
+- Robot code
+  - Code in robot class that creates the system and runs the commnad
+    - attach commands to buttons such that: holding `DPad Up` (0) raises the arm and `DPad Down` (180) lowers the arm
 
 ### Phase 2 - Improved Control
 
@@ -301,21 +338,21 @@ In this phase we will improve the capability of each system by adding more capab
 We want the capability to track the robot's position in the field. This will allow us to build autonomous actions based on the robot's absolute position, making it quite useful. You'll need to use the `DifferentialDriveOdometery` which works with the encoders and pigeon of the system
 
 Guidelines:
-- [ ] Add field odometery
-  - [ ] Create and update field positining in subsystem code using encoders and pigeon
+- Add field odometery
+  - Create and update field positining in subsystem code using encoders and pigeon
     - Use the `DifferentialDriveOdometery` class, construct it in the constructor with an initial position of 0
     - Update it in `periodic`
     - Note about `DifferentialDriveOdometery` using `Rotation2d` for angle information, you can create this from `Rotation2d.fromDegrees`.
-  - [ ] Display of position via a `Field2D` object
+  - Display of position via a `Field2D` object
     - Make sure to add the object to the dashboard (only once)
     - Make sure to update the robot position after odometery update
-  - [ ] Allow reseting the positioning to make the odometery think we are at a different position. This can allow us to lie about our positining.
+  - Allow reseting the positioning to make the odometery think we are at a different position. This can allow us to lie about our positining.
     - Look at `DifferentialDriveOdometery.resetPosition`
-  - [ ] Test and verify position tracking is actually accurate
+  - Test and verify position tracking is actually accurate
     - try wild motions with the robot in the air and on the ground. Make sure the tracking reflects accurate positining. Check with a Tape measure.
        
 Requirements:
-  - [ ] Subsystem has odometery capability
+  - Subsystem has odometery capability
     - Odometery is accurate and updates smoothly
     - Odometery can be reset according to a wanted `Pose2d` so we could lie about our position
       - Post reset, odometery works well with the new position 
@@ -327,28 +364,28 @@ Requirements:
 We want the capability to control the shooter based on a specific velocity (usually measured in RPM). This can give us the capability to provide and use precision shooting based on initial note velocity.
 
 Guidelines:
-- [ ] Added Closed-Loop Velocity to control the velocity of the motors
-  - [ ] Use integrated SparkMAX PIDF Velocity control mode
-  - [ ] Control each motor individually
+- Added Closed-Loop Velocity to control the velocity of the motors
+  - Use integrated SparkMAX PIDF Velocity control mode
+  - Control each motor individually
     - Consider: why do we want to do this
-  - [ ] Tune the control loop with REV Hardware Client
+  - Tune the control loop with REV Hardware Client
     - You only need to tune for one motor, as they are quite similar. So tune once and use this tuning with all motors.
-  - [ ] Create a command which uses this to rotate the shooter at a specific velocity
-  - [ ] Test the command by running it with different speeds
+  - Create a command which uses this to rotate the shooter at a specific velocity
+  - Test the command by running it with different speeds
     - make sure all motors are stabilized on the set point
     - make sure to tune until control is stable and quick
     - insert a note and watch how the note affect the control loop (does the speed loss get fixed quickly?)
-  - [ ] Attach the command to a button
+  - Attach the command to a button
     - while the button is held, the command is running (command doesn't need `isFinished` then )
     - select a base velocity which we will be using for our testing for attaching to the button
-  - [ ] Provide capability in the subsystem to check if all the motors have stabilized on a given RPM
+  - Provide capability in the subsystem to check if all the motors have stabilized on a given RPM
     - this will allow us to check when we've reached our wanted velocity
 
 Requirements:
-- [ ] Subsystem has velocity closed-loop control
+- Subsystem has velocity closed-loop control
   - Using the SparkMAX PIDF
   - Tuned well
-- [ ] Has command to use this capability
+- Has command to use this capability
   - Command is attached to a button for testing 
 
 #### Arm
