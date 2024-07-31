@@ -133,14 +133,15 @@ Implement the subsystem. Include definitions for the motor controller and encode
 
 Create methods for basic PercentVBus rotation of the motors, as well as methods for accessing the velocity measured by each encoder. Add dashboard display of these values.
 
-Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons.
+Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, rotates the motors.
 
 For the code to be finished:
 - make sure you have
   - a way to rotate the motors based on PercentVBus
   - a way to stop the motor rotation
   - a way to access velocity of each motor (methods)
-  - prints of all sensor information to the dashboard 
+  - prints of all sensor information to the dashboard
+  - your command uses an `XboxController` axis to rotate the motors (the choice of axis is yours).
 - run the command and test system motion
   - make sure the motors all rotate outwards from the system at differing speeds depending on the `XboxController` state.
 - test sensor values
@@ -151,4 +152,43 @@ For the code to be finished:
 try inserting a note and rotate the motors to shoot it
   - note the affect the note has on the speed of the motors
   - try different speeds and see how far you can shoot the note
-    - list in a comment in you code the maximum distance and minimum distance you managed to acheive 
+    - list in a comment in you code the maximum distance and minimum distance you managed to acheive
+  - test and note the lowest speed at which a note will be fired and how far it reaches
+  - test and note the maximum speed of the motors and how stable the system is when running it these speeds.
+
+#### Arm
+
+Implement the subsystem. Include definition for the motor controller and Through-Bore encoder.
+
+Create methods for basic PercentVBus rotation of the motor to move the arm up and down, as well as methods for accessing the position measured by the Through-Bore and NEO encoder, and velocity for NEO encoder. Add dashboard display of these sensor values.
+
+Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, raises the arm, and down lowers the arm. Use the speed parameter from the axis but be wary of high values as we don't want to damage the arm (you may wish to limit the values up to 0.5).
+
+For the code to be finished:
+- make sure you have
+  - a way to rotate the motor based on PercentVBus
+  - a way to stop the motor rotation
+  - a way to access position based on both encoders (methods)
+  - a way to access velocity based on NEO encoder.
+  - prints of all sensor information to the dashboard
+  - your command uses an `XboxController` axis to move the arm up and down (the choice of axis is yours).
+- run the command and test system motion
+  - make sure the arm is capabile of moving up and down
+  - note the limits of motion for the arm (how far it can go in each direction)
+  - try moving the arm at different speeds, note the slowest speed for the arm to even move and the fastest speed in which the arm moves without damaging anything.
+- test sensor values
+  - check that the position information from both encoders updates consistently and reflects the actual position of the arm
+  - note the differences between information from the through-bore and information from the NEO encoder.
+  - find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value  
+
+### Phase 2 - Improved Control
+
+In this phase we will improve the capability of each system by adding more capable control capabilities, that is, adding control loops to have more efficent and capable systems. This will mean different things for each system, but in general, we want to offload basic work from the robot operators to algorithms.
+
+#### Drive
+
+#### Intake
+
+#### Shooter
+
+#### Arm
