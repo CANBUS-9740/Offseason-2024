@@ -118,7 +118,7 @@ Create methods for basic PercentVBus tank-drive control as well as method for ac
 Create a command to control the system with an `XboxController`. Use axes and not buttons.
 
 Guidelines:
-- [ ] Subsystem creation
+- Subsystem creation
   - Define all motor controllers and sensors used in the system
   - Construct these components in the constructor
   - Remember to configure the controllers properly
@@ -133,11 +133,11 @@ Guidelines:
   - Remember to add prints of all sensor information to the dashboard
     - we would want to see position and velocity information from the sensors
     - and yaw information from the pigeon 
-- [ ] Create Command
+- Create Command
   - You'll need a command to run your system with an xbox controller.
   - Create this command and use Y axes from the two sticks to drive the left and right sides of the system
   - You may want to consider adding a deadband elimination, so that when the xbox isn't touched, even if it isn't at zero exactly we still stop the system
-- [ ] Testing
+- Testing
   - Make sure the drive system moves as expected according to xbox controller inputs
     - you'll want to look at driving forward/backwards and rotating
     - also make sure that each side can be driven independently
@@ -149,15 +149,15 @@ Guidelines:
       - move the robot on the floor for a know distance (use a tape measure) and compare encoder positions to known measurement
       - for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
       - rotate the robot and compare pigeon yaw to expected degrees
-        - try rotating around in a circle multiple times and check the values.
-  - More on Sensors
-    - You should probably reset both the pigeon yaw and encoder positions in the constructor.
-    - The pigeon Yaw is usually tracking rotating in an opposite direction then expected.
-    - Consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range and we do want it to be
-    - Detail in a comment in your code on how the pigeon values change with rotation of the robot
+      - try rotating around in a circle multiple times and check the values.
+- More on Sensors
+  - You should probably reset both the pigeon yaw and encoder positions in the constructor.
+  - The pigeon Yaw is usually tracking rotating in an opposite direction then expected.
+  - Consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range and we do want it to be
+  - Detail in a comment in your code on how the pigeon values change with rotation of the robot
 
 Requirements:
-- [ ] Finished Subsystem code
+- Finished Subsystem code
   - Tank Drive capability with PercentVBus and stop
   - Methods to access sensor information
     - Encoder Position/Velocity for each side
@@ -165,10 +165,10 @@ Requirements:
       - Pigeon uses Phoenix V6 
   - Dashboard prints of sensor information
   - Accurate sensor information
-    - Pigeon information limited between 0-360
-- [ ] Command
+    - For the pigeon: a detailed explanation (in a comment) on what we can expect from the values. We want to know the limits of values, direction. e.g. if we rotate clockwise for 90 degrees, what will be the value?
+- Command
   - A command to drive the system with xbox controller
-- [ ] Robot code
+- Robot code
   - Code in robot class that creates the system and runs the commnad
     - run command in `teleopInit` 
  
@@ -180,27 +180,47 @@ Create methods for basic PercentVBus rotation of the motor, as well as a method 
 
 Create a command to rotate the intake motor based on the `XboxController`. Use axes and not buttons.
 
-For the code to be finished:
-- [ ] make sure you have
-  - [ ] a way to rotate the motor based on PercentVBus
-  - [ ] a way to stop the motor rotation
-  - [ ] a way to access limit switch information
-  - [ ] prints of all sensor information to the dashboard 
-- [ ] run the command and test system motion
-  - [ ] make sure it moves as expected in both speed and direction
-  - [ ] check different speeds for note in and note out. Find optimal speeds and note them in your code.
-  - [ ] try inserting the note from different positions and directions to make sure the note is collected well
-- [ ] test the limit switch detection
-  - [ ] test the limit switch to make sure it works (use shuffleboard to view its state)
-  - [ ] push in a note and see when the limit switch detects the note
-  - [ ] pull the note out and see when the limit switch no longer detects the note
-- [ ] final result
-  - [ ] remove axis-based `XboxController` command
-  - [ ] create a command (or more) to rotate the wheels in and out at constant speeds. Attach these commands to the `RB` and `LB` buttons of the intake
-    - determine the constant speeds yourself, based on testing. Find a speed which is capable of collecting and releasing the note quickly, but not damage it
-    - stop the commands when the note has entered or left the system
-  - [ ] accurate information from the sensors is displayed on the shuffleboard
-    - limit switch ball in indication
+Guidelines:
+- Subsystem creation
+  - Define all motor controllers and sensors used in the system
+  - Construct these components in the constructor
+  - Remember to configure the controller properly
+    - at the very least reset to factory default
+  - You will need to have the following set of method
+    - a way to rotate the motor based on PercentVBus
+      - you should have constant speeds for in and out (in and out doesn't have to be the same) 
+    - a way to stop the motor rotation
+    - a way to access limit switch information
+  - Remember to add print of sensors information to the dashboard
+- Create Command
+  - You'll need a command to run your system with an xbox controller.
+  - Create a command or more and attach them to buttons. At the very least: one button needs to pull note in and one out.
+  - Configure it so that holding the buttons is required. This eliminates our need for a `isFinished` for the moment
+  - don't use limit switch in `isFinished` for now
+- Testing
+  - Make sure the system moves as expected in both speed and direction
+  - Check different speeds for note in and note out. Find optimal speeds and note them in your code.
+  - Try inserting the note from different positions and directions to make sure the note is collected well
+  - Test the limit switch to make sure it works (use shuffleboard to view its state)
+  - Push in a note and see when the limit switch detects the note
+  - Pull the note out and see when the limit switch no longer detects the note
+
+Requirements:
+- Finished Subsystem code
+  - Rotate in and out capability with PercentVBus and stop
+    - in and out done in a constant speed
+    - speed should be determined and tested (not arbitrary) 
+  - Methods to access sensor information
+    - Limit switch
+  - Dashboard prints of sensor information
+  - Accurate sensor information
+- Command
+  - A command (or more) to rotate the intake in and out
+    - the commands should not used limit switch for `isFinished` in this phase.
+- Robot code
+  - Code in robot class that creates the system and runs the commnad
+    - attach commands to button such that: holding `RB` pulls note in, holding `LB` pushes note out
+
 
 #### Shooter
 
