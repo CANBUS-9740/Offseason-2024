@@ -70,7 +70,7 @@ Specs:
 
 ## Phases
 
-Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase.
+Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase. Depending on the phase, some systems will have less or more work required. This is very dependent on the system and cannot be avoided really.
 
 The code for each phase will be done in a branch unique to that phase and system. Once coding and testing are finished, a review of the code will be done in a Pull Request. When the Pull Request is approved, the code will be merged into a mainline branch for that system. 
 
@@ -109,6 +109,13 @@ For the code to be finished:
   - [ ] the pigeon Yaw is usually tracking rotating in an opposite direction then expected. 
   - [ ] consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
   - [ ] Detail in a comment in your code on how the pigeon values change with rotation of the robot
+- [ ] final result
+  - [ ] an xbox based drive command
+    - gamepad sticks can be quite sensetive, you may wish to create a deadband so that when the controller isn't touched, the robot won't immediatly move.
+    - you may wish to limit the maximum value for the motion, determine this from testing and see if too high a speed causes any problems
+  - [ ] accurate information from the sensors is displayed on the shuffleboard
+    - Yaw from Pigeon
+    - Position and velocity from each SRX Encoder 
  
 #### Intake  
 
@@ -127,10 +134,18 @@ For the code to be finished:
 - [ ] run the command and test system motion
   - [ ] make sure it moves as expected in both speed and direction
   - [ ] check different speeds for note in and note out. Find optimal speeds and note them in your code.
+  - [ ] try inserting the note from different positions and directions to make sure the note is collected well
 - [ ] test the limit switch detection
   - [ ] test the limit switch to make sure it works (use shuffleboard to view its state)
   - [ ] push in a note and see when the limit switch detects the note
   - [ ] pull the note out and see when the limit switch no longer detects the note
+- [ ] final result
+  - [ ] remove axis-based `XboxController` command
+  - [ ] create a command (or more) to rotate the wheels in and out at constant speeds. Attach these commands to the `RB` and `LB` buttons of the intake
+    - determine the constant speeds yourself, based on testing. Find a speed which is capable of collecting and releasing the note quickly, but not damage it
+    - stop the commands when the note has entered or left the system
+  - [ ] accurate information from the sensors is displayed on the shuffleboard
+    - limit switch ball in indication
 
 #### Shooter
 
@@ -160,7 +175,13 @@ For the code to be finished:
     - [ ] list in a comment in you code the maximum distance and minimum distance you managed to acheive
   - [ ] test and note the lowest speed at which a note will be fired and how far it reaches
   - [ ] test and note the maximum speed of the motors and how stable the system is when running it these speeds.
-
+- [ ] final result
+  - [ ] remove axis-based `XboxController` command
+  - [ ] create a command to rotate all motors at a constant speed. Bind this to the `X` button, so that while it is held the commands run
+    - determine the speed yourself, based on testing. Find a speed which is capable of firing the notes quickly and 1-2 meters away, but not damage them. 
+  - [ ] accurate information from the sensors is displayed on the shuffleboard
+    - Velocity from each NEO encoder
+      
 #### Arm
 
 Implement the subsystem. Include definition for the motor controller and Through-Bore encoder.
@@ -184,7 +205,17 @@ For the code to be finished:
 - [ ] test sensor values
   - [ ] check that the position information from both encoders updates consistently and reflects the actual position of the arm
   - [ ] note the differences between information from the through-bore and information from the NEO encoder.
-  - [ ] find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value  
+  - [ ] find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value
+- [ ] final result
+  - [ ] remove axis-based `XboxController` command
+  - [ ] create a command (or more) to allow controlling the arm via the DPad of the `XboxController`. holding DPad up (0) will raise the arm at a constant speed; holding DPad down (180) will lower the arm at a constant speed.
+    - determine the best speed yourself. It must not be too fast as to damage the arm, or too slow as to fail to raise the arm.
+  - [ ] The Through-Bore Encoder has its 0 position when the arm is on the floor. Raising the arm will increase the angle value.
+  - [ ] Software checks limit the motion of the arm from exceeding its mechanical limitations.
+    - Use information from the Through-Bore Encoder to limit this motion.
+  - [ ] accurate information from the sensors is displayed on the shuffleboard
+    - Position and velocity from NEO encoder
+    - Position from Through-Bore encoder  
 
 ### Phase 2 - Improved Control
 
