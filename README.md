@@ -97,7 +97,7 @@ We have compiled a set of capabilities we would like to see at the end of work. 
 
 ## Phases
 
-Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase. Depending on the phase, some systems will have less or more work required. This is very dependent on the system and cannot be avoided really.
+Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase. Depending on the phase, some systems will have less or more work required. This is very dependent on the system and cannot be avoided really. Each system in a phase will also have a set of guidelines to help direct you on what you should be doing.
 
 The code for each phase will be done in a branch unique to that phase and system. Once coding and testing are finished, a review of the code will be done in a Pull Request. When the Pull Request is approved, the code will be merged into a mainline branch for that system. 
 
@@ -117,35 +117,60 @@ Create methods for basic PercentVBus tank-drive control as well as method for ac
 
 Create a command to control the system with an `XboxController`. Use axes and not buttons.
 
-For the code to be finished:
-- [ ] make sure you have
-  - [ ] a way to rotate the motors based on PercentVBus
-  - [ ] a way to stop the motor rotation
-  - [ ] a way to access position/velocity of each side of the drive
-  - [ ] a way to access yaw information
-  - [ ] prints of all sensor information to the dashboard 
-- [ ] run the drive command and test the system motion
-  - [ ] make sure it moves as expected (direction for forward/backward motion, rotation)
-  - [ ] check sensor values to make sure encoders show correct position and velocity information
-    - [ ] place the robot on the ground, compare encoder measurement of movement to measurements done by a tape measure
-    - [ ] for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
-  - [ ] test the top speed of the robot on the ground and list it in a comment in your code.
-  - [ ] check pigeon to make sure it displays expected YAW information when rotating
-    - [ ] rotate the robot on the ground around a bit and make sure the measurement is correct
-    - [ ] try rotating around in a circle multiple times and check the values. 
-- consider about the pigeon
-  - [ ] you should probably reset both the pigeon yaw and encoder positions in the constructor.
-  - [ ] the pigeon Yaw is usually tracking rotating in an opposite direction then expected. 
-  - [ ] consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
-  - [ ] Detail in a comment in your code on how the pigeon values change with rotation of the robot
-- [ ] final result
-  - [ ] an xbox based drive command
-    - gamepad sticks can be quite sensetive, you may wish to create a deadband so that when the controller isn't touched, the robot won't immediatly move.
-    - you may wish to limit the maximum value for the motion, determine this from testing and see if too high a speed causes any problems
-  - [ ] accurate information from the sensors is displayed on the shuffleboard
-    - Yaw from Pigeon
-    - Position and velocity from each SRX Encoder
-  - [ ] Use follow to make the _VictorSPX_ controllers follow the _TalonSRX_ for each side.
+Guidelines:
+- [ ] Subsystem creation
+  - Define all motor controllers and sensors used in the system
+  - Construct these components in the constructor
+  - Remember to configure the controllers properly
+    - at the very least reset all devices to factory default
+  - Use follow mode so that _VictorSPX_ controllers follow the _TalonSRX_ controllers.
+  - Remember that once side should be inverted and that inverted isn't taken into account when using follow.
+  - You will need to have the following set of method
+    - a way to rotate the motors based on PercentVBus
+    - a way to stop the motor rotation
+    - a way to access position/velocity of each side of the drive
+    - a way to access yaw information
+  - Remember to add prints of all sensor information to the dashboard
+    - we would want to see position and velocity information from the sensors
+    - and yaw information from the pigeon 
+- [ ] Create Command
+  - You'll need a command to run your system with an xbox controller.
+  - Create this command and use Y axes from the two sticks to drive the left and right sides of the system
+  - You may want to consider adding a deadband elimination, so that when the xbox isn't touched, even if it isn't at zero exactly we still stop the system
+- [ ] Testing
+  - Make sure the drive system moves as expected according to xbox controller inputs
+    - you'll want to look at driving forward/backwards and rotating
+    - also make sure that each side can be driven independently
+  - Make sure sensors show accurate data
+    - look at the prints on the shuffleboard from your subsystem
+    - Look at encoder position and velocity reporting
+    - Look at pigeon Yaw reporting
+    - Move the robot around and see that the sensor values make sense
+      - move the robot on the floor for a know distance (use a tape measure) and compare encoder positions to known measurement
+      - for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
+      - rotate the robot and compare pigeon yaw to expected degrees
+        - try rotating around in a circle multiple times and check the values.
+  - More on Sensors
+    - You should probably reset both the pigeon yaw and encoder positions in the constructor.
+    - The pigeon Yaw is usually tracking rotating in an opposite direction then expected.
+    - Consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range and we do want it to be
+    - Detail in a comment in your code on how the pigeon values change with rotation of the robot
+
+Requirements:
+- [ ] Finished Subsystem code
+  - Tank Drive capability with PercentVBus and stop
+  - Methods to access sensor information
+    - Encoder Position/Velocity for each side
+    - Pigeon Yaw
+      - Pigeon uses Phoenix V6 
+  - Dashboard prints of sensor information
+  - Accurate sensor information
+    - Pigeon information limited between 0-360
+- [ ] Command
+  - A command to drive the system with xbox controller
+- [ ] Robot code
+  - Code in robot class that creates the system and runs the commnad
+    - run command in `teleopInit` 
  
 #### Intake  
 
@@ -253,8 +278,62 @@ In this phase we will improve the capability of each system by adding more capab
 
 #### Drive
 
+We want the capability to track the robot's position in the field. This will allow us to build autonomous actions based on the robot's absolute position, making it quite useful. You'll need to use the `DifferentialDriveOdometery` which works with the encoders and pigeon of the system
+
+Guidelines:
+- [ ] Add field odometery
+  - [ ] Create and update field positining in subsystem code using encoders and pigeon
+    - Use the `DifferentialDriveOdometery` class, construct it in the constructor with an initial position of 0
+    - Update it in `periodic`
+    - Note about `DifferentialDriveOdometery` using `Rotation2d` for angle information, you can create this from `Rotation2d.fromDegrees`.
+  - [ ] Display of position via a `Field2D` object
+    - Make sure to add the object to the dashboard (only once)
+    - Make sure to update the robot position after odometery update
+  - [ ] Allow reseting the positioning to make the odometery think we are at a different position. This can allow us to lie about our positining.
+    - Look at `DifferentialDriveOdometery.resetPosition`
+  - [ ] Test and verify position tracking is actually accurate
+    - try wild motions with the robot in the air and on the ground. Make sure the tracking reflects accurate positining. Check with a Tape measure.
+       
+Requirements:
+  - [ ] Subsystem has odometery capability
+    - Odometery is accurate and updates smoothly
+    - Odometery can be reset according to a wanted `Pose2d` so we could lie about our position
+      - Post reset, odometery works well with the new position 
+
 #### Intake
 
 #### Shooter
 
+We want the capability to control the shooter based on a specific velocity (usually measured in RPM). This can give us the capability to provide and use precision shooting based on initial note velocity.
+
+Guidelines:
+- [ ] Added Closed-Loop Velocity to control the velocity of the motors
+  - [ ] Use integrated SparkMAX PIDF Velocity control mode
+  - [ ] Control each motor individually
+    - Consider: why do we want to do this
+  - [ ] Tune the control loop with REV Hardware Client
+    - You only need to tune for one motor, as they are quite similar. So tune once and use this tuning with all motors.
+  - [ ] Create a command which uses this to rotate the shooter at a specific velocity
+  - [ ] Test the command by running it with different speeds
+    - make sure all motors are stabilized on the set point
+    - make sure to tune until control is stable and quick
+    - insert a note and watch how the note affect the control loop (does the speed loss get fixed quickly?)
+  - [ ] Attach the command to a button
+    - while the button is held, the command is running (command doesn't need `isFinished` then )
+    - select a base velocity which we will be using for our testing for attaching to the button
+  - [ ] Provide capability in the subsystem to check if all the motors have stabilized on a given RPM
+    - this will allow us to check when we've reached our wanted velocity
+
+Requirements:
+- [ ] Subsystem has velocity closed-loop control
+  - Using the SparkMAX PIDF
+  - Tuned well
+- [ ] Has command to use this capability
+  - Command is attached to a button for testing 
+
 #### Arm
+
+### Phase 3 - Integration
+
+### Phase 4 - Initial Autonomous
+
