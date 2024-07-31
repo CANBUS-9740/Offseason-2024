@@ -68,6 +68,33 @@ Specs:
 - Through-Bore Encoder, Absolute, Magnetic, RoboRIO DIO: 0
 - Motor to Shaft Gear Ratio: $20 : 1$
 
+## Desired Capabilities
+
+We have compiled a set of capabilities we would like to see at the end of work. Some we will complete, others we might not.
+- Quick and Accurate Control Loops
+  - For all control loops (mostly Arm and Shooter)
+  - Quick and accurate set-point settling
+  - Based on SparkMAX-integrated PIDF for all loops
+  - Possible usage of SmartMotion
+- Capable Auto-Firing
+  - Usage of Interpolation, accurate Arm and Shooter control and target aquisition
+  - Be capable of looking-on and firing notes at targets from different orientations and ranges
+  - As quick a process as possible (as soon as a note is collected, be ready to shoot at an instant)
+  - Odometery or Vision based targeting
+  - Possibility for firing without human operator approval (?)
+- Accurate Field Odometery
+  - Usage of Pigeon and encoders for basic Odometery
+  - Integration of Vision for error correction and initial position configuration
+-  PathPlanner
+  - Usage of PathPlanner to plan and execute complex paths for autonomous mode
+    - Integrated with event markers
+  - Quick, accurate and smooth motion
+  - Possibilty of on-the-fly paths in teleop.
+- Auto-Collection
+  - Detect and reach notes on the floor
+  - Collect them once reached
+  - Likely vision-based note locating
+
 ## Phases
 
 Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase. Depending on the phase, some systems will have less or more work required. This is very dependent on the system and cannot be avoided really.
