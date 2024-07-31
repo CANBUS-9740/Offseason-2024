@@ -70,6 +70,8 @@ Specs:
 
 ## Phases
 
+Our work will be divided into different phases. During each phase we will have a specific set of goals to accomplish for each system in the robot. Read and follow the requirements for your system in each phase.
+
 ### Phase 1 - Base 
 
 In this phase we will be implementing the base of all subsystems, as well as minimal teleop capability. The intention for this is mostly to test the base code and make sure we understand the basic mechanics and behaviour of both the systems and their sensors.
@@ -85,26 +87,26 @@ Create methods for basic PercentVBus tank-drive control as well as method for ac
 Create a command to control the system with an `XboxController`. Use axes and not buttons.
 
 For the code to be finished:
-- make sure you have
-  - a way to rotate the motors based on PercentVBus
-  - a way to stop the motor rotation
-  - a way to access position/velocity of each side of the drive
-  - a way to access yaw information
-  - prints of all sensor information to the dashboard 
-- run the drive command and test the system motion
-  - make sure it moves as expected (direction for forward/backward motion, rotation)
-  - check sensor values to make sure encoders show correct position and velocity information
-    - place the robot on the ground, compare encoder measurement of movement to measurements done by a tape measure
-    - for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
-  - test the top speed of the robot on the ground and list it in a comment in your code.
-  - check pigeon to make sure it displays expected YAW information when rotating
-    - rotate the robot on the ground around a bit and make sure the measurement is correct
-    - try rotating around in a circle multiple times and check the values. 
+- [ ] make sure you have
+  - [ ] a way to rotate the motors based on PercentVBus
+  - [ ] a way to stop the motor rotation
+  - [ ] a way to access position/velocity of each side of the drive
+  - [ ] a way to access yaw information
+  - [ ] prints of all sensor information to the dashboard 
+- [ ] run the drive command and test the system motion
+  - [ ] make sure it moves as expected (direction for forward/backward motion, rotation)
+  - [ ] check sensor values to make sure encoders show correct position and velocity information
+    - [ ] place the robot on the ground, compare encoder measurement of movement to measurements done by a tape measure
+    - [ ] for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
+  - [ ] test the top speed of the robot on the ground and list it in a comment in your code.
+  - [ ] check pigeon to make sure it displays expected YAW information when rotating
+    - [ ] rotate the robot on the ground around a bit and make sure the measurement is correct
+    - [ ] try rotating around in a circle multiple times and check the values. 
 - consider about the pigeon
-  - you should probably reset both the pigeon yaw and encoder positions in the constructor.
-  - the pigeon Yaw is usually tracking rotating in an opposite direction then expected. 
-  - consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
-  - Detail in a comment in your code on how the pigeon values change with rotation of the robot
+  - [ ] you should probably reset both the pigeon yaw and encoder positions in the constructor.
+  - [ ] the pigeon Yaw is usually tracking rotating in an opposite direction then expected. 
+  - [ ] consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
+  - [ ] Detail in a comment in your code on how the pigeon values change with rotation of the robot
  
 #### Intake  
 
@@ -115,17 +117,18 @@ Create methods for basic PercentVBus rotation of the motor, as well as a method 
 Create a command to rotate the intake motor based on the `XboxController`. Use axes and not buttons.
 
 For the code to be finished:
-- make sure you have
-  - a way to rotate the motor based on PercentVBus
-  - a way to stop the motor rotation
-  - a way to access limit switch information
-  - prints of all sensor information to the dashboard 
-- run the command and test system motion
-  - make sure it moves as expected in both speed and direction
-- test the limit switch detection
-  - test the limit switch to make sure it works (use shuffleboard to view its state)
-  - push in a note and see when the limit switch detects the note
-  - pull the note out and see when the limit switch no longer detects the note
+- [ ] make sure you have
+  - [ ] a way to rotate the motor based on PercentVBus
+  - [ ] a way to stop the motor rotation
+  - [ ] a way to access limit switch information
+  - [ ] prints of all sensor information to the dashboard 
+- [ ] run the command and test system motion
+  - [ ] make sure it moves as expected in both speed and direction
+  - [ ] check different speeds for note in and note out. Find optimal speeds and note them in your code.
+- [ ] test the limit switch detection
+  - [ ] test the limit switch to make sure it works (use shuffleboard to view its state)
+  - [ ] push in a note and see when the limit switch detects the note
+  - [ ] pull the note out and see when the limit switch no longer detects the note
 
 #### Shooter
 
@@ -136,25 +139,25 @@ Create methods for basic PercentVBus rotation of the motors, as well as methods 
 Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, rotates the motors.
 
 For the code to be finished:
-- make sure you have
-  - a way to rotate the motors based on PercentVBus
-  - a way to stop the motor rotation
-  - a way to access velocity of each motor (methods)
-  - prints of all sensor information to the dashboard
-  - your command uses an `XboxController` axis to rotate the motors (the choice of axis is yours).
-- run the command and test system motion
-  - make sure the motors all rotate outwards from the system at differing speeds depending on the `XboxController` state.
-- test sensor values
-  - make sure all the encoders show expected velocity measurements
-  - values should be rather similar
-  - test for different speeds
-  - velocities for the different motors should be similar to each other
-try inserting a note and rotate the motors to shoot it
-  - note the affect the note has on the speed of the motors
-  - try different speeds and see how far you can shoot the note
-    - list in a comment in you code the maximum distance and minimum distance you managed to acheive
-  - test and note the lowest speed at which a note will be fired and how far it reaches
-  - test and note the maximum speed of the motors and how stable the system is when running it these speeds.
+- [ ] make sure you have
+  - [ ] a way to rotate the motors based on PercentVBus
+  - [ ] a way to stop the motor rotation
+  - [ ] a way to access velocity of each motor (methods)
+  - [ ] prints of all sensor information to the dashboard
+  - [ ] your command uses an `XboxController` axis to rotate the motors (the choice of axis is yours).
+- [ ] run the command and test system motion
+  - [ ] make sure the motors all rotate outwards from the system at differing speeds depending on the `XboxController` state.
+- [ ] test sensor values
+  - [ ] make sure all the encoders show expected velocity measurements
+  - [ ] values should be rather similar
+  - [ ] test for different speeds
+  - [ ] velocities for the different motors should be similar to each other
+- [ ] try inserting a note and rotate the motors to shoot it
+  - [ ] note the affect the note has on the speed of the motors
+  - [ ] try different speeds and see how far you can shoot the note
+    - [ ] list in a comment in you code the maximum distance and minimum distance you managed to acheive
+  - [ ] test and note the lowest speed at which a note will be fired and how far it reaches
+  - [ ] test and note the maximum speed of the motors and how stable the system is when running it these speeds.
 
 #### Arm
 
@@ -165,21 +168,21 @@ Create methods for basic PercentVBus rotation of the motor to move the arm up an
 Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons. So moving the Y axis up, raises the arm, and down lowers the arm. Use the speed parameter from the axis but be wary of high values as we don't want to damage the arm (you may wish to limit the values up to 0.5).
 
 For the code to be finished:
-- make sure you have
-  - a way to rotate the motor based on PercentVBus
-  - a way to stop the motor rotation
-  - a way to access position based on both encoders (methods)
-  - a way to access velocity based on NEO encoder.
-  - prints of all sensor information to the dashboard
-  - your command uses an `XboxController` axis to move the arm up and down (the choice of axis is yours).
-- run the command and test system motion
-  - make sure the arm is capabile of moving up and down
-  - note the limits of motion for the arm (how far it can go in each direction)
-  - try moving the arm at different speeds, note the slowest speed for the arm to even move and the fastest speed in which the arm moves without damaging anything.
-- test sensor values
-  - check that the position information from both encoders updates consistently and reflects the actual position of the arm
-  - note the differences between information from the through-bore and information from the NEO encoder.
-  - find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value  
+- [ ] make sure you have
+  - [ ] a way to rotate the motor based on PercentVBus
+  - [ ] a way to stop the motor rotation
+  - [ ] a way to access position based on both encoders (methods)
+  - [ ] a way to access velocity based on NEO encoder.
+  - [ ] prints of all sensor information to the dashboard
+  - [ ] your command uses an `XboxController` axis to move the arm up and down (the choice of axis is yours).
+- [ ] run the command and test system motion
+  - [ ] make sure the arm is capabile of moving up and down
+  - [ ] note the limits of motion for the arm (how far it can go in each direction)
+  - [ ] try moving the arm at different speeds, note the slowest speed for the arm to even move and the fastest speed in which the arm moves without damaging anything.
+- [ ] test sensor values
+  - [ ] check that the position information from both encoders updates consistently and reflects the actual position of the arm
+  - [ ] note the differences between information from the through-bore and information from the NEO encoder.
+  - [ ] find a way to convert the Through-Bore encoder such that 0 position is with the arm on the floor, and raising the arm increases the sensor value  
 
 ### Phase 2 - Improved Control
 
