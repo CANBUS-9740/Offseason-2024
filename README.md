@@ -65,5 +65,5 @@ Specs:
 - Motor Controllers:
   - SparkMAX, ID: 8, Brushless
 - NEO 1.1 Encoder, Relative, Magnetic, CPR: 42 
-- Through-Bore Encoder, Absolute, Magnetic
+- Through-Bore Encoder, Absolute, Magnetic, RoboRIO DIO: 0
 - Motor to Shaft Gear Ratio: $20 : 1$
