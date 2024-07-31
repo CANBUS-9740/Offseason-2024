@@ -74,6 +74,8 @@ Our work will be divided into different phases. During each phase we will have a
 
 The code for each phase will be done in a branch unique to that phase and system. Once coding and testing are finished, a review of the code will be done in a Pull Request. When the Pull Request is approved, the code will be merged into a mainline branch for that system. 
 
+Make sure to commit and push at the end of a work period, as to save the progress and have a backup. 
+
 ### Phase 1 - Base 
 
 In this phase we will be implementing the base of all subsystems, as well as minimal teleop capability. The intention for this is mostly to test the base code and make sure we understand the basic mechanics and behaviour of both the systems and their sensors.
