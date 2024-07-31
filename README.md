@@ -144,7 +144,8 @@ For the code to be finished:
     - you may wish to limit the maximum value for the motion, determine this from testing and see if too high a speed causes any problems
   - [ ] accurate information from the sensors is displayed on the shuffleboard
     - Yaw from Pigeon
-    - Position and velocity from each SRX Encoder 
+    - Position and velocity from each SRX Encoder
+  - [ ] Use follow to make the _VictorSPX_ controllers follow the _TalonSRX_ for each side.
  
 #### Intake  
 
