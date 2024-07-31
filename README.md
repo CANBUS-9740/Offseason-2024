@@ -96,11 +96,15 @@ For the code to be finished:
   - check sensor values to make sure encoders show correct position and velocity information
     - place the robot on the ground, compare encoder measurement of movement to measurements done by a tape measure
     - for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
+  - test the top speed of the robot on the ground and list it in a comment in your code.
   - check pigeon to make sure it displays expected YAW information when rotating
-- consider the following
+    - rotate the robot on the ground around a bit and make sure the measurement is correct
+    - try rotating around in a circle multiple times and check the values. 
+- consider about the pigeon
   - you should probably reset both the pigeon yaw and encoder positions in the constructor.
-  - the pigeon Yaw is usually tracking rotating in an opposite direction then expected. Detail in a comment in your code on how the pigeon values change with rotation of the robot
+  - the pigeon Yaw is usually tracking rotating in an opposite direction then expected. 
   - consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
+  - Detail in a comment in your code on how the pigeon values change with rotation of the robot
  
 #### Intake  
 
