@@ -2,7 +2,7 @@ Rewrite of the 2024 robot in preperation to the 2024 offseason.
 
 ## Robot Description
 
-### Drive System
+### Drive
 
 The drive system is a 4 by 6 tank drive, that is, it has 6 wheels and 4 motors, 3 wheels on each side and 2 motors on each side. The motors are CIM motors.
 
@@ -67,3 +67,84 @@ Specs:
 - NEO 1.1 Encoder, Relative, Magnetic, CPR: 42 
 - Through-Bore Encoder, Absolute, Magnetic, RoboRIO DIO: 0
 - Motor to Shaft Gear Ratio: $20 : 1$
+
+## Phases
+
+### Phase 1 - Base 
+
+In this phase we will be implementing the base of all subsystems, as well as minimal teleop capability. The intention for this is mostly to test the base code and make sure we understand the basic mechanics and behaviour of both the systems and their sensors.
+
+For each system, create a subsystem class, implement basic access to sensors and control over the motors. After which create a command for use with an Xbox controller to test the system. See following details for specifics.
+
+#### Drive
+
+Implement subsystem. Include definitions for the motor controllers and pigeon. For the pigeon use Phoenix V6. 
+
+Create methods for basic PercentVBus tank-drive control as well as method for accessing sensor information (for both encoders and pigeon). Add dashboard displays of each sensor in `periodic`.
+
+Create a command to control the system with an `XboxController`. Use axes and not buttons.
+
+For the code to be finished:
+- make sure you have
+  - a way to rotate the motors based on PercentVBus
+  - a way to stop the motor rotation
+  - a way to access position/velocity of each side of the drive
+  - a way to access yaw information
+  - prints of all sensor information to the dashboard 
+- run the drive command and test the system motion
+  - make sure it moves as expected (direction for forward/backward motion, rotation)
+  - check sensor values to make sure encoders show correct position and velocity information
+    - place the robot on the ground, compare encoder measurement of movement to measurements done by a tape measure
+    - for velocity, keep the robot at a steady speed while moving it along a known distance; measure the time it took and compare this with encoder velocity measurement
+  - check pigeon to make sure it displays expected YAW information when rotating
+- consider the following
+  - you should probably reset both the pigeon yaw and encoder positions in the constructor.
+  - the pigeon Yaw is usually tracking rotating in an opposite direction then expected. Detail in a comment in your code on how the pigeon values change with rotation of the robot
+  - consider how to handle clamping the pigeon Yaw between 0 and 360, as it is not limited to this range.
+ 
+#### Intake  
+
+Implement the subsystem. Include definitions for the motor controller and limit switch.
+
+Create methods for basic PercentVBus rotation of the motor, as well as a method for accessing the limit switch state. Add dashboard display of the limit switch state.
+
+Create a command to rotate the intake motor based on the `XboxController`. Use axes and not buttons.
+
+For the code to be finished:
+- make sure you have
+  - a way to rotate the motor based on PercentVBus
+  - a way to stop the motor rotation
+  - a way to access limit switch information
+  - prints of all sensor information to the dashboard 
+- run the command and test system motion
+  - make sure it moves as expected in both speed and direction
+- test the limit switch detection
+  - test the limit switch to make sure it works (use shuffleboard to view its state)
+  - push in a note and see when the limit switch detects the note
+  - pull the note out and see when the limit switch no longer detects the note
+
+#### Shooter
+
+Implement the subsystem. Include definitions for the motor controller and encoder sensors.
+
+Create methods for basic PercentVBus rotation of the motors, as well as methods for accessing the velocity measured by each encoder. Add dashboard display of these values.
+
+Create a command to rotate the motors based on the `XboxController`. Use axes and not buttons.
+
+For the code to be finished:
+- make sure you have
+  - a way to rotate the motors based on PercentVBus
+  - a way to stop the motor rotation
+  - a way to access velocity of each motor (methods)
+  - prints of all sensor information to the dashboard 
+- run the command and test system motion
+  - make sure the motors all rotate outwards from the system at differing speeds depending on the `XboxController` state.
+- test sensor values
+  - make sure all the encoders show expected velocity measurements
+  - values should be rather similar
+  - test for different speeds
+  - velocities for the different motors should be similar to each other
+try inserting a note and rotate the motors to shoot it
+  - note the affect the note has on the speed of the motors
+  - try different speeds and see how far you can shoot the note
+    - list in a comment in you code the maximum distance and minimum distance you managed to acheive 
