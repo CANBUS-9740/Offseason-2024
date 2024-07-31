@@ -85,15 +85,15 @@ We have compiled a set of capabilities we would like to see at the end of work. 
 - Accurate Field Odometery
   - Usage of Pigeon and encoders for basic Odometery
   - Integration of Vision for error correction and initial position configuration
--  PathPlanner
-  - Usage of PathPlanner to plan and execute complex paths for autonomous mode
-    - Integrated with event markers
-  - Quick, accurate and smooth motion
-  - Possibilty of on-the-fly paths in teleop.
 - Auto-Collection
   - Detect and reach notes on the floor
   - Collect them once reached
   - Likely vision-based note locating
+- PathPlanner
+  - Usage of PathPlanner to plan and execute complex paths for autonomous mode
+  - Integrated with event markers
+  - Quick, accurate and smooth motion
+  - Possibilty of on-the-fly paths in teleop.
 
 ## Phases
 
