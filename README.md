@@ -80,6 +80,7 @@ We have compiled a set of capabilities we would like to see at the end of work. 
   - Usage of Interpolation, accurate Arm and Shooter control and target aquisition
   - Be capable of looking-on and firing notes at targets from different orientations and ranges
   - As quick a process as possible (as soon as a note is collected, be ready to shoot at an instant)
+  - Control all relavent systems automatically, no need for additional operator input
   - Odometery or Vision based targeting
   - Possibility for firing without human operator approval (?)
 - Accurate Field Odometery
@@ -94,6 +95,26 @@ We have compiled a set of capabilities we would like to see at the end of work. 
   - Integrated with event markers
   - Quick, accurate and smooth motion
   - Possibilty of on-the-fly paths in teleop.
+- Power Consumption Testing
+ - Make sure systems don't consume to much power
+ - Make sure we can fully run the robot and its systems for the duration of a game on a battery
+ - Check for motor overheating and consider software limits to solve this
+   - drive is likely susceptiable  
+- Proper, simple and useful information display to the operators
+  - Perhaps make use of LEDs to signal stuff to robot operates
+  - Design proper shuffleboard displays
+- Easy Testing during competitions
+  - consider how to design and implement a testing functionality to quickly and easily prove that systems are operational for a game
+- Keep the Arm inside frame perimeter automatically when not collecting notes
+- Keep the intake wheels spining slowly when a note is collected to make sure that the note stays in place
+- Arm Through-Bore may be susceptiable to wire disconnects during games, check and consider solutions
+
+
+### Requests for Robot Changes
+
+- Connect Forward and Reverse Limit Switches for the Arm. Make sure they are connected directly to the SparkMax if possible
+- Connect the Arm's Through-Bore Encoder to the SparkMAX
+- During testing and working of the systems, consider what we can change to improve the system mechanically
 
 ## Phases
 
