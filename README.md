@@ -338,18 +338,17 @@ In this phase we will improve the capability of each system by adding more capab
 We want the capability to track the robot's position in the field. This will allow us to build autonomous actions based on the robot's absolute position, making it quite useful. You'll need to use the `DifferentialDriveOdometery` which works with the encoders and pigeon of the system
 
 Guidelines:
-- Add field odometery
-  - Create and update field positining in subsystem code using encoders and pigeon
-    - Use the `DifferentialDriveOdometery` class, construct it in the constructor with an initial position of 0
-    - Update it in `periodic`
-    - Note about `DifferentialDriveOdometery` using `Rotation2d` for angle information, you can create this from `Rotation2d.fromDegrees`.
-  - Display of position via a `Field2D` object
-    - Make sure to add the object to the dashboard (only once)
-    - Make sure to update the robot position after odometery update
-  - Allow reseting the positioning to make the odometery think we are at a different position. This can allow us to lie about our positining.
-    - Look at `DifferentialDriveOdometery.resetPosition`
-  - Test and verify position tracking is actually accurate
-    - try wild motions with the robot in the air and on the ground. Make sure the tracking reflects accurate positining. Check with a Tape measure.
+- Create and update field positining in subsystem code using encoders and pigeon
+  - Use the `DifferentialDriveOdometery` class, construct it in the constructor with an initial position of 0
+  - Update it in `periodic`
+  - Note about `DifferentialDriveOdometery` using `Rotation2d` for angle information, you can create this from `Rotation2d.fromDegrees`.
+- Display of position via a `Field2D` object
+  - Make sure to add the object to the dashboard (only once)
+  - Make sure to update the robot position after odometery update
+- Allow reseting the positioning to make the odometery think we are at a different position. This can allow us to lie about our positining.
+  - Look at `DifferentialDriveOdometery.resetPosition`
+- Test and verify position tracking is actually accurate
+  - try wild motions with the robot in the air and on the ground. Make sure the tracking reflects accurate positining. Check with a Tape measure.
        
 Requirements:
   - Subsystem has odometery capability
@@ -358,6 +357,25 @@ Requirements:
       - Post reset, odometery works well with the new position 
 
 #### Intake
+
+We want to control the intake with conjuction with the limit switch. This will allow the robot operator to no longer have to guess and stop commands themselves. 
+
+Guidelines:
+- Update or create commands for intake in and intake out
+ - update the `isFinished` for both commands so that the commands finish depending on the note state as shown from the limit switch.
+ - For intake in: run until the limit switch shows that the note is in the system, then stop
+ - For intake out: run until liimt switch shows the note is no longer in the system
+- Testing
+ - test these changes by inserting notes into the system and showing that the commands function properly
+ - we expect to see that during intake in, the command stops when the note has entered
+ - while for intake out, the command stops when the note has fully left the system
+ - test this in and out multiple times, with the arm at multiple positions and the note being at different orientations to the system
+   - this will make sure that if the note is on the floor in peculiar ways, we can still work with it well 
+
+Requirements:
+- Commands for intake update to use the limit switch state
+ - For intake in command, run until limit switch detects the note is in the system
+ - For intake out command, run until the limit switch detects the note is no longer in the system  
 
 #### Shooter
 
@@ -371,15 +389,17 @@ Guidelines:
   - Tune the control loop with REV Hardware Client
     - You only need to tune for one motor, as they are quite similar. So tune once and use this tuning with all motors.
   - Create a command which uses this to rotate the shooter at a specific velocity
-  - Test the command by running it with different speeds
-    - make sure all motors are stabilized on the set point
-    - make sure to tune until control is stable and quick
-    - insert a note and watch how the note affect the control loop (does the speed loss get fixed quickly?)
-  - Attach the command to a button
-    - while the button is held, the command is running (command doesn't need `isFinished` then )
-    - select a base velocity which we will be using for our testing for attaching to the button
-  - Provide capability in the subsystem to check if all the motors have stabilized on a given RPM
-    - this will allow us to check when we've reached our wanted velocity
+- Test the command by running it with different speeds
+  - make sure all motors are stabilized on the set point
+  - make sure to tune until control is stable and quick
+  - insert a note and watch how the note affect the control loop (does the speed loss get fixed quickly?)
+- Attach the command to a button
+  - while the button is held, the command is running (command doesn't need `isFinished` then )
+  - select a base velocity which we will be using for our testing for attaching to the button
+  - check to see that the button runs the command well
+- Provide capability in the subsystem to check if all the motors have stabilized on a given RPM
+  - this will allow us to check when we've reached our wanted velocity
+  - test this capability. Add a print to the dashboard of whether the system is stabalized and run the command. See that when the system is stabilized, the method reports so, and when it isn't the method reports so. 
 
 Requirements:
 - Subsystem has velocity closed-loop control
@@ -390,7 +410,7 @@ Requirements:
 
 #### Arm
 
-### Phase 3 - Integration
+### Phase 3 - Integration I
 
 ### Phase 4 - Initial Autonomous
 
