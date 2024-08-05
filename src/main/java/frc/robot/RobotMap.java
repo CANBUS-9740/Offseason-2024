@@ -1,7 +1,7 @@
 package frc.robot;
 
 public class RobotMap {
-
+    // ARM
     public final static int ARM_MOTOR_PORT = 8;
     public final static int ARM_ENCODER_PORT = 0;
     public final static double ARM_GEAR_RATIO = 20 / 1;
