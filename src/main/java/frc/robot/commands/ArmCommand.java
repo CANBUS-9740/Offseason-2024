@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSystem;
 
 public class ArmCommand extends Command {
-    private final ArmSystem sub;
+    private final ArmSystem armSystem;
     private final XboxController xboxController;
 
     public ArmCommand(ArmSystem sub, XboxController xboxController) {
-        this.sub = sub;
+        this.armSystem = sub;
         this.xboxController = xboxController;
 
         addRequirements(sub);
@@ -23,11 +23,11 @@ public class ArmCommand extends Command {
     @Override
     public void execute() {
         if (xboxController.getPOV() == 0) {
-            sub.moveUp();
+            armSystem.moveUp();
         } else if (xboxController.getPOV() == 180) {
-            sub.moveDown();
+            armSystem.moveDown();
         } else {
-            sub.stop();
+            armSystem.stop();
         }
     }
 
@@ -38,6 +38,6 @@ public class ArmCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        sub.stop();
+        armSystem.stop();
     }
 }

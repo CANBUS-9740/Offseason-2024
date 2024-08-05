@@ -8,12 +8,12 @@ import frc.robot.RobotMap;
 
 public class ArmSystem extends SubsystemBase {
     private final CANSparkMax motor;
-    private final RelativeEncoder NeoEncoder;
+    private final RelativeEncoder neoEncoder;
     private final DutyCycleEncoder dutyCycleEncoder;
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
-        NeoEncoder = motor.getAlternateEncoder(RobotMap.ARM_ENCODER_CPR);
+        neoEncoder = motor.getAlternateEncoder(RobotMap.ARM_ENCODER_CPR);
         dutyCycleEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
 
         dutyCycleEncoder.setPositionOffset(RobotMap.ARM_FLOOR_ANGLE / 360);
@@ -40,11 +40,11 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getNeoEncoderVelocity() {
-        return NeoEncoder.getVelocity();
+        return neoEncoder.getVelocity();
     }
 
     public double getNeoEncoderPosition() {
-        return NeoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO * 360;
+        return neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO * 360;
     }
 
     public double getDutyCycleEncoderPosition() {
