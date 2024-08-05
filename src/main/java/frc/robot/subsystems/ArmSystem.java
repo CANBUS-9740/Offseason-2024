@@ -15,8 +15,6 @@ public class ArmSystem extends SubsystemBase {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
         neoEncoder = motor.getAlternateEncoder(RobotMap.ARM_ENCODER_CPR);
         dutyCycleEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
-
-        dutyCycleEncoder.setPositionOffset(RobotMap.ARM_FLOOR_ANGLE / 360);
     }
 
     public void moveUp() {
@@ -48,7 +46,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getDutyCycleEncoderPosition() {
-        return dutyCycleEncoder.getAbsolutePosition() * 360;
+        return -(dutyCycleEncoder.getAbsolutePosition() - (214 / 360.0))  * 360;
     }
 
     @Override
