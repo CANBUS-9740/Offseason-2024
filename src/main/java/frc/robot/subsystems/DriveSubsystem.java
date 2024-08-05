@@ -37,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     public double getPigeonAngle(){
         return (360 - pigeon2.getAngle()) % 360;// the value returned will be from 0 - 360 depending on its location
-        // 0  - initial degree, 359 - one degree to the right, 1 - one degree to the left
+        // 0  - initial degree, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
     }
     public void powerLeftMotors(double power){
         leftFrontMotor.set(power);
