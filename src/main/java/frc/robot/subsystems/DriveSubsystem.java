@@ -21,6 +21,7 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.setInverted(true);
         leftBackMotor.setInverted(true);
 
+
         pigeon2 = new Pigeon2(RobotMap.PIGEON_ID);
     }
     public double getHowMuchLeftMoved(){
