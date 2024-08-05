@@ -33,7 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void initialize(){
         pigeon2.reset();
         leftFrontMotor.setSelectedSensorPosition(0);
-        rightBackMotor.setSelectedSensorPosition(0);
+        rightBackMotor.setSelectedSensorPosition(0);//inits
     }
     public double getPigeonAngle(){
         return (360 - pigeon2.getAngle()) % 360;// the value returned will be from 0 - 360 depending on its location
