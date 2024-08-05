@@ -1,12 +1,20 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.DriveTeleopCommand;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class Robot extends TimedRobot {
+    private DriveSubsystem driveSubsystem;
+    private DriveTeleopCommand driveTeleopCommand;
+    private XboxController xboxController;
 
     @Override
     public void robotInit() {
+        driveSubsystem = new DriveSubsystem();
+        driveSubsystem.initialize();
 
     }
 
@@ -22,12 +30,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-
+        xboxController = new XboxController(RobotMap.DRIVE_CONTROLLER_PORT);
+        driveTeleopCommand = new DriveTeleopCommand(driveSubsystem,xboxController);
     }
 
     @Override
     public void teleopPeriodic() {
-
+        driveTeleopCommand.schedule();
     }
 
     @Override
