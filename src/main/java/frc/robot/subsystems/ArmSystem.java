@@ -13,24 +13,22 @@ public class ArmSystem extends SubsystemBase {
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
-        neoEncoder = motor.getAlternateEncoder(RobotMap.ARM_ENCODER_CPR);
+        neoEncoder = motor.getEncoder(SparkRelativeEncoder.Type.kQuadrature, RobotMap.ARM_NEO_ENCODER_CPR);
         dutyCycleEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
+
+        motor.restoreFactoryDefaults();
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, RobotMap.ARM_MAX_ANGLE);
+        motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, RobotMap.ARM_MIN_ANGLE);
+        motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
     public void moveUp() {
-        if (getDutyCycleEncoderPosition() >= RobotMap.ARM_MAX_ANGLE){
-            stop();
-        } else {
-            motor.set(0.5);
-        }
+        motor.set(0.5);
     }
 
     public void moveDown() {
-        if (getDutyCycleEncoderPosition() <= RobotMap.ARM_MIN_ANGLE){
-            stop();
-        } else {
-            motor.set(-0.5);
-        }
+        motor.set(-0.5);
     }
 
     public void stop() {
@@ -46,7 +44,10 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getDutyCycleEncoderPosition() {
-        return -(dutyCycleEncoder.getAbsolutePosition() - (214 / 360.0))  * 360;
+            // ↓ For offset the encoder to zero point that we want(floor),
+            // ↓ we subtract from the encoder position the required quantity that need to offset the encoder to zero.
+            // ↓ The "-" at the start we add to turn over the encoder value to positive value
+        return -(dutyCycleEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * 360;
     }
 
     @Override
