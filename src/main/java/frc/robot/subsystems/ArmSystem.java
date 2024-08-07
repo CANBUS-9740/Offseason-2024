@@ -45,7 +45,7 @@ public class ArmSystem extends SubsystemBase {
         return neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO * 360;
     }
 
-    public double getDutyCycleEncoderPosition() {
+    public double getAbsEncoderPositionDegrees() {
             // ↓ For offset the encoder to zero point that we want(floor),
             // ↓ we subtract from the encoder position the required quantity that need to offset the encoder to zero.
             // ↓ The "-" at the start we add to turn over the encoder value to positive value
