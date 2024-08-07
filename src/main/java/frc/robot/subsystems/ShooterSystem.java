@@ -37,7 +37,6 @@ public class ShooterSystem extends SubsystemBase {
         encoderRT = motorRT.getEncoder();
         encoderRB = motorRB.getEncoder();
     }
-
     public void stop() {
         motorLT.stopMotor();
         motorLB.stopMotor();
@@ -60,11 +59,9 @@ public class ShooterSystem extends SubsystemBase {
     public double getVelocityLT() {
         return encoderLT.getVelocity();
     }
-
     public double getVelocityRT() {
         return encoderRT.getVelocity();
     }
-
     public double getVelocityRB() {
         return encoderRB.getVelocity();
     }

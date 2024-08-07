@@ -12,9 +12,6 @@ public class ShootOut extends Command {
         addRequirements(shooterSystem);
     }
 
-    public void initialize() {
-    }
-
 
     public void execute() {
 
