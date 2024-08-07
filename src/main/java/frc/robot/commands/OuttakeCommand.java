@@ -26,6 +26,6 @@ public class OuttakeCommand extends Command {
     }
 
     public boolean isFinished() {
-        return false;
+        return !intakeSystem.isNoteInside();
     }
 }
