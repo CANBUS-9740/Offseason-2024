@@ -1,13 +1,28 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.ArmDownCommand;
+import frc.robot.commands.ArmUpCommand;
+import frc.robot.subsystems.ArmSystem;
 
 public class Robot extends TimedRobot {
+    private XboxController xboxController;
+    private ArmSystem armSystem;
 
     @Override
     public void robotInit() {
+        xboxController = new XboxController(0);
+        armSystem = new ArmSystem();
 
+        POVButton dPadUp = new POVButton(xboxController, 0);
+        POVButton dPadDown = new POVButton(xboxController, 180);
+
+        dPadUp.whileTrue(new ArmUpCommand(armSystem));
+        dPadDown.whileTrue(new ArmDownCommand(armSystem));
     }
 
     @Override
