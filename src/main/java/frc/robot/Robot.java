@@ -8,13 +8,12 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class Robot extends TimedRobot {
     private DriveSubsystem driveSubsystem;
-    private DriveTeleopCommand driveTeleopCommand;
     private XboxController xboxController;
 
     @Override
     public void robotInit() {
+        xboxController = new XboxController(RobotMap.DRIVE_CONTROLLER_PORT);
         driveSubsystem = new DriveSubsystem();
-        driveSubsystem.initialize();
 
     }
 
@@ -30,13 +29,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        xboxController = new XboxController(RobotMap.DRIVE_CONTROLLER_PORT);
-        driveTeleopCommand = new DriveTeleopCommand(driveSubsystem,xboxController);
+        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem,xboxController);
+        driveTeleopCommand.schedule();
+
     }
 
     @Override
     public void teleopPeriodic() {
-        driveTeleopCommand.schedule();
     }
 
     @Override
