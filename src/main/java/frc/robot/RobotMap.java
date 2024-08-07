@@ -11,5 +11,4 @@ public class RobotMap {
     public final static double ARM_FLOOR_ANGLE = 0;
     public final static double ARM_MIN_ANGLE = 0;
     public final static double ARM_MAX_ANGLE = 120;
-
 }
