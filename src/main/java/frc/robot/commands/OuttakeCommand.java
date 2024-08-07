@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSystem;
 
 public class OuttakeCommand extends Command {
-    private IntakeSystem intakeSystem;
+    private final IntakeSystem intakeSystem;
 
     public OuttakeCommand(IntakeSystem intakeSystem) {
         this.intakeSystem = intakeSystem;
