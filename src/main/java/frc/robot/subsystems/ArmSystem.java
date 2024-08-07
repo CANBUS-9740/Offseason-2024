@@ -13,13 +13,14 @@ public class ArmSystem extends SubsystemBase {
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
-        neoEncoder = motor.getEncoder(SparkRelativeEncoder.Type.kQuadrature, RobotMap.ARM_NEO_ENCODER_CPR);
+        neoEncoder = motor.getEncoder();
         dutyCycleEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
+        neoEncoder.setPosition(getDutyCycleEncoderPosition());
 
         motor.restoreFactoryDefaults();
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, RobotMap.ARM_MAX_ANGLE);
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360);
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, RobotMap.ARM_MIN_ANGLE);
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360);
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
@@ -35,7 +36,7 @@ public class ArmSystem extends SubsystemBase {
         motor.stopMotor();
     }
 
-    public double getNeoEncoderVelocity() {
+    public double getNeoEncoderVelocityRPM() {
         return neoEncoder.getVelocity();
     }
 
@@ -52,7 +53,7 @@ public class ArmSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocity());
+        SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPosition());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getDutyCycleEncoderPosition());
     }
