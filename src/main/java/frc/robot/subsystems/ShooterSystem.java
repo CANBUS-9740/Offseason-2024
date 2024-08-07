@@ -18,8 +18,7 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderRB;
 
 
-
-    public ShooterSystem(){
+    public ShooterSystem() {
         motorLT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorRT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_RIGHT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorLB = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
@@ -38,41 +37,43 @@ public class ShooterSystem extends SubsystemBase {
         encoderRT = motorRT.getEncoder();
         encoderRB = motorRB.getEncoder();
     }
-    public void stop(){
+
+    public void stop() {
         motorLT.stopMotor();
         motorLB.stopMotor();
         motorRB.stopMotor();
         motorRT.stopMotor();
     }
 
-    public void rotate(){
-        motorLT.set(0.5);
-        motorRB.set(0.5);
-        motorLB.set(0.5);
-        motorRT.set(0.5);
+    public void rotate() {
+        motorLT.set(RobotMap.SHOOTER_ROTATE_SPEED);
+        motorRB.set(RobotMap.SHOOTER_ROTATE_SPEED);
+        motorLB.set(RobotMap.SHOOTER_ROTATE_SPEED);
+        motorRT.set(RobotMap.SHOOTER_ROTATE_SPEED);
     }
 
 
-    public double getVelocityLB(){
+    public double getVelocityLB() {
         return encoderLB.getVelocity();
     }
 
-    public double getVelocityLT(){
+    public double getVelocityLT() {
         return encoderLT.getVelocity();
     }
-    public double getVelocityRT(){
+
+    public double getVelocityRT() {
         return encoderRT.getVelocity();
     }
-    public double getVelocityRB(){
+
+    public double getVelocityRB() {
         return encoderRB.getVelocity();
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("left top:", getVelocityLT());
-        SmartDashboard.putNumber("left bottom", getVelocityLB());
-        SmartDashboard.putNumber("right top", getVelocityRT());
-        SmartDashboard.putNumber("right bottom", getVelocityRB());
-        super.periodic();
+        SmartDashboard.putNumber("ShooterLeftTopMotor", getVelocityLT());
+        SmartDashboard.putNumber("ShooterLeftBottomMotor", getVelocityLB());
+        SmartDashboard.putNumber("ShooterRightTopMotor", getVelocityRT());
+        SmartDashboard.putNumber("ShooterRightBottomMotor", getVelocityRB());
     }
 }

@@ -6,17 +6,19 @@ import frc.robot.subsystems.ShooterSystem;
 public class ShootOut extends Command {
     private final ShooterSystem shooterSystem;
 
-    public ShootOut(ShooterSystem shooterSystem){
+    public ShootOut(ShooterSystem shooterSystem) {
         this.shooterSystem = shooterSystem;
 
         addRequirements(shooterSystem);
     }
-    public void initialize() {}
+
+    public void initialize() {
+    }
 
 
     public void execute() {
 
-    shooterSystem.rotate();
+        shooterSystem.rotate();
 
     }
 
