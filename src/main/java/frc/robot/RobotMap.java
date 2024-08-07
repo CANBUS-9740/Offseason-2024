@@ -7,4 +7,9 @@ public class RobotMap {
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
     public static final double SHOOTER_ROTATE_SPEED = 0.5;
 
+    public static final double SHOOTER_RPM_KP = 0;
+    public static final double SHOOTER_RPM_KI = 0;
+    public static final double SHOOTER_RPM_KD = 0;
+
+
 }

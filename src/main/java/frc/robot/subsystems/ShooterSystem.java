@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -16,9 +14,10 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderRT;
     private final RelativeEncoder encoderLB;
     private final RelativeEncoder encoderRB;
+    private final SparkPIDController pid;
+    private final double targetRPM;
 
-
-    public ShooterSystem() {
+    public ShooterSystem(double targetRPM) {
         motorLT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorRT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_RIGHT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorLB = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
@@ -36,6 +35,19 @@ public class ShooterSystem extends SubsystemBase {
         encoderLB = motorLB.getEncoder();
         encoderRT = motorRT.getEncoder();
         encoderRB = motorRB.getEncoder();
+
+        pid = motorLB.getPIDController();
+
+        pid.setP(0.002,0);
+        pid.setI(0, 0);
+        pid.setD(0.042, 0);
+
+        motorRB.follow(motorLB);
+        motorRT.follow(motorLB);
+        motorLT.follow(motorLB);
+
+
+        this.targetRPM = targetRPM;
     }
     public void stop() {
         motorLT.stopMotor();
@@ -64,6 +76,10 @@ public class ShooterSystem extends SubsystemBase {
     }
     public double getVelocityRB() {
         return encoderRB.getVelocity();
+    }
+
+    public void rotatePID(){
+        pid.setReference(targetRPM, CANSparkBase.ControlType.kSmartMotion);
     }
 
     @Override
