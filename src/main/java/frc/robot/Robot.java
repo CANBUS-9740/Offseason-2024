@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ArmCommand;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.ArmDownCommand;
+import frc.robot.commands.ArmUpCommand;
 import frc.robot.subsystems.ArmSystem;
 
 public class Robot extends TimedRobot {
@@ -15,6 +17,12 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         xboxController = new XboxController(0);
         armSystem = new ArmSystem();
+
+        POVButton dPadUp = new POVButton(xboxController, 0);
+        POVButton dPadDown = new POVButton(xboxController, 180);
+
+        dPadUp.whileTrue(new ArmUpCommand(armSystem));
+        dPadDown.whileTrue(new ArmDownCommand(armSystem));
     }
 
     @Override
@@ -29,8 +37,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        Command armCommand = new ArmCommand(armSystem, xboxController);
-        armCommand.schedule();
+
     }
 
     @Override
