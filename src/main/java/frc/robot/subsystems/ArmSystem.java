@@ -56,6 +56,6 @@ public class ArmSystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
-        SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getDutyCycleEncoderPosition());
+        SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
     }
 }
