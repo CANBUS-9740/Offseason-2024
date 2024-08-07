@@ -18,9 +18,9 @@ public class ArmSystem extends SubsystemBase {
         neoEncoder.setPosition(getDutyCycleEncoderPosition());
 
         motor.restoreFactoryDefaults();
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360);
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360);
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
