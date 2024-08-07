@@ -20,11 +20,11 @@ public class IntakeSystem extends SubsystemBase {
     }
 
     public void out() {
-        motor.set(DEFAULT_ROTATE_SPEED);
+        motor.set(-DEFAULT_ROTATE_SPEED);
     }
 
     public void in() {
-        motor.set(-DEFAULT_ROTATE_SPEED);
+        motor.set(DEFAULT_ROTATE_SPEED);
     }
 
     public void stop() {
