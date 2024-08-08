@@ -15,9 +15,10 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderLB;
     private final RelativeEncoder encoderRB;
     private final SparkPIDController pid;
-    private final double targetRPM;
+    public  final double SHOOTER_ROTATE_SPEED = 0.5;
 
-    public ShooterSystem(double targetRPM) {
+
+    public ShooterSystem() {
         motorLT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorRT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_RIGHT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorLB = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
@@ -46,8 +47,6 @@ public class ShooterSystem extends SubsystemBase {
         motorRT.follow(motorLB);
         motorLT.follow(motorLB);
 
-
-        this.targetRPM = targetRPM;
     }
     public void stop() {
         motorLT.stopMotor();
@@ -57,36 +56,36 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public void rotate() {
-        motorLT.set(RobotMap.SHOOTER_ROTATE_SPEED);
-        motorRB.set(RobotMap.SHOOTER_ROTATE_SPEED);
-        motorLB.set(RobotMap.SHOOTER_ROTATE_SPEED);
-        motorRT.set(RobotMap.SHOOTER_ROTATE_SPEED);
+        motorLT.set(SHOOTER_ROTATE_SPEED);
+        motorRB.set(SHOOTER_ROTATE_SPEED);
+        motorLB.set(SHOOTER_ROTATE_SPEED);
+        motorRT.set(SHOOTER_ROTATE_SPEED);
     }
 
 
-    public double getVelocityLB() {
+    public double getLeftBottomVelocityRpm() {
         return encoderLB.getVelocity();
     }
 
-    public double getVelocityLT() {
+    public double getLeftTopVelocityRpm() {
         return encoderLT.getVelocity();
     }
-    public double getVelocityRT() {
+    public double getRightTopVelocityRpm() {
         return encoderRT.getVelocity();
     }
-    public double getVelocityRB() {
+    public double getRightBottomVelocityRpm() {
         return encoderRB.getVelocity();
     }
 
-    public void rotatePID(){
+    public void rotatePID(double targetRPM){
         pid.setReference(targetRPM, CANSparkBase.ControlType.kSmartMotion);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ShooterLeftTopMotor", getVelocityLT());
-        SmartDashboard.putNumber("ShooterLeftBottomMotor", getVelocityLB());
-        SmartDashboard.putNumber("ShooterRightTopMotor", getVelocityRT());
-        SmartDashboard.putNumber("ShooterRightBottomMotor", getVelocityRB());
+        SmartDashboard.putNumber("ShooterLeftTopMotor", getLeftTopVelocityRpm());
+        SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
+        SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
+        SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
     }
 }

@@ -16,7 +16,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        shooterSystem = new ShooterSystem(2000);
+        shooterSystem = new ShooterSystem();
         xboxController = new XboxController(0);
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new ShooterPID(shooterSystem, 2000));

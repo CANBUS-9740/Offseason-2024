@@ -5,14 +5,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSystem;
 
 public class ShooterPID extends Command {
-    private ShooterSystem shooterSystem;
+    private final ShooterSystem shooterSystem;
     private final double targetRPM;
     public ShooterPID(ShooterSystem shooterSystem, double targetRPM){
         this.shooterSystem = shooterSystem;
         this.targetRPM = targetRPM;
+        addRequirements(shooterSystem);
     }
     public void initialize() {
-        shooterSystem.rotatePID();
+        shooterSystem.rotatePID(targetRPM);
     }
 
     public void execute() {}
