@@ -16,6 +16,9 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderRB;
     private final SparkPIDController pid;
     public  final double SHOOTER_ROTATE_SPEED = 0.5;
+    public final double SHOOTER_RPM_KP = 0;
+    public final double SHOOTER_RPM_KI = 0;
+    public final double SHOOTER_RPM_KD = 0;
 
 
     public ShooterSystem() {
