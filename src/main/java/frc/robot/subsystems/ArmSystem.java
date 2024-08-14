@@ -15,12 +15,12 @@ public class ArmSystem extends SubsystemBase {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
         neoEncoder = motor.getEncoder();
         dutyCycleEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
-        neoEncoder.setPosition(getDutyCycleEncoderPosition());
+        neoEncoder.setPosition(0);
 
         motor.restoreFactoryDefaults();
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MAX_ANGLE / RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MIN_ANGLE / RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
@@ -41,7 +41,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getNeoEncoderPosition() {
-        return neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO * 360;
+        return neoEncoder.getPosition();
     }
 
     public double getDutyCycleEncoderPosition() {
