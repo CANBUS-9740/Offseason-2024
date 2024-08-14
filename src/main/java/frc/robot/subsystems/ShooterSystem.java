@@ -32,6 +32,11 @@ public class ShooterSystem extends SubsystemBase {
         motorLB.restoreFactoryDefaults();
         motorRB.restoreFactoryDefaults();
 
+        motorRT.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        motorLT.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        motorLB.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        motorRB.setIdleMode(CANSparkBase.IdleMode.kBrake);
+
         motorRT.setInverted(true);
         motorRB.setInverted(true);
 
@@ -42,9 +47,9 @@ public class ShooterSystem extends SubsystemBase {
 
         pid = motorLB.getPIDController();
 
-        pid.setP(0.002,0);
-        pid.setI(0, 0);
-        pid.setD(0.042, 0);
+        pid.setP(0.0001,0);
+        pid.setI(0.000001, 0);
+        pid.setD(0, 0);
 
         motorRB.follow(motorLB);
         motorRT.follow(motorLB);
@@ -81,7 +86,7 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public void rotatePID(double targetRPM){
-        pid.setReference(targetRPM, CANSparkBase.ControlType.kSmartMotion);
+        pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
     }
 
     @Override
