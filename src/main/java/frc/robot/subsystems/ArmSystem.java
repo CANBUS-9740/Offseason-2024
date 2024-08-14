@@ -42,7 +42,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getNeoEncoderPositionDegrees() {
-        return neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO * 360;
+        return -(neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO) * 360;
     }
 
     public double getAbsEncoderPositionDegrees() {
