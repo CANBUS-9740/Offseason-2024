@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +19,8 @@ public class ArmSystem extends SubsystemBase {
 
         motor.restoreFactoryDefaults();
 
-        neoEncoder.setPosition((absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * RobotMap.ARM_GEAR_RATIO);
+        neoEncoder.setPosition((absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * RobotMap.ARM_GEAR_RATIO + Units.Degrees.of(30).in(Units.Revolutions));
+
         motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
         motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
@@ -42,7 +44,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getNeoEncoderPositionDegrees() {
-        return -(neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO) * 360;
+        return (neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO) * 360;
     }
 
     public double getAbsEncoderPositionDegrees() {
