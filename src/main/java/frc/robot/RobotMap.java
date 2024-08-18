@@ -12,5 +12,4 @@ public class RobotMap {
     public final static double ARM_MIN_ANGLE = 0;
     public final static double ARM_MAX_ANGLE = 195;
     public final static double ABSOLUTE_ENCODER_ZERO_OFFSET = 214 / 360.0;
-    public final static double ARM_MAX_ANGLE = 120;
 }
