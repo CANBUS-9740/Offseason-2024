@@ -102,23 +102,23 @@ public class DriveSubsystem extends SubsystemBase {
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
+    }
 
-        public void periodic () {
-            differentialDriveOdometry.update(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
+    public void periodic() {
+        differentialDriveOdometry.update(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
 
-            SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
-            SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
-            SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
-            SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
-            SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
-            SmartDashboard.putData("field: ", field2d);
-            SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
+        SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
+        SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
+        SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
+        SmartDashboard.putData("field: ", field2d);
+        SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
 
-            field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
-            //  field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(),differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation() );
-            //   field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
-            //}
-        }
+        field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
+        //  field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(),differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation() );
+        //   field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
+        //}
     }
 }
 
