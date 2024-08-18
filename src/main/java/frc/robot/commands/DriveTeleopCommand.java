@@ -28,6 +28,10 @@ public class DriveTeleopCommand extends Command {
 
     @Override
     public void execute() {
+        double powerR = xboxController.getRightY();
+        double powerL = xboxController.getLeftY();
+        driveSubsystem.powerLeftMotors(powerL);
+        driveSubsystem.powerRightMotors(powerR);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_VictorSPX leftBackMotor;
     private final WPI_TalonSRX rightBackMotor;
     private final Field2d field2d;
-    private final DifferentialDriveOdometry odometry;
+    private final DifferentialDriveOdometry differentialDriveOdometry;
     private Pigeon2 pigeon2;
 
     public DriveSubsystem() {
@@ -40,60 +40,85 @@ public class DriveSubsystem extends SubsystemBase {
 
         this.field2d = new Field2d();
 
-        this.odometry = new DifferentialDriveOdometry(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
-        field2d.setRobotPose(this.odometry.getPoseMeters().getX(),this.odometry.getPoseMeters().getY(), this.odometry.getPoseMeters().getRotation() );
+        differentialDriveOdometry = new DifferentialDriveOdometry(
+                new Rotation2d(getAngleDegrees()),
+                getLeftDistancePassedMeters(),
+                getRightDistancePassedMeters()
+        );
+        field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(), differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation());
 
         initialize();
 
 
     }
-    public double getLeftDistancePassedMeters(){
-        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS*2*Math.PI;
+
+    public Field2d getField2d() {
+        return field2d;
     }
-    public double getRightDistancePassedMeters(){
-        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS*2*Math.PI;
+
+    public double getLeftDistancePassedMeters() {
+        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
-    public void initialize(){
+
+    public double getRightDistancePassedMeters() {
+        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+    }
+
+    public void initialize() {
         pigeon2.reset();
         leftFrontMotor.setSelectedSensorPosition(0);
         rightBackMotor.setSelectedSensorPosition(0);//inits
     }
-    public double getAngleDegrees(){
+
+    public double getAngleDegrees() {
         return (360 - pigeon2.getAngle()) % 360;// the value returned will be from 0 - 360 depending on its location
         // 0  - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
     }
-    public void powerLeftMotors(double power){
-        leftFrontMotor.set(power);
-        leftBackMotor.set(power);
+
+    public void powerLeftMotors(double powerL) {
+        leftFrontMotor.set(powerL);
+        leftBackMotor.set(powerL);
     }
-    public void powerRightMotors(double power){
-        rightFrontMotor.set(power);
-        rightBackMotor.set(power);
+
+    public void powerRightMotors(double powerR) {
+        rightFrontMotor.set(powerR);
+        rightBackMotor.set(powerR);
     }
-    public void stop(){
+
+    public void stop() {
         rightBackMotor.stopMotor();
         rightFrontMotor.stopMotor();
         leftBackMotor.stopMotor();
         leftFrontMotor.stopMotor();
     }
 
-    public void setOdometryPose2d (Pose2d pose2d){
-        odometry.update(pose2d.getRotation(), getRightDistancePassedMeters(), getLeftDistancePassedMeters());
+    //public void setOdometryPose2d (Pose2d pose2d){
+    //   differentialDriveOdometry.update(pose2d.getRotation(), getRightDistancePassedMeters(), getLeftDistancePassedMeters());
+    //}
 
-    }
+    private void updateOdometry() {
+        differentialDriveOdometry.update(
+                pigeon2.getRotation2d(),
+                getLeftDistancePassedMeters(),
+                getRightDistancePassedMeters()
+        );
 
-    public void periodic(){
-        odometry.update(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
-        SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
-        SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
-        SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
-        SmartDashboard.putNumber("X:", this.odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y:", this.odometry.getPoseMeters().getY());
-        SmartDashboard.putData("field: ", field2d);
-        SmartDashboard.putNumber("Angle:", this.odometry.getPoseMeters().getRotation().getDegrees());
-        field2d.setRobotPose(this.odometry.getPoseMeters().getX(),this.odometry.getPoseMeters().getY(), this.odometry.getPoseMeters().getRotation() );
-        field2d.setRobotPose(odometry.getPoseMeters());
+        public void periodic () {
+            differentialDriveOdometry.update(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
 
+            SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
+            SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
+            SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
+            SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
+            SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
+            SmartDashboard.putData("field: ", field2d);
+            SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
+
+            field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
+            //  field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(),differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation() );
+            //   field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
+            //}
+        }
     }
 }
 
