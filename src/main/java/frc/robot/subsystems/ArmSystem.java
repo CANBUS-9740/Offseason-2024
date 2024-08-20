@@ -19,11 +19,12 @@ public class ArmSystem extends SubsystemBase {
 
         motor.restoreFactoryDefaults();
 
+        motor.setInverted(true);
         neoEncoder.setPosition((absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * RobotMap.ARM_GEAR_RATIO + Units.Degrees.of(30).in(Units.Revolutions));
 
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
@@ -44,7 +45,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public double getNeoEncoderPositionDegrees() {
-        return (neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO) * 360;
+        return (-neoEncoder.getPosition() / RobotMap.ARM_GEAR_RATIO) * 360;
     }
 
     public double getAbsEncoderPositionDegrees() {
