@@ -4,22 +4,30 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OuttakeCommand;
+import frc.robot.subsystems.IntakeSystem;
 import frc.robot.commands.ShootOut;
 import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ShooterSystem;
 
 public class Robot extends TimedRobot {
-    private XboxController xboxController;
     private ShooterSystem shooterSystem;
+    private IntakeSystem intakeSystem;
+    private XboxController xboxController;
 
 
 
     @Override
     public void robotInit() {
         shooterSystem = new ShooterSystem();
+        intakeSystem = new IntakeSystem();
         xboxController = new XboxController(0);
+
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new ShooterPID(shooterSystem, 2000));
+        new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
     }
 
     @Override
@@ -38,7 +46,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-
     }
 
     @Override
