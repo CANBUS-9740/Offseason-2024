@@ -13,17 +13,18 @@ public class ArmSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final RelativeEncoder neoEncoder;
     private final DutyCycleEncoder absEncoder;
-    private final SparkPIDController pidController;
+    //private final SparkPIDController pidController;
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
         neoEncoder = motor.getEncoder();
         absEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
-        pidController = motor.getPIDController();
+        //pidController = motor.getPIDController();
 
         motor.restoreFactoryDefaults();
 
         motor.setInverted(true);
+        /*
         neoEncoder.setPosition((absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * RobotMap.ARM_GEAR_RATIO + Units.Degrees.of(30).in(Units.Revolutions));
 
         motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
@@ -34,15 +35,24 @@ public class ArmSystem extends SubsystemBase {
         pidController.setP(0.07, 0);
         pidController.setI(0, 0);
         pidController.setD(0, 0);
-        //pidController.setFF(0.01 * Math.cos(Math.toRadians(getNeoEncoderPositionDegrees())), 0);
+        pidController.setFF(0.01 * Math.cos(Math.toRadians(getNeoEncoderPositionDegrees())), 0);
+        */
     }
 
-    public void moveToPosition(double targetAngle) {
-        pidController.setReference((-targetAngle * RobotMap.ARM_GEAR_RATIO) / 360, CANSparkBase.ControlType.kPosition);
-    }
+//    public void moveToAngle(double targetAngle) {
+//        pidController.setReference((-targetAngle * RobotMap.ARM_GEAR_RATIO) / 360, CANSparkBase.ControlType.kPosition);
+//    }
 
     public boolean researchATargetAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, getNeoEncoderPositionDegrees(), 2);
+        return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), 2);
+    }
+
+    public void moveToAngle(double output) {
+        if ((motor.get() < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || motor.get() > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+            stop();
+        } else {
+            motor.set(output);
+        }
     }
 
     public void stop() {

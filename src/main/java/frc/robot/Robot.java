@@ -20,8 +20,8 @@ public class Robot extends TimedRobot {
         POVButton dPadUp = new POVButton(xboxController, 0);
         POVButton dPadDown = new POVButton(xboxController, 180);
 
-        dPadUp.whileTrue(new ArmMoveToShooterCommand(armSystem));
-        dPadDown.whileTrue(new ArmMoveToFloorCommand(armSystem));
+        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
+        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
     }
 
     @Override
