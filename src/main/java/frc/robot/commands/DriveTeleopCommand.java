@@ -12,13 +12,10 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DriveTeleopCommand extends Command {
     private final DriveSubsystem driveSubsystem;
     private final XboxController xboxController;
-    private final Field2d field2d;
-
 
     public DriveTeleopCommand(DriveSubsystem driveSubsystem, XboxController xboxController) {
         this.driveSubsystem = driveSubsystem;
         this.xboxController = xboxController;
-        this.field2d = new Field2d();
         addRequirements(this.driveSubsystem);
     }
     @Override

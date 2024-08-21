@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -39,13 +40,13 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.setSensorPhase(true);
 
         this.field2d = new Field2d();
+        SmartDashboard.putData("field2d" ,field2d);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
-        field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(), differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation());
 
         initialize();
 
@@ -98,21 +99,21 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         differentialDriveOdometry.update(
-                pigeon2.getRotation2d(),
+                new Rotation2d(Math.toRadians(getAngleDegrees())),
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
     }
 
     public void periodic() {
-        differentialDriveOdometry.update(new Rotation2d(getAngleDegrees()), getLeftDistancePassedMeters(), getRightDistancePassedMeters());
+        updateOdometry();
 
         SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
+        SmartDashboard.putNumber("pigeon" , pigeon2.getAngle());
         SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
         SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
         SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
-        SmartDashboard.putData("field: ", field2d);
         SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
 
         field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
