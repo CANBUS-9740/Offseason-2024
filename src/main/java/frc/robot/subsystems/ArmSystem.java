@@ -24,16 +24,16 @@ public class ArmSystem extends SubsystemBase {
 
         motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, (float) ((RobotMap.ARM_MIN_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
+        motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((-RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
     }
 
     public void moveUp() {
-        motor.set(0.5);
+        motor.set(-0.5);
     }
 
     public void moveDown() {
-        motor.set(-0.5);
+        motor.set(0.5);
     }
 
     public void stop() {
