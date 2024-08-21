@@ -65,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
         return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
 
-    public void initialize() {
+    private void initialize() {
         pigeon2.reset();
         leftFrontMotor.setSelectedSensorPosition(0);
         rightBackMotor.setSelectedSensorPosition(0);//inits
@@ -93,10 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.stopMotor();
     }
 
-    //public void setOdometryPose2d (Pose2d pose2d){
-    //   differentialDriveOdometry.update(pose2d.getRotation(), getRightDistancePassedMeters(), getLeftDistancePassedMeters());
-    //}
-
     private void updateOdometry() {
         differentialDriveOdometry.update(
                 new Rotation2d(Math.toRadians(getAngleDegrees())),
@@ -117,9 +113,6 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
 
         field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
-        //  field2d.setRobotPose(differentialDriveOdometry.getPoseMeters().getX(),differentialDriveOdometry.getPoseMeters().getY(), differentialDriveOdometry.getPoseMeters().getRotation() );
-        //   field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
-        //}
     }
 }
 
