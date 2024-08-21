@@ -2,11 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.ArmDownCommand;
-import frc.robot.commands.ArmUpCommand;
+import frc.robot.commands.ArmMoveToFloorCommand;
+import frc.robot.commands.ArmMoveToShooterCommand;
 import frc.robot.subsystems.ArmSystem;
 
 public class Robot extends TimedRobot {
@@ -21,8 +20,8 @@ public class Robot extends TimedRobot {
         POVButton dPadUp = new POVButton(xboxController, 0);
         POVButton dPadDown = new POVButton(xboxController, 180);
 
-        dPadUp.whileTrue(new ArmUpCommand(armSystem));
-        dPadDown.whileTrue(new ArmDownCommand(armSystem));
+        dPadUp.whileTrue(new ArmMoveToShooterCommand(armSystem));
+        dPadDown.whileTrue(new ArmMoveToFloorCommand(armSystem));
     }
 
     @Override

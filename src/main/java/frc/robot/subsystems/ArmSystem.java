@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,11 +13,13 @@ public class ArmSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final RelativeEncoder neoEncoder;
     private final DutyCycleEncoder absEncoder;
+    private final SparkPIDController pidController;
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
         neoEncoder = motor.getEncoder();
         absEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
+        pidController = motor.getPIDController();
 
         motor.restoreFactoryDefaults();
 
@@ -26,14 +30,19 @@ public class ArmSystem extends SubsystemBase {
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
         motor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, (float) ((-RobotMap.ARM_MAX_ANGLE * RobotMap.ARM_GEAR_RATIO) / 360));
         motor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+
+        pidController.setP(0.07, 0);
+        pidController.setI(0, 0);
+        pidController.setD(0, 0);
+        //pidController.setFF(0.01 * Math.cos(Math.toRadians(getNeoEncoderPositionDegrees())), 0);
     }
 
-    public void moveUp() {
-        motor.set(-0.5);
+    public void moveToPosition(double targetAngle) {
+        pidController.setReference((-targetAngle * RobotMap.ARM_GEAR_RATIO) / 360, CANSparkBase.ControlType.kPosition);
     }
 
-    public void moveDown() {
-        motor.set(0.5);
+    public boolean researchATargetAngle(double targetAngle) {
+        return MathUtil.isNear(targetAngle, getNeoEncoderPositionDegrees(), 2);
     }
 
     public void stop() {

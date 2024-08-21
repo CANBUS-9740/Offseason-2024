@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.ArmSystem;
 
-public class ArmUpCommand extends Command {
+public class ArmMoveToShooterCommand extends Command {
     private final ArmSystem armSystem;
 
-    public ArmUpCommand(ArmSystem armSystem) {
+    public ArmMoveToShooterCommand(ArmSystem armSystem) {
         this.armSystem = armSystem;
 
         addRequirements(armSystem);
@@ -15,12 +15,11 @@ public class ArmUpCommand extends Command {
 
     @Override
     public void initialize() {
-
+        armSystem.moveToPosition(RobotMap.ARM_SHOOTER_ANGLE);
     }
 
     @Override
     public void execute() {
-        armSystem.moveUp();
     }
 
     @Override
