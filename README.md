@@ -481,6 +481,14 @@ During this integraton, we will do several things:
   - how the system is controlled/functions
   - detail problems you encountered and how you solved them
 - run, play and test the entire robot in a mock field
+  - legit play the game: drive around the field, collect notes, score them into amp and speaker.
+      - pay attention to:
+      - how easy/difficult it is to collect notes (from different angles)
+      - from which distances and angles can we shoot and score notes in amp and speaker
+          - how many times do we miss vs score?
+          - how much work does it require from the drive
+      - how easily does the robot navigate the field
+      - how quickly does it do anything? the game is has a time-limit, what can we do within this limit  
   - write down and detail any recognized issue
   - attempt to fix small issues on the spot, larger issues can wait for later
   - push the robot to its limits, try to play like its a game in the competition
@@ -493,8 +501,12 @@ During this integraton, we will do several things:
   - what could we automate instead of letting the driver do on its own
   - **required**: by the end of the meeting, have a list of suggestions that we could implement.
       - for each suggestion, provide a short explaination of how it could be done
-      - _example suggestion_: limit the robot drive speed so that the robot. this could be helpful to pervent situations where the driver losses control and the robot turns over.
-          - this is just an idea for an example 
+      - particularly, we care about any way we can automate things such that the driver doesn't have to do it themselves
+      - _example suggestions_:
+          - limit the robot drive speed so that the robot. this could be helpful to pervent situations where the driver losses control and the robot turns over due to high momentum.
+          - add camera to allow driver to see things the robot does from the camera (maybe see notes better, or the field)
+          - add a second robot operator and split the work between them: one drives, the other operates systems
+          - these are all examples, they are not necessarily required/wanted
 
 
 ### Phase 4 - Initial Autonomous
