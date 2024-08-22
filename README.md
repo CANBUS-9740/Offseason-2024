@@ -471,5 +471,31 @@ Requirements:
 
 ### Phase 3 - Integration I
 
+After writng and preparing code in the first two phases, it is time to take a good look at what we have as a whole. At the moment of reaching this phase, we would have a single branch containing the code of
+all the systems together.
+
+During this integraton, we will do several things:
+- each one shares what work they did on the robot
+  - explain a bit about what was required of the system
+  - share what subsystems, commands you made
+  - how the system is controlled/functions
+  - detail problems you encountered and how you solved them
+- run, play and test the entire robot in a mock field
+  - write down and detail any recognized issue
+  - attempt to fix small issues on the spot, larger issues can wait for later
+  - push the robot to its limits, try to play like its a game in the competition
+  - organize a nice layout in shuffleboard to use while operating the robot. use it to inspect sensor info while operating
+  - make sure to let everyone have a chance at driving
+  - **required**: have detailed list of encountered issues, what might/is causing them and how to fix them
+- suggest and discuss improvemnts to the robot for teleop
+  - how can we make the robot work better, smoother to
+  - things that could make the operation of the robot nice/easier to the driver
+  - what could we automate instead of letting the driver do on its own
+  - **required**: by the end of the meeting, have a list of suggestions that we could implement.
+      - for each suggestion, provide a short explaination of how it could be done
+      - _example suggestion_: limit the robot drive speed so that the robot. this could be helpful to pervent situations where the driver losses control and the robot turns over.
+          - this is just an idea for an example 
+
+
 ### Phase 4 - Initial Autonomous
 
