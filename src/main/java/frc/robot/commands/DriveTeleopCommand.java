@@ -20,15 +20,14 @@ public class DriveTeleopCommand extends Command {
     }
     @Override
     public void initialize() {
-        driveSubsystem.initialize();
     }
 
     @Override
     public void execute() {
-        double powerR = xboxController.getRightY();
-        double powerL = xboxController.getLeftY();
-        driveSubsystem.powerLeftMotors(powerL);
-        driveSubsystem.powerRightMotors(powerR);
+        double straightSpeed = xboxController.getLeftY();
+        double rotationSpeed = xboxController.getRightX();
+
+        driveSubsystem.arcadeDrive(straightSpeed , rotationSpeed );
     }
 
     @Override

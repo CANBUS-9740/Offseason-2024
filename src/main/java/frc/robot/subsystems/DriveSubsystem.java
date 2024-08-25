@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +22,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX rightBackMotor;
     private final Field2d field2d;
     private final DifferentialDriveOdometry differentialDriveOdometry;
+    private final DifferentialDrive differentialDrive;
     private Pigeon2 pigeon2;
 
     public DriveSubsystem() {
@@ -42,11 +44,14 @@ public class DriveSubsystem extends SubsystemBase {
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d" ,field2d);
 
+        differentialDrive = new DifferentialDrive(leftFrontMotor , rightBackMotor);
+
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
+
 
         initialize();
 
@@ -99,6 +104,10 @@ public class DriveSubsystem extends SubsystemBase {
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
+    }
+
+    public void arcadeDrive(double linearSpeed, double rotationSpeed){
+        differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
     public void periodic() {
