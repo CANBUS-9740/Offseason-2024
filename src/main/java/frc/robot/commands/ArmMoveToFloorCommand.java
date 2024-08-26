@@ -11,7 +11,7 @@ public class ArmMoveToFloorCommand extends Command {
 
     public ArmMoveToFloorCommand(ArmSystem armSystem) {
         this.armSystem = armSystem;
-        pidController = new PIDController(0.07, 0, 0);
+        pidController = new PIDController(RobotMap.ARM_PID_P, RobotMap.ARM_PID_I, RobotMap.ARM_PID_D);
 
         addRequirements(armSystem);
     }
@@ -30,7 +30,7 @@ public class ArmMoveToFloorCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return armSystem.researchATargetAngle(RobotMap.ARM_FLOOR_ANGLE);
+        return armSystem.reachedATargetAngle(RobotMap.ARM_FLOOR_ANGLE);
     }
 
     @Override

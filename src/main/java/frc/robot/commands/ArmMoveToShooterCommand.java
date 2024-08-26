@@ -11,7 +11,7 @@ public class ArmMoveToShooterCommand extends Command {
 
     public ArmMoveToShooterCommand(ArmSystem armSystem) {
         this.armSystem = armSystem;
-        pidController = new PIDController(0.07, 0, 0);
+        pidController = new PIDController(RobotMap.ARM_PID_P, RobotMap.ARM_PID_I, RobotMap.ARM_PID_D);
 
         addRequirements(armSystem);
     }
