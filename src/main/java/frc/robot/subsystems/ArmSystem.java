@@ -43,7 +43,7 @@ public class ArmSystem extends SubsystemBase {
 //        pidController.setReference((-targetAngle * RobotMap.ARM_GEAR_RATIO) / 360, CANSparkBase.ControlType.kPosition);
 //    }
 
-    public boolean researchATargetAngle(double targetAngle) {
+    public boolean reachedTargetAngle(double targetAngle) {
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), 2);
     }
 
