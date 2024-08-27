@@ -8,3 +8,5 @@ build/
 
 imgui.ini
 simgui*
+.datalogtool/
+ctre_sim/
