@@ -8,5 +8,6 @@ build/
 
 imgui.ini
 simgui*
+networktables.json
 .datalogtool/
 ctre_sim/
