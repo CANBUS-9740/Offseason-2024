@@ -403,7 +403,7 @@ Requirements:
 We want the capability to control the shooter based on a specific velocity (usually measured in RPM). This can give us the capability to provide and use precision shooting based on initial note velocity.
 
 Guidelines:
-- Added Closed-Loop Velocity to control the velocity of the motors
+- Add Closed-Loop Velocity to control the velocity of the motors
   - Use integrated SparkMAX PIDF Velocity control mode
   - Control each motor individually
     - Consider: why do we want to do this
@@ -426,10 +426,48 @@ Requirements:
 - Subsystem has velocity closed-loop control
   - Using the SparkMAX PIDF
   - Tuned well
+  - Has the capability to determine that the shooter motors are spining in a given velocity and stable
 - Has command to use this capability
   - Command is attached to a button for testing 
 
 #### Arm
+
+We want the capability to move the arm and hold it in the wanted angle automatically. Manual control is always difficult when percision is needed, ever more difficult if you want to hold the arm in place.
+
+Because we now know how to use the SparkMax to do more complex things, we should use it for the arm control.
+
+Guidelines:
+- Add Closed-Loop Position to control the position of the arm
+  -  Use integrated SparkMAX PIDF Position control mode
+  -  Consider using several possible improvements for arm control
+    - using FeedForward to keep the arm in place or help resist gravitational forces 
+    - Using SmartMotion for profiled motion
+    - For this, you will need to properly tune it. Which may also require a custom feed-forward. But first test without and if you find difficulties, then try it. Consult Tom if help is necessary
+    - This may not be necessary, depends on the tuning and the system
+  - Create a command which uses this feature to move the arm into a given place and hold it in place
+    - holding it in place is essential only for certain positions
+    - check shooting a note and collecting a note without holding the arm in place, if this works well then maybe holding the arm in place by force is not necessary
+    - in floor position, holding it in place is likely not necessary at all and just wastes work
+- Test these new command(s)
+  - Attach to a button(s)
+    - Prefer a button press, since we want the command to tell us when it is finished 
+  -  Try running each command and see the arm move and stay in wanted positions
+  -  Try to move the arm to one position, and before it is finished, switch to a different position.
+    - This will prove that switching arm motions is possible and safe  
+
+Requirements:
+- Subsystem has position closed-loop control
+  - Using SparkMAX PIDF
+  - Tuned Well
+  - Has capability to stay in place
+  - Has the capability to determine that the arm is in a given position and stable
+- Has command to use this capability
+  - On a press of one button (DPad Up) the arm moves to shooter position and holds there
+  - On a press of one button (DPad Down) the arm moves to floor position and is released (don't hold it in place, since we are on the floor)
+- Check the current draw of the motor during the motion and when held in place
+  - Make sure the current draw is small (less then 10A), if any higher, alert Tom
+- Test and make sure that switching arm target positions while running is possible and safe
+  - If you are switching between commands, then the arm will lose power momenterally because we call `stop` 
 
 ### Phase 3 - Integration I
 
