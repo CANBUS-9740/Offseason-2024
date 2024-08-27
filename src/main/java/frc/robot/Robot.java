@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+
+import frc.robot.commands.DriveTeleopCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.commands.ArmMoveToFloorCommand;
 import frc.robot.commands.ArmMoveToShooterCommand;
 import frc.robot.commands.IntakeCommand;
@@ -16,6 +19,8 @@ import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ShooterSystem;
 
 public class Robot extends TimedRobot {
+
+    private DriveSubsystem driveSubsystem;
     private ShooterSystem shooterSystem;
     private IntakeSystem intakeSystem;
     private ArmSystem armSystem;
@@ -25,11 +30,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        driveSubsystem = new DriveSubsystem();
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
         xboxController = new XboxController(0);
-
 
         POVButton dPadUp = new POVButton(xboxController, 0);
         POVButton dPadDown = new POVButton(xboxController, 180);
@@ -56,6 +61,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem,xboxController);
+        driveTeleopCommand.schedule();
     }
 
     @Override
