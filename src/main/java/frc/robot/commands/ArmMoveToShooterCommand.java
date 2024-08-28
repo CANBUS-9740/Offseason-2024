@@ -25,7 +25,7 @@ public class ArmMoveToShooterCommand extends Command {
     public void execute() {
         double output = pidController.calculate(armSystem.getAbsEncoderPositionDegrees(),  RobotMap.ARM_SHOOTER_ANGLE);
 
-        armSystem.moveToAngle(output);
+        armSystem.move(output);
     }
 
     @Override

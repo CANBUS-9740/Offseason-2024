@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
     private ArmSystem armSystem;
     private XboxController xboxController;
 
-
-
     @Override
     public void robotInit() {
         driveSubsystem = new DriveSubsystem();
