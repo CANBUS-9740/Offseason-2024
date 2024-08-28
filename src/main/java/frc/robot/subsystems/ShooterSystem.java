@@ -16,8 +16,8 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderRB;
     private final SparkPIDController pid;
     public  final double SHOOTER_ROTATE_SPEED = 0.5;
-    public final double SHOOTER_RPM_KP = 0;
-    public final double SHOOTER_RPM_KI = 0;
+    public final double SHOOTER_RPM_KP = 0.0001;
+    public final double SHOOTER_RPM_KI = 0.000001;
     public final double SHOOTER_RPM_KD = 0;
 
 
@@ -32,11 +32,6 @@ public class ShooterSystem extends SubsystemBase {
         motorLB.restoreFactoryDefaults();
         motorRB.restoreFactoryDefaults();
 
-        motorRT.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        motorLT.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        motorLB.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        motorRB.setIdleMode(CANSparkBase.IdleMode.kBrake);
-
         motorRT.setInverted(true);
         motorRB.setInverted(true);
 
@@ -47,9 +42,9 @@ public class ShooterSystem extends SubsystemBase {
 
         pid = motorLB.getPIDController();
 
-        pid.setP(0.0001,0);
-        pid.setI(0.000001, 0);
-        pid.setD(0, 0);
+        pid.setP(SHOOTER_RPM_KP,0);
+        pid.setI(SHOOTER_RPM_KI, 0);
+        pid.setD(SHOOTER_RPM_KD, 0);
 
         motorRB.follow(motorLB);
         motorRT.follow(motorLB);

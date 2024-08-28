@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new ShooterPID(shooterSystem, 2000));
+        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
     }
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem,xboxController);
+        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, xboxController);
         driveTeleopCommand.schedule();
     }
 

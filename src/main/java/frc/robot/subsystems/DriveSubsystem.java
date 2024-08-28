@@ -5,8 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -23,7 +21,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final Field2d field2d;
     private final DifferentialDriveOdometry differentialDriveOdometry;
     private final DifferentialDrive differentialDrive;
-    private Pigeon2 pigeon2;
+    private final Pigeon2 pigeon2;
 
     public DriveSubsystem() {
         leftBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
@@ -52,10 +50,7 @@ public class DriveSubsystem extends SubsystemBase {
                 getRightDistancePassedMeters()
         );
 
-
         initialize();
-
-
     }
 
     public Field2d getField2d() {
@@ -81,14 +76,8 @@ public class DriveSubsystem extends SubsystemBase {
         // 0  - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
     }
 
-    public void powerLeftMotors(double powerL) {
-        leftFrontMotor.set(powerL);
-        leftBackMotor.set(powerL);
-    }
-
-    public void powerRightMotors(double powerR) {
-        rightFrontMotor.set(powerR);
-        rightBackMotor.set(powerR);
+    public void arcadeDrive(double linearSpeed, double rotationSpeed){
+        differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
     public void stop() {
@@ -104,10 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
-    }
-
-    public void arcadeDrive(double linearSpeed, double rotationSpeed){
-        differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
     public void periodic() {
