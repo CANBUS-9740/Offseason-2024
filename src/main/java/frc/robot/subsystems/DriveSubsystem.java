@@ -93,15 +93,12 @@ public class DriveSubsystem extends SubsystemBase {
                 .withPosition(10, 0)
                 .withSize(3, 6);
 
-        listLayout.add("Subsystem", this)
-                .withPosition(0, 0);
+        listLayout.add("Subsystem", this);
 
         ShuffleboardLayout positionLayout = listLayout.getLayout("Position", BuiltInLayouts.kGrid)
-                .withPosition(1, 1)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
 
         angleEntry = listLayout.add("Angle", 0.0)
-                .withPosition(2, 2)
                 .withWidget(BuiltInWidgets.kGyro)
                 .withProperties(Map.of("Starting angle", 90))
                 .getEntry();
