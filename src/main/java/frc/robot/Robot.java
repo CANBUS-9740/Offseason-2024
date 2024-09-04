@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -34,11 +34,23 @@ public class Robot extends TimedRobot {
         armSystem = new ArmSystem();
         xboxController = new XboxController(0);
 
+        armSystem.setDefaultCommand(
+                new ArmMoveToShooterCommand(armSystem)
+        );
+
         POVButton dPadUp = new POVButton(xboxController, 0);
         POVButton dPadDown = new POVButton(xboxController, 180);
 
-        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
-        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
+        JoystickButton Abutton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+
+//        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
+//        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
+
+        Abutton.onTrue(new InstantCommand(() -> armSystem.getCurrentCommand().cancel()));
+
+
+
+
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
         new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
@@ -65,6 +77,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+
     }
 
     @Override
