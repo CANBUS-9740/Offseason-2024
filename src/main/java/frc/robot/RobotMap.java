@@ -29,13 +29,18 @@ public class RobotMap {
     public final static double ARM_PID_I = 0.005;
     public final static double ARM_PID_D = 0.0;
     public final static int NEAR_ANGLE_TOLERANCE = 2;
-
+    public final static int D_PAD_TO_SHOOTER_ANGLE = 0;
+    public final static int D_PAD_TO_FLOOR_ANGLE = 180;
 
     public static final int SHOOTER_MOTOR_LEFT_TOP = 13;
     public static final int SHOOTER_MOTOR_LEFT_BOTTOM = 12;
     public static final int SHOOTER_MOTOR_RIGHT_TOP = 15;
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
+    public final static int SHOOTER_TARGET_RPM = 2000;
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
+
+    public final static int XBOX_CONTROLLER_PORT = 0;
+
 }

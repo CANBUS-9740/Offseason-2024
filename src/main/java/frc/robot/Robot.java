@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -32,18 +32,28 @@ public class Robot extends TimedRobot {
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
-        xboxController = new XboxController(0);
+        xboxController = new XboxController(RobotMap.XBOX_CONTROLLER_PORT);
 
-        POVButton dPadUp = new POVButton(xboxController, 0);
-        POVButton dPadDown = new POVButton(xboxController, 180);
+        POVButton dPadUp = new POVButton(xboxController, RobotMap.D_PAD_TO_SHOOTER_ANGLE);
+        POVButton dPadDown = new POVButton(xboxController, RobotMap.D_PAD_TO_FLOOR_ANGLE);
 
         dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
+        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, RobotMap.SHOOTER_TARGET_RPM));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+
+        SequentialCommandGroup collectNote = new SequentialCommandGroup(
+                new ArmMoveToFloorCommand(armSystem),
+                new IntakeCommand(intakeSystem)
+        );
+
+        new JoystickButton(xboxController,XboxController.Button.kA.value).onTrue(collectNote);
+        new JoystickButton(xboxController, XboxController.Button.kB.value).onTrue(
+                new InstantCommand(collectNote::cancel)
+        );
     }
 
     @Override
@@ -61,6 +71,16 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, xboxController);
         driveTeleopCommand.schedule();
+
+        ParallelDeadlineGroup moveToFloorAndIntake = new ParallelDeadlineGroup(
+                new IntakeCommand(intakeSystem),
+                new ArmMoveToFloorCommand(armSystem)
+        );
+
+        new JoystickButton(xboxController,XboxController.Button.kA.value).onTrue(moveToFloorAndIntake);
+        new JoystickButton(xboxController, XboxController.Button.kB.value).onTrue(
+                new InstantCommand(moveToFloorAndIntake::cancel)
+        );
     }
 
     @Override
