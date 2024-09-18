@@ -26,6 +26,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public boolean reachedATargetAngle(double targetAngle) {
+        System.out.println(getAbsEncoderPositionDegrees() + " - " + MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE));
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
 

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -82,6 +83,10 @@ public class ShooterSystem extends SubsystemBase {
 
     public void rotatePID(double targetRPM){
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    }
+
+    public boolean reachedRPM(double rpm){
+        return MathUtil.isNear(rpm, getLeftBottomVelocityRpm(),15);
     }
 
     @Override

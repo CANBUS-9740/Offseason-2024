@@ -2,7 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -24,7 +25,10 @@ public class Robot extends TimedRobot {
     private ShooterSystem shooterSystem;
     private IntakeSystem intakeSystem;
     private ArmSystem armSystem;
-    private XboxController xboxController;
+    private XboxController driveController;
+    private XboxController operatorController;
+    private ParallelCommandGroup cancelAllCommands;
+    private ParallelCommandGroup shootNote;
 
     @Override
     public void robotInit() {
@@ -32,24 +36,47 @@ public class Robot extends TimedRobot {
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
-        xboxController = new XboxController(0);
+        driveController = new XboxController(0);
+        operatorController = new XboxController(1);
 
-        POVButton dPadUp = new POVButton(xboxController, 0);
-        POVButton dPadDown = new POVButton(xboxController, 180);
+        JoystickButton Ybutton = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        //shooterSystem.getCurrentCommand().cancel();
+
+        ShooterPID shooterCommand = new ShooterPID(shooterSystem, 5000);
+        ArmMoveToShooterCommand armCommand = new ArmMoveToShooterCommand(armSystem);
+
+        shootNote = new ParallelCommandGroup(
+                shooterCommand,
+                new InstantCommand(() -> System.out.println("After shooter")),
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> System.out.println("In Seq")),
+                        new ParallelDeadlineGroup(
+                                new WaitUntilCommand(()-> shooterSystem.reachedRPM(5000) && armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                                armCommand,
+                                new InstantCommand(() -> System.out.println("In ParDead"))
+                        ),
+                        new InstantCommand(() -> System.out.println("After ParDead")),
+                        new OuttakeCommand(intakeSystem),
+                        Commands.waitSeconds(2),
+                        new InstantCommand(shooterCommand::cancel),
+                        new InstantCommand(armCommand::cancel)
+                )
+        );
+
+        POVButton dPadUp = new POVButton(operatorController, 0);
+        POVButton dPadDown = new POVButton(operatorController, 180);
 
         dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
-        new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
-        new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
-        new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNote);
+        new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
+        new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
     }
 
     @Override
     public void disabledInit() {
-
-
     }
 
     @Override
@@ -59,7 +86,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, xboxController);
+        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, driveController);
         driveTeleopCommand.schedule();
     }
 
@@ -79,7 +106,28 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        ShooterPID shooterPID = new ShooterPID(shooterSystem,5000);
+        shooterPID.schedule();
 
+        ShootOut shootOut =  new ShootOut(shooterSystem);
+        shootOut.schedule();
+
+        OuttakeCommand outtakeCommand = new OuttakeCommand(intakeSystem);
+        outtakeCommand.schedule();
+
+        IntakeCommand intakeCommand = new IntakeCommand(intakeSystem);
+        intakeCommand.schedule();
+
+        ArmMoveToShooterCommand armMoveToShooterCommand = new ArmMoveToShooterCommand(armSystem);
+        armMoveToShooterCommand.schedule();
+
+        ArmMoveToFloorCommand armMoveToFloorCommand = new ArmMoveToFloorCommand(armSystem);
+        armMoveToFloorCommand.schedule();
+
+        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, driveController);
+        driveTeleopCommand.schedule();
+
+        shootNote.schedule();
     }
 
     @Override
@@ -90,6 +138,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+
+        SmartDashboard.putBoolean("ShootNote Scheduled", shootNote.isScheduled());
     }
 
     @Override
