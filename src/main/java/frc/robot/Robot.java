@@ -34,6 +34,16 @@ public class Robot extends TimedRobot {
         armSystem = new ArmSystem();
         xboxController = new XboxController(RobotMap.XBOX_CONTROLLER_PORT);
 
+        armSystem.setDefaultCommand(
+                new ParallelCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new WaitUntilCommand(() -> armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                                new InstantCommand(() -> intakeSystem.slowIn())
+                        ),
+                new ArmMoveToShooterCommand(armSystem)
+                )
+        );
+
         POVButton dPadUp = new POVButton(xboxController, RobotMap.D_PAD_TO_SHOOTER_ANGLE);
         POVButton dPadDown = new POVButton(xboxController, RobotMap.D_PAD_TO_FLOOR_ANGLE);
 
@@ -41,13 +51,14 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, RobotMap.SHOOTER_TARGET_RPM));
+        //new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, RobotMap.SHOOTER_TARGET_RPM));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
-        new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+        //new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
 
-        SequentialCommandGroup collectNote = new SequentialCommandGroup(
-                new ArmMoveToFloorCommand(armSystem),
-                new IntakeCommand(intakeSystem)
+        ParallelDeadlineGroup collectNote = new ParallelDeadlineGroup(
+                new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
+                new IntakeCommand(intakeSystem),
+                new ArmMoveToFloorCommand(armSystem)
         );
 
         new JoystickButton(xboxController,XboxController.Button.kA.value).onTrue(collectNote);
@@ -71,16 +82,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, xboxController);
         driveTeleopCommand.schedule();
-
-        ParallelDeadlineGroup moveToFloorAndIntake = new ParallelDeadlineGroup(
-                new IntakeCommand(intakeSystem),
-                new ArmMoveToFloorCommand(armSystem)
-        );
-
-        new JoystickButton(xboxController,XboxController.Button.kA.value).onTrue(moveToFloorAndIntake);
-        new JoystickButton(xboxController, XboxController.Button.kB.value).onTrue(
-                new InstantCommand(moveToFloorAndIntake::cancel)
-        );
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public void move(double power) {
-        if ((power < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+        if ((power > 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power < 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
             stop();
         } else {
             motor.set(power);

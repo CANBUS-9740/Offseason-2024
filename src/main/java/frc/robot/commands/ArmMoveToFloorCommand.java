@@ -24,8 +24,9 @@ public class ArmMoveToFloorCommand extends Command {
     @Override
     public void execute() {
         double power = pidController.calculate(armSystem.getAbsEncoderPositionDegrees(), RobotMap.ARM_FLOOR_ANGLE);
+        pidController.setIZone(RobotMap.ARM_PID_I_ZONE);
 
-        armSystem.move(power);
+        armSystem.move(power + RobotMap.ARM_PID_K_GRAVITY * Math.cos(Math.toRadians(armSystem.getAbsEncoderPositionDegrees())));
     }
 
     @Override
