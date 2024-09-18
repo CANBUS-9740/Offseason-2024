@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
         DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, driveController);
         driveTeleopCommand.schedule();
 
-        shootNote.schedule();
+        shootToAmp.schedule();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
-        SmartDashboard.putBoolean("ShootNote Scheduled", shootNote.isScheduled());
+        SmartDashboard.putBoolean("shoot to amp Scheduled", shootToAmp.isScheduled());
     }
 
     @Override
