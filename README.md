@@ -509,5 +509,72 @@ During this integraton, we will do several things:
           - these are all examples, they are not necessarily required/wanted
 
 
-### Phase 4 - Initial Autonomous
+### Phase 4 - Fixes and More Capable Autonomous
+
+In this phase we will implement improvement suggestions from last phase and start work on new capabilities which will open more autonomous options.
+
+There are several work paths which we will follow.
+
+#### General Work
+
+- Power Consumption
+    - Assignee: Liam 
+    - Investigate system power consumption and possible effects it may have on performence
+        - Run robot operations and monitor power consumption of motors
+    - Initial work to insert current limits to shooter [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/12)
+        - note: pr has unrelated changes
+            - removal of `isFinished` condition in `OuttakeCommand`
+        - note: pr code doesn't achieve what it seeks to 
+- Shuffleboard
+    - Assignee: Martin (delayed due to pathplanner)
+    - Add control/status information to the shuffleboard for driver/operator use
+    - Initial implementation [branch](shuffleboard)
+        - note: incomplete 
+- Arm Default Position
+    - Place arm in shooter position by default, and return it there after collecting note, or shooting to amp.
+    - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/13)
+       - note: implementation uses this by running a default command on the arm. is this a good approach?
+- Hold Note in Intake
+    - Actively hold note in intake by slowly rotating intake wheels. Note may slip out otherwise
+    - Implemented along side something else [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
+
+#### Command Groups
+
+- Amp Shoot Group
+    - Assignee: Keren
+    - Command group for shooting to amp
+    - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/17)
+        - note: untested
+- Speaker Shoot Group
+    - Assignee: Yali
+    - Command group for shooting to speaker
+    - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/11)
+        - note: done by yali not talya (commits made from talya's computer)
+        - note: untested
+- Intake Group
+    - Assignee: Eduard
+    - Command group for collecting note
+    - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
+        - note: untested
+     
+#### New Capabilities
+
+- PathPlanner
+    - Implement and test basic support for path following with path planner
+    - Assignee: Martin
+    - planning specific paths will come in later
+    - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/16)
+        - note: untested
+- Vision
+    - Implement vision capabilities with limelight
+    - Assignee: Oren
+    - Initial work will be done to support distance and orientation analysis of AprilTags
+        - how to configure limelight to detect and analyze AprilTags
+        - how to interact with limelight via code
+        - how to write commands that use this info
+    - Final work will result in odometery fixes and all algorithms will rely on odometery accuracy
+ 
+- Auto Shoot
+    - Implement auto shoot from any distance
+    - Dependent on Vision/Odometery shoot command group and shooting function 
 
