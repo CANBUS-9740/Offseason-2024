@@ -20,8 +20,7 @@ public class ShooterSystem extends SubsystemBase {
     public final double SHOOTER_RPM_KI = 0.000001;
     public final double SHOOTER_RPM_KD = 0;
 
-
-    public ShooterSystem() {
+    public ShooterSystem( ) {
         motorLT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorRT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_RIGHT_TOP, CANSparkLowLevel.MotorType.kBrushless);
         motorLB = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_BOTTOM, CANSparkLowLevel.MotorType.kBrushless);
@@ -84,11 +83,24 @@ public class ShooterSystem extends SubsystemBase {
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
     }
 
+    public void setNewSoftLimits(int stallLimit, int freeLimit, int limitRPM){
+        motorLT.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+        motorLB.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+        motorRT.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+        motorRB.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
+
+    }
+
+    public double shooterA(){
+        return motorLT.getOutputCurrent();
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("ShooterLeftTopMotor", getLeftTopVelocityRpm());
         SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
         SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
         SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
+        SmartDashboard.putNumber("I", shooterA());
     }
 }

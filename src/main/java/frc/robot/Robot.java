@@ -3,19 +3,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
-import frc.robot.commands.DriveTeleopCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.commands.ArmMoveToFloorCommand;
-import frc.robot.commands.ArmMoveToShooterCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.ArmSystem;
 import frc.robot.subsystems.IntakeSystem;
-import frc.robot.commands.ShootOut;
-import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ShooterSystem;
 
 public class Robot extends TimedRobot {
@@ -41,9 +37,9 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+        new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterSoftLimits(shooterSystem,10,20,3000));
     }
 
     @Override
