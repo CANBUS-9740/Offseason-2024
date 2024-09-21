@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -40,10 +42,19 @@ public class Robot extends TimedRobot {
         dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
+        ParallelCommandGroup cancelAllCommands = new ParallelCommandGroup(
+                new InstantCommand(() -> armSystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> driveSubsystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> intakeSystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> shooterSystem.getCurrentCommand().cancel())
+        );
+
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
         new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+
+        new JoystickButton(xboxController, XboxController.Button.kY.value).onTrue(cancelAllCommands);
     }
 
     @Override
