@@ -6,16 +6,10 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
-import frc.robot.commands.DriveTeleopCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.commands.ArmMoveToFloorCommand;
-import frc.robot.commands.ArmMoveToShooterCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.OuttakeCommand;
 import frc.robot.subsystems.ArmSystem;
 import frc.robot.subsystems.IntakeSystem;
-import frc.robot.commands.ShootOut;
-import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ShooterSystem;
 
 public class Robot extends TimedRobot {
@@ -35,7 +29,7 @@ public class Robot extends TimedRobot {
         xboxController = new XboxController(0);
 
         armSystem.setDefaultCommand(
-                new ArmMoveToShooterCommand(armSystem)
+                new ArmMoveToPosition(armSystem, RobotMap.ARM_SHOOTER_ANGLE)
         );
 
         POVButton dPadUp = new POVButton(xboxController, 0);

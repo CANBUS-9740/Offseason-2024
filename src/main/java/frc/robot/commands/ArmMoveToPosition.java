@@ -5,17 +5,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.ArmSystem;
 
-public class ArmMoveToShooterCommand extends Command {
+public class ArmMoveToPosition extends Command {
     private final ArmSystem armSystem;
     private final PIDController pidController;
+    private double targetPosition;
 
-    public ArmMoveToShooterCommand(ArmSystem armSystem) {
+    public ArmMoveToPosition(ArmSystem armSystem, double targetPosition) {
         this.armSystem = armSystem;
+        this.targetPosition = targetPosition;
+
         pidController = new PIDController(RobotMap.ARM_PID_P, RobotMap.ARM_PID_I, RobotMap.ARM_PID_D);
 
         addRequirements(armSystem);
     }
-
     @Override
     public void initialize() {
         pidController.reset();
@@ -23,14 +25,14 @@ public class ArmMoveToShooterCommand extends Command {
 
     @Override
     public void execute() {
-        double output = pidController.calculate(armSystem.getAbsEncoderPositionDegrees(),  RobotMap.ARM_SHOOTER_ANGLE);
+        double power = pidController.calculate(armSystem.getAbsEncoderPositionDegrees(), targetPosition);
 
-        armSystem.move(output);
+        armSystem.move(power);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return armSystem.reachedATargetAngle(targetPosition);
     }
 
     @Override
@@ -38,3 +40,4 @@ public class ArmMoveToShooterCommand extends Command {
         armSystem.stop();
     }
 }
+
