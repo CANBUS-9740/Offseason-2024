@@ -30,10 +30,10 @@ public class ArmSystem extends SubsystemBase {
 
         motor.restoreFactoryDefaults();
 
-        setUpShuffleboardTab();
+        setUpShuffleboard();
     }
 
-    private void setUpShuffleboardTab() {
+    private void setUpShuffleboard() {
         ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
         angleEntry = tab.add("Arm Angle", 0.0)

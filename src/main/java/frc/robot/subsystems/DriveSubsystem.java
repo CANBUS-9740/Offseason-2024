@@ -65,10 +65,10 @@ public class DriveSubsystem extends SubsystemBase {
         );
 
         initialize();
-        setUpShuffleboardTab();
+        setUpShuffleboard();
     }
 
-    private void setUpShuffleboardTab() {
+    private void setUpShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         tab.add("Field", field2d)

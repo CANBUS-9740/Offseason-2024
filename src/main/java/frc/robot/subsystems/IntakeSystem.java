@@ -28,10 +28,10 @@ public class IntakeSystem extends SubsystemBase {
 
         motor.restoreFactoryDefaults();
 
-        setUpShuffleboardTab();
+        setUpShuffleboard();
     }
 
-    private void setUpShuffleboardTab() {
+    private void setUpShuffleboard() {
         ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
         motorSpeedEntry = tab.add("Intake Motor Speed", 0.0)

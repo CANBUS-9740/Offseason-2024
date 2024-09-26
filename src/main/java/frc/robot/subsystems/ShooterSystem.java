@@ -61,10 +61,10 @@ public class ShooterSystem extends SubsystemBase {
         motorRT.follow(motorLB);
         motorLT.follow(motorLB);
 
-        setUpShuffleboardTab();
+        setUpShuffleboard();
     }
 
-    private void setUpShuffleboardTab() {
+    private void setUpShuffleboard() {
         ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
         ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
