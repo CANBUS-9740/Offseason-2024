@@ -32,6 +32,10 @@ public class DriveSubsystem extends SubsystemBase {
     private GenericEntry xEntry;
     private GenericEntry yEntry;
     private GenericEntry angleEntry;
+    private GenericEntry leftFrontSpeedEntry;
+    private GenericEntry rightFrontSpeedEntry;
+    private GenericEntry leftBackSpeedEntry;
+    private GenericEntry rightBackSpeedEntry;
 
     public DriveSubsystem() {
         leftBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
@@ -64,26 +68,8 @@ public class DriveSubsystem extends SubsystemBase {
         setUpShuffleboardTab();
     }
 
-    public Field2d getField2d() {
-        return field2d;
-    }
-
-    public double getLeftDistancePassedMeters() {
-        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
-    }
-
-    public double getRightDistancePassedMeters() {
-        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
-    }
-
-    private void initialize() {
-        pigeon2.reset();
-        leftFrontMotor.setSelectedSensorPosition(0);
-        rightBackMotor.setSelectedSensorPosition(0);
-    }
-
     private void setUpShuffleboardTab() {
-        ShuffleboardTab tab = Shuffleboard.getTab("DriveSubsystem");
+        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         tab.add("Field", field2d)
                 .withPosition(0, 0)
@@ -110,13 +96,77 @@ public class DriveSubsystem extends SubsystemBase {
         yEntry = positionLayout.add("Y", 0.0)
                 .withPosition(1, 0)
                 .getEntry();
+
+        ShuffleboardLayout speedsLayout = listLayout.getLayout("Motor Speeds", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2));
+
+        leftFrontSpeedEntry = speedsLayout.add("Left Front", 0.0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -5, "max", 5))
+                .withPosition(0, 0)
+                .getEntry();
+        rightFrontSpeedEntry = speedsLayout.add("Right Front", 0.0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -5, "max", 5))
+                .withPosition(1, 0)
+                .getEntry();
+        leftBackSpeedEntry = speedsLayout.add("Left Back", 0.0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -5, "max", 5))
+                .withPosition(0, 1)
+                .getEntry();
+        rightBackSpeedEntry = speedsLayout.add("Right Back", 0.0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -5, "max", 5))
+                .withPosition(1, 1)
+                .getEntry();
+    }
+
+    public Field2d getField2d() {
+        return field2d;
+    }
+
+    public double getLeftDistancePassedMeters() {
+        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightDistancePassedMeters() {
+        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightFrontSpeedMetersPerSecond() {
+        return rightFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getLeftBackSpeedMetersPerSecond() {
+        return leftBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightBackSpeedMetersPerSecond() {
+        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getLeftFrontSpeedMetersPerSecond() {
+        return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    private void initialize() {
+        pigeon2.reset();
+        leftFrontMotor.setSelectedSensorPosition(0);
+        rightBackMotor.setSelectedSensorPosition(0);
     }
 
     private void updateShuffleboard() {
         Pose2d pose2d = differentialDriveOdometry.getPoseMeters();
+
         xEntry.setDouble(pose2d.getX());
         yEntry.setDouble(pose2d.getY());
         angleEntry.setDouble(getAngleDegrees());
+
+        leftFrontSpeedEntry.setDouble(getLeftFrontSpeedMetersPerSecond());
+        rightFrontSpeedEntry.setDouble(getRightFrontSpeedMetersPerSecond());
+        leftBackSpeedEntry.setDouble(getLeftBackSpeedMetersPerSecond());
+        rightBackSpeedEntry.setDouble(getRightBackSpeedMetersPerSecond());
     }
 
     public double getAngleDegrees() {

@@ -4,7 +4,11 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -16,6 +20,10 @@ public class ArmSystem extends SubsystemBase {
     private final RelativeEncoder neoEncoder;
     private final DutyCycleEncoder absEncoder;
 
+    // Shuffleboard
+
+    private GenericEntry angleEntry;
+
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
         neoEncoder = motor.getEncoder();
@@ -23,6 +31,17 @@ public class ArmSystem extends SubsystemBase {
 
         motor.restoreFactoryDefaults();
 
+        setUpShuffleboardTab();
+    }
+
+    private void setUpShuffleboardTab() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Intake & Arm");
+
+        angleEntry = tab.add("Arm Angle", 0.0)
+                .withWidget(BuiltInWidgets.kGyro)
+                .withPosition(0, 0)
+                .withSize(5, 5)
+                .getEntry();
     }
 
     public boolean reachedATargetAngle(double targetAngle) {
@@ -56,8 +75,14 @@ public class ArmSystem extends SubsystemBase {
         return -(absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * 360;
     }
 
+    private void updateShuffleboard() {
+        angleEntry.setDouble(getAbsEncoderPositionDegrees());
+    }
+
     @Override
     public void periodic() {
+        updateShuffleboard();
+
         SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
