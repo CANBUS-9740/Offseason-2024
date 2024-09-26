@@ -4,12 +4,11 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardUtils;
 
 import java.util.Map;
 
@@ -20,8 +19,8 @@ public class IntakeSystem extends SubsystemBase {
 
     // Shuffleboard
 
-    private GenericEntry noteInsideEntry;
     private GenericEntry motorSpeedEntry;
+    private GenericEntry noteInsideEntry;
 
     public IntakeSystem() {
         motor = new CANSparkMax(RobotMap.INTAKE_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
@@ -33,19 +32,23 @@ public class IntakeSystem extends SubsystemBase {
     }
 
     private void setUpShuffleboardTab() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Intake & Arm");
-
-        noteInsideEntry = tab.add("Note Inside", false)
-                .withPosition(5, 0)
-                .withSize(2, 5)
-                .getEntry();
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
         motorSpeedEntry = tab.add("Intake Motor Speed", 0.0)
                 .withWidget(BuiltInWidgets.kNumberBar)
                 .withProperties(Map.of("min", -5, "max", 5))
-                .withPosition(0, 5)
-                .withSize(7, 1)
+                .withPosition(0, 0)
+                .withSize(4, 1)
                 .getEntry();
+
+        noteInsideEntry = tab.add("Note Inside", false)
+                .withPosition(0, 5)
+                .withSize(8, 1)
+                .getEntry();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Intake", this)
+                .withPosition(1, 0);
     }
 
     public void out() {

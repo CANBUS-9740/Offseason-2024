@@ -6,12 +6,11 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardUtils;
 
 import static frc.robot.RobotMap.NEAR_ANGLE_TOLERANCE;
 
@@ -35,13 +34,17 @@ public class ArmSystem extends SubsystemBase {
     }
 
     private void setUpShuffleboardTab() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Intake & Arm");
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
         angleEntry = tab.add("Arm Angle", 0.0)
                 .withWidget(BuiltInWidgets.kGyro)
-                .withPosition(0, 0)
-                .withSize(5, 5)
+                .withPosition(0, 1)
+                .withSize(4, 4)
                 .getEntry();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Arm", this)
+                .withPosition(0, 0);
     }
 
     public boolean reachedATargetAngle(double targetAngle) {

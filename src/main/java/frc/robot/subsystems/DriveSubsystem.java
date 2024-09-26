@@ -76,10 +76,11 @@ public class DriveSubsystem extends SubsystemBase {
                 .withSize(10, 6);
 
         ShuffleboardLayout listLayout = tab.getLayout("Information", BuiltInLayouts.kList)
+                .withProperties(Map.of("Label position", "TOP"))
                 .withPosition(10, 0)
                 .withSize(3, 6);
 
-        listLayout.add("Subsystem", this);
+        listLayout.add("Drive Subsystem State", this);
 
         ShuffleboardLayout positionLayout = listLayout.getLayout("Position", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
