@@ -40,7 +40,6 @@ public class Robot extends TimedRobot {
 
         shootNoteSpeaker = new ParallelRaceGroup(
                 new ShooterPID(shooterSystem, 5000),
-                new InstantCommand(() -> System.out.println("After shooter")),
                 new SequentialCommandGroup(
                         new InstantCommand(() -> System.out.println("In Seq")),
                         new ParallelDeadlineGroup(
@@ -51,8 +50,10 @@ public class Robot extends TimedRobot {
                                 new InstantCommand(() -> System.out.println("In ParDead"))
                         ),
                         new InstantCommand(() -> System.out.println("After ParDead")),
-                        new OuttakeCommand(intakeSystem),
-                        Commands.waitSeconds(2)
+                        new ParallelRaceGroup(
+                                new OuttakeCommand(intakeSystem),
+                                Commands.waitSeconds(2)
+                        )
                 )
         );
 
