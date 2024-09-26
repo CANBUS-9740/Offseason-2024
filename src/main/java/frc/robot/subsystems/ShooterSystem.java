@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -32,8 +33,6 @@ public class ShooterSystem extends SubsystemBase {
         motorLB.restoreFactoryDefaults();
         motorRB.restoreFactoryDefaults();
 
-        motorRT.setInverted(true);
-        motorRB.setInverted(true);
 
         encoderLT = motorLT.getEncoder();
         encoderLB = motorLB.getEncoder();
@@ -46,8 +45,8 @@ public class ShooterSystem extends SubsystemBase {
         pid.setI(SHOOTER_RPM_KI, 0);
         pid.setD(SHOOTER_RPM_KD, 0);
 
-        motorRB.follow(motorLB);
-        motorRT.follow(motorLB);
+        motorRB.follow(motorLB, true);
+        motorRT.follow(motorLB,true);
         motorLT.follow(motorLB);
 
     }
@@ -82,6 +81,10 @@ public class ShooterSystem extends SubsystemBase {
 
     public void rotatePID(double targetRPM){
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    }
+
+    public boolean reachedRPM(double rpm){
+        return MathUtil.isNear(rpm, getLeftBottomVelocityRpm(),15);
     }
 
     @Override
