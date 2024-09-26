@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardUtils;
 
+import java.util.Map;
+
 import static frc.robot.RobotMap.NEAR_ANGLE_TOLERANCE;
 
 public class ArmSystem extends SubsystemBase {
@@ -38,6 +40,7 @@ public class ArmSystem extends SubsystemBase {
 
         angleEntry = tab.add("Arm Angle", 0.0)
                 .withWidget(BuiltInWidgets.kGyro)
+                .withProperties(Map.of("Counter clockwise", true))
                 .withPosition(0, 1)
                 .withSize(4, 4)
                 .getEntry();
