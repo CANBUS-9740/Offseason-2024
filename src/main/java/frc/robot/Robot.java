@@ -41,15 +41,15 @@ public class Robot extends TimedRobot {
         shootNoteSpeaker = new ParallelRaceGroup(
                 new ShooterPID(shooterSystem, 5000),
                 new SequentialCommandGroup(
-                        new InstantCommand(() -> System.out.println("In Seq")),
+                        new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In Seq")),
                         new ParallelDeadlineGroup(
                                 new WaitUntilCommand(()-> shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER) && armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
-                                new RunCommand(() -> SmartDashboard.putBoolean("reached rpm?: ", shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER))),
-                                new RunCommand(() -> SmartDashboard.putBoolean("reached shooter?: ", armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE))),
+                                new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerRpmReached", shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER))),
+                                new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerArmReached", armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE))),
                                 new ArmMoveToShooterCommand(armSystem),
-                                new InstantCommand(() -> System.out.println("In ParDead"))
+                                new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In ParDead"))
                         ),
-                        new InstantCommand(() -> System.out.println("After ParDead")),
+                        new InstantCommand(() -> System.out.println("ShootNoteSpeaker: After ParDead")),
                         new ParallelRaceGroup(
                                 new OuttakeCommand(intakeSystem),
                                 Commands.waitSeconds(2)
