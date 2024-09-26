@@ -91,9 +91,6 @@ public class ShooterSystem extends SubsystemBase {
 
     }
 
-    public double shooterA(){
-        return motorLT.getOutputCurrent();
-    }
 
     @Override
     public void periodic() {
@@ -101,6 +98,9 @@ public class ShooterSystem extends SubsystemBase {
         SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
         SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
         SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
-        SmartDashboard.putNumber("I", shooterA());
+        SmartDashboard.putNumber("ShooterLeftTopCurrent", motorLT.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterLeftBottomCurrent", motorLB.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterRightTopCurrent", motorRT.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterRightBottomCurrent", motorRB.getOutputCurrent());
     }
 }

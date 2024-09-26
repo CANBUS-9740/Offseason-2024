@@ -105,6 +105,9 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
         SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("DriveLeftFrontCurrent", leftFrontMotor.getStatorCurrent());
+        SmartDashboard.putNumber("DriveRightBackCurrent", rightBackMotor.getStatorCurrent());
+
 
         field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
     }

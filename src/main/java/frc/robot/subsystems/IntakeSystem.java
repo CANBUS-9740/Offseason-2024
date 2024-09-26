@@ -38,5 +38,6 @@ public class IntakeSystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("IntakeIsNoteInside", isNoteInside());
+        SmartDashboard.putNumber("IntakeMotorCurrent", motor.getOutputCurrent());
     }
 }
