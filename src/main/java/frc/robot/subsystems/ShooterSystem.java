@@ -33,8 +33,6 @@ public class ShooterSystem extends SubsystemBase {
         motorLB.restoreFactoryDefaults();
         motorRB.restoreFactoryDefaults();
 
-        motorRT.setInverted(true);
-        motorRB.setInverted(true);
 
         encoderLT = motorLT.getEncoder();
         encoderLB = motorLB.getEncoder();
@@ -47,8 +45,8 @@ public class ShooterSystem extends SubsystemBase {
         pid.setI(SHOOTER_RPM_KI, 0);
         pid.setD(SHOOTER_RPM_KD, 0);
 
-        motorRB.follow(motorLB);
-        motorRT.follow(motorLB);
+        motorRB.follow(motorLB, true);
+        motorRT.follow(motorLB,true);
         motorLT.follow(motorLB);
 
     }
