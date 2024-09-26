@@ -540,6 +540,11 @@ There are several work paths which we will follow.
 - [ ] Hold Note in Intake
     - Actively hold note in intake by slowly rotating intake wheels. Note may slip out otherwise
     - Implemented along side something else [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
+
+- [ ] Cancel All
+    - Assignee: Liam
+    - We need to give the robot operator the ability to cancel automatic commands so that they don't get the robot stuck
+    - Initial implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/18)
     
 - [ ] Combine all Arm commands into a single generic command
     - they are all similar just move to different angles.
@@ -557,6 +562,9 @@ There are several work paths which we will follow.
     - The arm is moving very aggressively
     - When moving to shooter position, it actually hits the gearbox of its own motor. This has caused a noticeable dent.
     - Need to lower it gently, perhaps a retuning of the PID is in order. 
+
+- [ ] Intake Sensor
+    - Latest changes removed use of intake sensor for some commands, despite it being wanted to monitor if we have a note. Return usage of sensor and think of a good way to address the reasons for each the use was removed 
 
 #### Command Groups
 
