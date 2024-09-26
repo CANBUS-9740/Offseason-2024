@@ -79,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void initialize() {
         pigeon2.reset();
         leftFrontMotor.setSelectedSensorPosition(0);
-        rightBackMotor.setSelectedSensorPosition(0);//inits
+        rightBackMotor.setSelectedSensorPosition(0);
     }
 
     private void setUpShuffleboardTab() {
