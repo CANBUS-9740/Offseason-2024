@@ -51,14 +51,14 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(xboxController, XboxController.Button.kX.value).whileTrue(new ShootOut(shooterSystem));
-        //new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, RobotMap.SHOOTER_TARGET_RPM));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
-        //new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
 
         ParallelDeadlineGroup collectNote = new ParallelDeadlineGroup(
                 new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
-                new IntakeCommand(intakeSystem),
-                new ArmMoveToFloorCommand(armSystem)
+                new SequentialCommandGroup(
+                        new IntakeCommand(intakeSystem),
+                        new ArmMoveToFloorCommand(armSystem)
+                )
         );
 
         new JoystickButton(xboxController,XboxController.Button.kA.value).onTrue(collectNote);
