@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
+import frc.robot.utils.ShuffleboardUtils;
+
+import java.util.Map;
 
 public class ShooterSystem extends SubsystemBase {
     private final CANSparkMax motorLT;
@@ -20,6 +25,12 @@ public class ShooterSystem extends SubsystemBase {
     public final double SHOOTER_RPM_KI = 0;
     public final double SHOOTER_RPM_KD = 0;
 
+    // Shuffleboard
+
+    private GenericEntry leftTopSpeed;
+    private GenericEntry rightTopSpeed;
+    private GenericEntry leftBottomSpeed;
+    private GenericEntry rightBottomSpeed;
 
     public ShooterSystem() {
         motorLT = new CANSparkMax(RobotMap.SHOOTER_MOTOR_LEFT_TOP, CANSparkLowLevel.MotorType.kBrushless);
@@ -55,7 +66,16 @@ public class ShooterSystem extends SubsystemBase {
         motorRT.follow(motorLB);
         motorLT.follow(motorLB);
 
+        setUpShuffleboard();
+
+        ShuffleboardDashboard.setShooterDataSupplier(() -> new ShuffleboardDashboard.ShooterData(
+                getLeftTopVelocityRpm(),
+                getRightTopVelocityRpm(),
+                getLeftBottomVelocityRpm(),
+                getRightBottomVelocityRpm()
+        ));
     }
+
     public void stop() {
         motorLT.stopMotor();
         motorLB.stopMotor();
@@ -78,22 +98,54 @@ public class ShooterSystem extends SubsystemBase {
     public double getLeftTopVelocityRpm() {
         return encoderLT.getVelocity();
     }
+
     public double getRightTopVelocityRpm() {
         return encoderRT.getVelocity();
     }
+
     public double getRightBottomVelocityRpm() {
         return encoderRB.getVelocity();
     }
 
-    public void rotatePID(double targetRPM){
+    public void rotatePID(double targetRPM) {
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    }
+
+    private void setUpShuffleboard() {
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Shooter", this)
+                .withPosition(2, 0);
+
+        ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2))
+                .withPosition(7, 2)
+                .withSize(6, 3);
+
+        leftTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Top")
+                .withPosition(0, 0)
+                .getEntry();
+        rightTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Right Top")
+                .withPosition(1, 0)
+                .getEntry();
+        leftBottomSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Bottom")
+                .withPosition(0, 1)
+                .getEntry();
+        rightBottomSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Right Bottom")
+                .withPosition(1, 1)
+                .getEntry();
+    }
+
+    private void updateShuffleboard() {
+        leftTopSpeed.setDouble(getLeftTopVelocityRpm());
+        rightTopSpeed.setDouble(getRightTopVelocityRpm());
+        leftBottomSpeed.setDouble(getLeftBottomVelocityRpm());
+        rightBottomSpeed.setDouble(getRightBottomVelocityRpm());
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ShooterLeftTopMotor", getLeftTopVelocityRpm());
-        SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
-        SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
-        SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
+        updateShuffleboard();
     }
 }
