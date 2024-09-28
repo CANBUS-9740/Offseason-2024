@@ -39,11 +39,11 @@ public class ArmSystem extends SubsystemBase {
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
 
-    public void move(double power) {
-        if ((power < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+    public void moveToAngle(double output) {
+        if ((output < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || output > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
             stop();
         } else {
-            motor.set(power);
+            motor.set(output);
         }
     }
 
