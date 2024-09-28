@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardUtils;
@@ -148,10 +147,5 @@ public class ShooterSystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateShuffleboard();
-
-        SmartDashboard.putNumber("ShooterLeftTopMotor", getLeftTopVelocityRpm());
-        SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
-        SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
-        SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
     }
 }

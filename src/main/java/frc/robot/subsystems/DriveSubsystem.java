@@ -11,7 +11,6 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -54,7 +53,6 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.setSensorPhase(true);
 
         this.field2d = new Field2d();
-        SmartDashboard.putData("field2d", field2d);
 
         differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
 
@@ -198,14 +196,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         updateOdometry();
         updateShuffleboard();
-
-        SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
-        SmartDashboard.putNumber("pigeon", pigeon2.getAngle());
-        SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
-        SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
-        SmartDashboard.putNumber("X", differentialDriveOdometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y", differentialDriveOdometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("Angle", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
 
         field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
     }

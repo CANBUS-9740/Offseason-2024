@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardUtils;
@@ -79,7 +78,5 @@ public class IntakeSystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateShuffleboard();
-
-        SmartDashboard.putBoolean("IntakeIsNoteInside", isNoteInside());
     }
 }
