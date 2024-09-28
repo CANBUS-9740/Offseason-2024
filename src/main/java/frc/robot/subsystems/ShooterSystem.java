@@ -64,40 +64,6 @@ public class ShooterSystem extends SubsystemBase {
         setUpShuffleboard();
     }
 
-    private void setUpShuffleboard() {
-        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
-
-        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
-        subsystemsLayout.add("Shooter", this)
-                .withPosition(2, 0);
-
-        ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
-                .withPosition(4, 2)
-                .withSize(4, 3)
-                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2));
-
-        leftTopSpeed = speedsLayout.add("Left Top", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
-                .withPosition(0, 0)
-                .getEntry();
-        rightTopSpeed = speedsLayout.add("Right Top", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
-                .withPosition(1, 0)
-                .getEntry();
-        leftBottomSpeed = speedsLayout.add("Left Bottom", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
-                .withPosition(0, 1)
-                .getEntry();
-        rightBottomSpeed = speedsLayout.add("Right Bottom", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
-                .withPosition(1, 1)
-                .getEntry();
-    }
-
     public void stop() {
         motorLT.stopMotor();
         motorLB.stopMotor();
@@ -131,6 +97,40 @@ public class ShooterSystem extends SubsystemBase {
 
     public void rotatePID(double targetRPM) {
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    }
+
+    private void setUpShuffleboard() {
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Shooter", this)
+                .withPosition(2, 0);
+
+        ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
+                .withPosition(4, 2)
+                .withSize(4, 3)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2));
+
+        leftTopSpeed = speedsLayout.add("Left Top", 0.0)
+                .withWidget(BuiltInWidgets.kDial)
+                .withProperties(Map.of("min", 0, "max", 5000))
+                .withPosition(0, 0)
+                .getEntry();
+        rightTopSpeed = speedsLayout.add("Right Top", 0.0)
+                .withWidget(BuiltInWidgets.kDial)
+                .withProperties(Map.of("min", 0, "max", 5000))
+                .withPosition(1, 0)
+                .getEntry();
+        leftBottomSpeed = speedsLayout.add("Left Bottom", 0.0)
+                .withWidget(BuiltInWidgets.kDial)
+                .withProperties(Map.of("min", 0, "max", 5000))
+                .withPosition(0, 1)
+                .getEntry();
+        rightBottomSpeed = speedsLayout.add("Right Bottom", 0.0)
+                .withWidget(BuiltInWidgets.kDial)
+                .withProperties(Map.of("min", 0, "max", 5000))
+                .withPosition(1, 1)
+                .getEntry();
     }
 
     private void updateShuffleboard() {

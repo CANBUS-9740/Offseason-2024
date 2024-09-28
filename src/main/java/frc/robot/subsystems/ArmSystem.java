@@ -35,21 +35,6 @@ public class ArmSystem extends SubsystemBase {
         setUpShuffleboard();
     }
 
-    private void setUpShuffleboard() {
-        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
-
-        angleEntry = tab.add("Arm Angle", 0.0)
-                .withWidget(BuiltInWidgets.kGyro)
-                .withProperties(Map.of("Counter clockwise", true))
-                .withPosition(0, 1)
-                .withSize(4, 4)
-                .getEntry();
-
-        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
-        subsystemsLayout.add("Arm", this)
-                .withPosition(0, 0);
-    }
-
     public boolean reachedATargetAngle(double targetAngle) {
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
@@ -79,6 +64,21 @@ public class ArmSystem extends SubsystemBase {
             // ↓ we subtract from the encoder position the required quantity that need to offset the encoder to zero.
             // ↓ The "-" at the start we add to turn over the encoder value to positive value
         return -(absEncoder.getAbsolutePosition() - RobotMap.ABSOLUTE_ENCODER_ZERO_OFFSET) * 360;
+    }
+
+    private void setUpShuffleboard() {
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
+
+        angleEntry = tab.add("Arm Angle", 0.0)
+                .withWidget(BuiltInWidgets.kGyro)
+                .withProperties(Map.of("Counter clockwise", true))
+                .withPosition(0, 1)
+                .withSize(4, 4)
+                .getEntry();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Arm", this)
+                .withPosition(0, 0);
     }
 
     private void updateShuffleboard() {

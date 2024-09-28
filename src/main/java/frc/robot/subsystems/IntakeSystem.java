@@ -31,26 +31,6 @@ public class IntakeSystem extends SubsystemBase {
         setUpShuffleboard();
     }
 
-    private void setUpShuffleboard() {
-        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
-
-        motorSpeedEntry = tab.add("Intake Motor Speed", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
-                .withPosition(0, 0)
-                .withSize(4, 1)
-                .getEntry();
-
-        noteInsideEntry = tab.add("Note Inside", false)
-                .withPosition(0, 5)
-                .withSize(8, 1)
-                .getEntry();
-
-        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
-        subsystemsLayout.add("Intake", this)
-                .withPosition(1, 0);
-    }
-
     public void out() {
         motor.set(-DEFAULT_ROTATE_SPEED);
     }
@@ -69,6 +49,26 @@ public class IntakeSystem extends SubsystemBase {
 
     public double getIntakeSpeed() {
         return motor.getEncoder().getVelocity() / 60 / RobotMap.INTAKE_MOTOR_TO_WHEEL_RATIO * RobotMap.INTAKE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    private void setUpShuffleboard() {
+        ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
+
+        motorSpeedEntry = tab.add("Intake Motor Speed", 0.0)
+                .withWidget(BuiltInWidgets.kNumberBar)
+                .withProperties(Map.of("min", -5, "max", 5))
+                .withPosition(0, 0)
+                .withSize(4, 1)
+                .getEntry();
+
+        noteInsideEntry = tab.add("Note Inside", false)
+                .withPosition(0, 5)
+                .withSize(8, 1)
+                .getEntry();
+
+        ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
+        subsystemsLayout.add("Intake", this)
+                .withPosition(1, 0);
     }
 
     private void updateShuffleboard() {

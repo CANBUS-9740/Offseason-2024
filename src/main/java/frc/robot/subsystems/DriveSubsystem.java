@@ -68,6 +68,34 @@ public class DriveSubsystem extends SubsystemBase {
         setUpShuffleboard();
     }
 
+    public Field2d getField2d() {
+        return field2d;
+    }
+
+    public double getLeftDistancePassedMeters() {
+        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightDistancePassedMeters() {
+        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightFrontSpeedMetersPerSecond() {
+        return rightFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getLeftBackSpeedMetersPerSecond() {
+        return leftBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightBackSpeedMetersPerSecond() {
+        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getLeftFrontSpeedMetersPerSecond() {
+        return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
     private void setUpShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -121,34 +149,6 @@ public class DriveSubsystem extends SubsystemBase {
                 .withProperties(Map.of("min", -5, "max", 5))
                 .withPosition(1, 1)
                 .getEntry();
-    }
-
-    public Field2d getField2d() {
-        return field2d;
-    }
-
-    public double getLeftDistancePassedMeters() {
-        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getRightDistancePassedMeters() {
-        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getRightFrontSpeedMetersPerSecond() {
-        return rightFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getLeftBackSpeedMetersPerSecond() {
-        return leftBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getRightBackSpeedMetersPerSecond() {
-        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getLeftFrontSpeedMetersPerSecond() {
-        return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
     private void initialize() {
