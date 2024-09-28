@@ -96,6 +96,22 @@ public class DriveSubsystem extends SubsystemBase {
         return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
+    public double getAngleDegrees() {
+        return (360 - pigeon2.getAngle()) % 360; // the value returned will be from 0 - 360 depending on its location
+        // 0 - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
+    }
+
+    public void arcadeDrive(double linearSpeed, double rotationSpeed) {
+        differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
+    }
+
+    public void stop() {
+        rightBackMotor.stopMotor();
+        rightFrontMotor.stopMotor();
+        leftBackMotor.stopMotor();
+        leftFrontMotor.stopMotor();
+    }
+
     private void setUpShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -168,22 +184,6 @@ public class DriveSubsystem extends SubsystemBase {
         rightFrontSpeedEntry.setDouble(getRightFrontSpeedMetersPerSecond());
         leftBackSpeedEntry.setDouble(getLeftBackSpeedMetersPerSecond());
         rightBackSpeedEntry.setDouble(getRightBackSpeedMetersPerSecond());
-    }
-
-    public double getAngleDegrees() {
-        return (360 - pigeon2.getAngle()) % 360; // the value returned will be from 0 - 360 depending on its location
-        // 0 - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
-    }
-
-    public void arcadeDrive(double linearSpeed, double rotationSpeed) {
-        differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
-    }
-
-    public void stop() {
-        rightBackMotor.stopMotor();
-        rightFrontMotor.stopMotor();
-        leftBackMotor.stopMotor();
-        leftFrontMotor.stopMotor();
     }
 
     private void updateOdometry() {
