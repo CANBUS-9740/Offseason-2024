@@ -59,12 +59,12 @@ public class IntakeSystem extends SubsystemBase {
 
         motorSpeedEntry = ShuffleboardUtils.addIntakeMotorSpeedWidget(tab)
                 .withPosition(0, 0)
-                .withSize(4, 1)
+                .withSize(7, 1)
                 .getEntry();
 
         noteInsideEntry = tab.add("Note Inside", false)
                 .withPosition(0, 5)
-                .withSize(8, 1)
+                .withSize(13, 1)
                 .getEntry();
 
         ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();

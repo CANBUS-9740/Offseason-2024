@@ -73,7 +73,7 @@ public class ArmSystem extends SubsystemBase {
 
         angleEntry = ShuffleboardUtils.addArmAngleWidget(tab)
                 .withPosition(0, 1)
-                .withSize(4, 4)
+                .withSize(7, 4)
                 .getEntry();
 
         ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();

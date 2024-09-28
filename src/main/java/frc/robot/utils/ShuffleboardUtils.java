@@ -45,8 +45,8 @@ public class ShuffleboardUtils {
 
     public static ShuffleboardLayout getArmIntakeShooterSubsystemsLayout() {
         return getArmIntakeShooterTab().getLayout("Subsystems", BuiltInLayouts.kGrid)
-                .withPosition(4, 0)
-                .withSize(4, 2)
+                .withPosition(7, 0)
+                .withSize(6, 2)
                 .withProperties(Map.of("Number of columns", 3, "Number of rows", 1));
     }
 }

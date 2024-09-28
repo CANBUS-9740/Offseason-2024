@@ -120,8 +120,8 @@ public class ShooterSystem extends SubsystemBase {
 
         ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 2))
-                .withPosition(4, 2)
-                .withSize(4, 3);
+                .withPosition(7, 2)
+                .withSize(6, 3);
 
         leftTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Top")
                 .withPosition(0, 0)
