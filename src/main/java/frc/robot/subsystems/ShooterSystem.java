@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
 
 import java.util.Map;
@@ -66,6 +67,13 @@ public class ShooterSystem extends SubsystemBase {
         motorLT.follow(motorLB);
 
         setUpShuffleboard();
+
+        ShuffleboardDashboard.setShooterDataSupplier(() -> new ShuffleboardDashboard.ShooterData(
+                getLeftTopVelocityRpm(),
+                getRightTopVelocityRpm(),
+                getLeftBottomVelocityRpm(),
+                getRightBottomVelocityRpm()
+        ));
     }
 
     public void stop() {
@@ -111,28 +119,20 @@ public class ShooterSystem extends SubsystemBase {
                 .withPosition(2, 0);
 
         ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2))
                 .withPosition(4, 2)
-                .withSize(4, 3)
-                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2));
+                .withSize(4, 3);
 
-        leftTopSpeed = speedsLayout.add("Left Top", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
+        leftTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Top")
                 .withPosition(0, 0)
                 .getEntry();
-        rightTopSpeed = speedsLayout.add("Right Top", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
+        rightTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Right Top")
                 .withPosition(1, 0)
                 .getEntry();
-        leftBottomSpeed = speedsLayout.add("Left Bottom", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
+        leftBottomSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Bottom")
                 .withPosition(0, 1)
                 .getEntry();
-        rightBottomSpeed = speedsLayout.add("Right Bottom", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 5000))
+        rightBottomSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Right Bottom")
                 .withPosition(1, 1)
                 .getEntry();
     }

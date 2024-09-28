@@ -7,12 +7,15 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
+import frc.robot.utils.ShuffleboardUtils;
 
 import java.util.Map;
 
@@ -31,10 +34,8 @@ public class DriveSubsystem extends SubsystemBase {
     private GenericEntry xEntry;
     private GenericEntry yEntry;
     private GenericEntry angleEntry;
-    private GenericEntry leftFrontSpeedEntry;
-    private GenericEntry rightFrontSpeedEntry;
-    private GenericEntry leftBackSpeedEntry;
-    private GenericEntry rightBackSpeedEntry;
+    private GenericEntry leftSpeedEntry;
+    private GenericEntry rightSpeedEntry;
 
     public DriveSubsystem() {
         leftBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
@@ -64,6 +65,11 @@ public class DriveSubsystem extends SubsystemBase {
 
         initialize();
         setUpShuffleboard();
+
+        ShuffleboardDashboard.setDrivetrainDataSupplier(() -> new ShuffleboardDashboard.DrivetrainData(
+                differentialDriveOdometry.getPoseMeters(),
+                new DifferentialDriveWheelSpeeds(getLeftSpeedMetersPerSecond(), getRightSpeedMetersPerSecond())
+        ));
     }
 
     public Field2d getField2d() {
@@ -78,20 +84,12 @@ public class DriveSubsystem extends SubsystemBase {
         return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
-    public double getRightFrontSpeedMetersPerSecond() {
-        return rightFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getLeftBackSpeedMetersPerSecond() {
-        return leftBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getRightBackSpeedMetersPerSecond() {
-        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public double getLeftFrontSpeedMetersPerSecond() {
+    public double getLeftSpeedMetersPerSecond() {
         return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightSpeedMetersPerSecond() {
+        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
     public double getAngleDegrees() {
@@ -127,9 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
         ShuffleboardLayout positionLayout = listLayout.getLayout("Position", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
 
-        angleEntry = listLayout.add("Angle", 0.0)
-                .withWidget(BuiltInWidgets.kGyro)
-                .withProperties(Map.of("Starting angle", 90))
+        angleEntry = ShuffleboardUtils.addRobotAngleWidget(listLayout)
                 .getEntry();
 
         xEntry = positionLayout.add("X", 0.0)
@@ -140,28 +136,14 @@ public class DriveSubsystem extends SubsystemBase {
                 .withPosition(1, 0)
                 .getEntry();
 
-        ShuffleboardLayout speedsLayout = listLayout.getLayout("Motor Speeds", BuiltInLayouts.kGrid)
-                .withProperties(Map.of("Number of columns", 2, "Number of rows", 2));
+        ShuffleboardLayout speedsLayout = listLayout.getLayout("Wheel Speeds", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
 
-        leftFrontSpeedEntry = speedsLayout.add("Left Front", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
+        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Wheel")
                 .withPosition(0, 0)
                 .getEntry();
-        rightFrontSpeedEntry = speedsLayout.add("Right Front", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
+        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Wheel")
                 .withPosition(1, 0)
-                .getEntry();
-        leftBackSpeedEntry = speedsLayout.add("Left Back", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
-                .withPosition(0, 1)
-                .getEntry();
-        rightBackSpeedEntry = speedsLayout.add("Right Back", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
-                .withPosition(1, 1)
                 .getEntry();
     }
 
@@ -178,10 +160,8 @@ public class DriveSubsystem extends SubsystemBase {
         yEntry.setDouble(pose2d.getY());
         angleEntry.setDouble(getAngleDegrees());
 
-        leftFrontSpeedEntry.setDouble(getLeftFrontSpeedMetersPerSecond());
-        rightFrontSpeedEntry.setDouble(getRightFrontSpeedMetersPerSecond());
-        leftBackSpeedEntry.setDouble(getLeftBackSpeedMetersPerSecond());
-        rightBackSpeedEntry.setDouble(getRightBackSpeedMetersPerSecond());
+        leftSpeedEntry.setDouble(getLeftSpeedMetersPerSecond());
+        rightSpeedEntry.setDouble(getRightSpeedMetersPerSecond());
     }
 
     private void updateOdometry() {

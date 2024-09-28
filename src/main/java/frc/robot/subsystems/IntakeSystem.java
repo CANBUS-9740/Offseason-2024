@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
-
-import java.util.Map;
 
 public class IntakeSystem extends SubsystemBase {
     private final CANSparkMax motor;
@@ -28,6 +27,11 @@ public class IntakeSystem extends SubsystemBase {
         motor.restoreFactoryDefaults();
 
         setUpShuffleboard();
+
+        ShuffleboardDashboard.setIntakeDataSupplier(() -> new ShuffleboardDashboard.IntakeData(
+                isNoteInside(),
+                getIntakeSpeedRpm()
+        ));
     }
 
     public void out() {
@@ -46,16 +50,14 @@ public class IntakeSystem extends SubsystemBase {
         return !limitSwitch.get();
     }
 
-    public double getIntakeSpeed() {
-        return motor.getEncoder().getVelocity() / 60 / RobotMap.INTAKE_MOTOR_TO_WHEEL_RATIO * RobotMap.INTAKE_WHEEL_CIRCUMFERENCE_METERS;
+    public double getIntakeSpeedRpm() {
+        return motor.getEncoder().getVelocity() / RobotMap.INTAKE_MOTOR_TO_WHEEL_RATIO;
     }
 
     private void setUpShuffleboard() {
         ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
-        motorSpeedEntry = tab.add("Intake Motor Speed", 0.0)
-                .withWidget(BuiltInWidgets.kNumberBar)
-                .withProperties(Map.of("min", -5, "max", 5))
+        motorSpeedEntry = ShuffleboardUtils.addIntakeMotorSpeedWidget(tab)
                 .withPosition(0, 0)
                 .withSize(4, 1)
                 .getEntry();
@@ -72,7 +74,7 @@ public class IntakeSystem extends SubsystemBase {
 
     private void updateShuffleboard() {
         noteInsideEntry.setBoolean(isNoteInside());
-        motorSpeedEntry.setDouble(getIntakeSpeed());
+        motorSpeedEntry.setDouble(getIntakeSpeedRpm());
     }
 
     @Override

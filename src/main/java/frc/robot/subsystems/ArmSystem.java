@@ -9,9 +9,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
-
-import java.util.Map;
 
 import static frc.robot.RobotMap.NEAR_ANGLE_TOLERANCE;
 
@@ -32,6 +31,10 @@ public class ArmSystem extends SubsystemBase {
         motor.restoreFactoryDefaults();
 
         setUpShuffleboard();
+
+        ShuffleboardDashboard.setArmDataSupplier(() -> new ShuffleboardDashboard.ArmData(
+                getAbsEncoderPositionDegrees()
+        ));
     }
 
     public boolean reachedATargetAngle(double targetAngle) {
@@ -68,9 +71,7 @@ public class ArmSystem extends SubsystemBase {
     private void setUpShuffleboard() {
         ShuffleboardTab tab = ShuffleboardUtils.getArmIntakeShooterTab();
 
-        angleEntry = tab.add("Arm Angle", 0.0)
-                .withWidget(BuiltInWidgets.kGyro)
-                .withProperties(Map.of("Counter clockwise", true))
+        angleEntry = ShuffleboardUtils.addArmAngleWidget(tab)
                 .withPosition(0, 1)
                 .withSize(4, 4)
                 .getEntry();

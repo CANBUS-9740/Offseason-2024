@@ -17,6 +17,7 @@ import frc.robot.subsystems.IntakeSystem;
 import frc.robot.commands.ShootOut;
 import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ShooterSystem;
+import frc.robot.utils.ShuffleboardDashboard;
 
 public class Robot extends TimedRobot {
 
@@ -44,6 +45,14 @@ public class Robot extends TimedRobot {
         new JoystickButton(xboxController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(xboxController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+
+        ShuffleboardDashboard.initialize(armSystem, driveSubsystem, intakeSystem, shooterSystem);
+    }
+
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+        ShuffleboardDashboard.update();
     }
 
     @Override
@@ -85,11 +94,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
 
-    }
-
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
     }
 
     @Override
