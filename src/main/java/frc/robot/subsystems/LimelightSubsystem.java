@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LimelightSubsystem extends SubsystemBase {
     private NetworkTable table;
@@ -57,13 +58,15 @@ public class LimelightSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        botPoseArray = networkTableEntry.getDoubleArray(new double[6]);
+        double[] array = new double[6];
+        Arrays.fill(array, -10.0);
+
+        botPoseArray = networkTableEntry.getDoubleArray(array);
         SmartDashboard.putNumber("yaw: ", getYaw());
         SmartDashboard.putNumber("Pitch: ", getPitch());
         SmartDashboard.putNumber("Roll: ", getRoll());
         SmartDashboard.putNumber("Z: ", getZ());
         SmartDashboard.putNumber("Y: ", getY());
         SmartDashboard.putNumber("X: ", getX());
-        field2d.setRobotPose(getX(), getY(), new Rotation2d(Math.toRadians(getYaw())));
     }
 }
