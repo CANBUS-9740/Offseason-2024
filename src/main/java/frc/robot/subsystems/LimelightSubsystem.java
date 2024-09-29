@@ -17,13 +17,14 @@ public class LimelightSubsystem extends SubsystemBase {
     private double[] botPoseArray;
     private NetworkTableEntry networkTableEntry;
     private Field2d field2d;
+
     public LimelightSubsystem() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         networkTableEntry = table.getEntry("botpose_wpiblue");
         field2d = new Field2d();
 
         SmartDashboard.putData("LimelightField", field2d);
-        botPoseArray =networkTableEntry.getDoubleArray(new double[6]);
+        botPoseArray = networkTableEntry.getDoubleArray(new double[6]);
 
         for (double num : botPoseArray) {
             System.out.println(num);
@@ -33,18 +34,23 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getX() {
         return botPoseArray[0];
     }
+
     public double getY() {
         return botPoseArray[1];
     }
+
     public double getZ() {
         return botPoseArray[2];
     }
+
     public double getRoll() {
         return botPoseArray[3];
     }
+
     public double getPitch() {
         return botPoseArray[4];
     }
+
     public double getYaw() {
         return botPoseArray[5];
     }
@@ -52,12 +58,12 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         botPoseArray = networkTableEntry.getDoubleArray(new double[6]);
-        SmartDashboard.putNumber("yaw: ",getYaw() );
-        SmartDashboard.putNumber("Pitch: ",getPitch() );
-        SmartDashboard.putNumber("Roll: ",getRoll() );
-        SmartDashboard.putNumber("Z: ",getZ() );
-        SmartDashboard.putNumber("Y: ",getY() );
-        SmartDashboard.putNumber("X: ",getX() );
+        SmartDashboard.putNumber("yaw: ", getYaw());
+        SmartDashboard.putNumber("Pitch: ", getPitch());
+        SmartDashboard.putNumber("Roll: ", getRoll());
+        SmartDashboard.putNumber("Z: ", getZ());
+        SmartDashboard.putNumber("Y: ", getY());
+        SmartDashboard.putNumber("X: ", getX());
         field2d.setRobotPose(getX(), getY(), new Rotation2d(Math.toRadians(getYaw())));
     }
 }
