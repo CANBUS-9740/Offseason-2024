@@ -11,7 +11,7 @@ public class IntakeSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final DigitalInput limitSwitch;
     private static final double DEFAULT_ROTATE_SPEED = 0.6;
-    private static final double SLOW_IN_ROTATE_SPEED = 0.2;
+    private static final double SLOW_IN_ROTATE_SPEED = 0.1;
 
     public IntakeSystem() {
         motor = new CANSparkMax(RobotMap.INTAKE_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
