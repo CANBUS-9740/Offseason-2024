@@ -39,6 +39,9 @@ public class DriveSubsystem extends SubsystemBase {
         leftBackMotor.setInverted(true);
         leftFrontMotor.setSensorPhase(true);
 
+        leftBackMotor.follow(leftFrontMotor);
+        rightFrontMotor.follow(rightBackMotor);
+
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d" ,field2d);
 
