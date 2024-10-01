@@ -24,6 +24,9 @@ public class Robot extends TimedRobot {
 
     private Command shootToAmp;
     private Command shootNoteSpeaker;
+    private Command shootToAmp2;
+
+    private double angle;
 
     @Override
     public void robotInit() {

@@ -27,7 +27,7 @@ public class RobotMap {
     public final static double ARM_PID_I = 0.005;
     public final static double ARM_PID_D = 0.0;
     public final static int NEAR_ANGLE_TOLERANCE = 2;
-    public final static double ARM_AMP_ANGLE = 130;
+    public final static double ARM_AMP_ANGLE = 138;
 
 
     public static final int SHOOTER_MOTOR_LEFT_TOP = 13;
