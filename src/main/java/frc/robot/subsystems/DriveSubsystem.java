@@ -45,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d" ,field2d);
 
-        differentialDrive = new DifferentialDrive(leftFrontMotor , rightBackMotor);
+        differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),

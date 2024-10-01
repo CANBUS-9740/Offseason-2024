@@ -2,20 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 
-public class  RobotMap {
+public class RobotMap {
+
     public static final double DRIVE_WHEEL_RADIUS = Units.inchesToMeters(3);
     public static final int DRIVE_LEFT_FRONT_MOTOR_ID = 4;
     public static final int DRIVE_LEFT_BACK_MOTOR_ID = 5;
     public static final int DRIVE_RIGHT_FRONT_MOTOR_ID = 2;
     public static final int DRIVE_RIGHT_BACK_MOTOR_ID = 3;
     public static final int PIGEON_ID = 7;
-    public static final int DRIVE_CONTROLLER_PORT = 0;
     public static final double TALON_ENCODER_PPR = 4096;
 
     public static final double DRIVE_MOTOR_TO_WHEEL_GEAR_RATIO = 8.45;
 
-    //                          ARM
-    // ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
     public final static int ARM_MOTOR_PORT = 8;
     public final static int ARM_ENCODER_PORT = 0;
     public final static double ARM_GEAR_RATIO = 100 / 1;
@@ -38,12 +36,8 @@ public class  RobotMap {
     public static final int SHOOTER_MOTOR_LEFT_BOTTOM = 12;
     public static final int SHOOTER_MOTOR_RIGHT_TOP = 15;
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
-    public final static int SHOOTER_TARGET_RPM = 2000;
+    public static final int TARGET_RPM_SHOOTER = 5000;
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
-
-    public final static int XBOX_CONTROLLER_PORT = 0;
-
-
 }

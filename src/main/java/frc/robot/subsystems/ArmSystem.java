@@ -31,8 +31,10 @@ public class ArmSystem extends SubsystemBase {
 
     public void move(double power) {
         if ((power > 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power < 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+            SmartDashboard.putBoolean("armManualLimit", true);
             stop();
         } else {
+            SmartDashboard.putBoolean("armManualLimit", false);
             motor.set(power);
         }
     }
@@ -61,6 +63,6 @@ public class ArmSystem extends SubsystemBase {
         SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
-        SmartDashboard.putBoolean("atShooter", reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE));
+        SmartDashboard.putBoolean("ArmAtShooter", reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE));
     }
 }
