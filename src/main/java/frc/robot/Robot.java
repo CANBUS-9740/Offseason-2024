@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
     private XboxController driveController;
     private XboxController operatorController;
 
+    private Command shootToAmp;
     private Command shootNoteSpeaker;
     private Command collectNote;
 
@@ -74,6 +75,23 @@ public class Robot extends TimedRobot {
                 )
         );
 
+        shootToAmp = new ParallelRaceGroup(
+                new ArmMoveToAmp(armSystem),
+                new SequentialCommandGroup(
+                        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_RELEASE_ANGLE)),
+                        new ParallelRaceGroup(
+                                new OuttakeCommand(intakeSystem),
+                                Commands.waitSeconds(1)
+                        )
+                )
+        );
+
+        POVButton dPadUp = new POVButton(operatorController, 0);
+        POVButton dPadDown = new POVButton(operatorController, 180);
+
+        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
+        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
+
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
@@ -81,8 +99,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-
-
     }
 
     @Override
@@ -126,6 +142,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
+        SmartDashboard.putBoolean("ShootNoteAmp Scheduled", shootToAmp.isScheduled());
     }
 
     @Override
