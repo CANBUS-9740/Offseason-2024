@@ -50,9 +50,9 @@ public class Robot extends TimedRobot {
 
         ParallelDeadlineGroup collectNote = new ParallelDeadlineGroup(
                 new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
-                new SequentialCommandGroup(
-                        new ArmMoveToFloorCommand(armSystem),
-                        new IntakeCommand(intakeSystem)
+                new ParallelDeadlineGroup(
+                        new IntakeCommand(intakeSystem),
+                        new ArmMoveToFloorCommand(armSystem)
                 )
         );
 
