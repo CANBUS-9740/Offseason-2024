@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
     private XboxController driveController;
     private XboxController operatorController;
     private ParallelCommandGroup cancelAllCommands;
-    private ParallelCommandGroup shootToAmp;
+    private ParallelDeadlineGroup shootToAmp;
 
     @Override
     public void robotInit() {
@@ -39,7 +39,8 @@ public class Robot extends TimedRobot {
         ShooterPID shooterCommand = new ShooterPID(shooterSystem, 5000);
         ArmMoveToShooterCommand armCommand = new ArmMoveToShooterCommand(armSystem);
 
-        shootToAmp = new ParallelCommandGroup(
+        shootToAmp = new ParallelDeadlineGroup(
+                new OuttakeCommand(intakeSystem),
                 new SequentialCommandGroup(
                         new InstantCommand(() -> System.out.println("In Seq")),
                         new ParallelDeadlineGroup(
@@ -47,9 +48,7 @@ public class Robot extends TimedRobot {
                                 new ArmMoveToAmp(armSystem),
                                 new InstantCommand(() -> System.out.println("In ParDead"))
                         ),
-                        new InstantCommand(() -> System.out.println("After ParDead")),
-                        new OuttakeCommand(intakeSystem),
-                        new InstantCommand(intakeSystem.getCurrentCommand()::cancel)
+                        new InstantCommand(() -> System.out.println("After ParDead"))
                 )
         );
         new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE));
