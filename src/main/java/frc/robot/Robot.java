@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -24,7 +23,7 @@ public class Robot extends TimedRobot {
     private XboxController driveController;
     private XboxController operatorController;
 
-    private Command shootToAmp;
+    private Command shooterNoteAmp;
     private Command shootNoteSpeaker;
     private Command collectNote;
 
@@ -75,7 +74,7 @@ public class Robot extends TimedRobot {
                 )
         );
 
-        shootToAmp = new ParallelRaceGroup(
+        shooterNoteAmp = new ParallelRaceGroup(
                 new ArmMoveToAmp(armSystem),
                 new SequentialCommandGroup(
                         new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_RELEASE_ANGLE)),
@@ -93,12 +92,15 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
-        new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kB.value).onTrue(shooterNoteAmp);
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
+        new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+
     }
 
     @Override
     public void disabledInit() {
+
     }
 
     @Override
@@ -142,7 +144,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
-        SmartDashboard.putBoolean("ShootNoteAmp Scheduled", shootToAmp.isScheduled());
+        SmartDashboard.putBoolean("ShootNoteAmp Scheduled", shooterNoteAmp.isScheduled());
     }
 
     @Override
