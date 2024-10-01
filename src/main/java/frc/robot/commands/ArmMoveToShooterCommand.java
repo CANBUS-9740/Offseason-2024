@@ -12,6 +12,7 @@ public class ArmMoveToShooterCommand extends Command {
     public ArmMoveToShooterCommand(ArmSystem armSystem) {
         this.armSystem = armSystem;
         pidController = new PIDController(RobotMap.ARM_PID_P, RobotMap.ARM_PID_I, RobotMap.ARM_PID_D);
+        pidController.setIZone(RobotMap.ARM_PID_I_ZONE);
 
         addRequirements(armSystem);
     }
@@ -25,7 +26,7 @@ public class ArmMoveToShooterCommand extends Command {
     public void execute() {
         double output = pidController.calculate(armSystem.getAbsEncoderPositionDegrees(),  RobotMap.ARM_SHOOTER_ANGLE);
 
-        armSystem.move(output);
+        armSystem.move(output + RobotMap.ARM_PID_K_GRAVITY * Math.cos(Math.toRadians(armSystem.getAbsEncoderPositionDegrees())));
     }
 
     @Override

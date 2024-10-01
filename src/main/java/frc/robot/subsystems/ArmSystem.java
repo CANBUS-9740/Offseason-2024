@@ -63,5 +63,6 @@ public class ArmSystem extends SubsystemBase {
         SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
+        SmartDashboard.putBoolean("ArmAtShooter", reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE));
     }
 }
