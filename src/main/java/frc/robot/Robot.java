@@ -20,9 +20,12 @@ public class Robot extends TimedRobot {
     private ShooterSystem shooterSystem;
     private IntakeSystem intakeSystem;
     private ArmSystem armSystem;
+
     private XboxController driveController;
     private XboxController operatorController;
+
     private Command shootNoteSpeaker;
+    private Command collectNote;
 
     @Override
     public void robotInit() {
@@ -30,6 +33,7 @@ public class Robot extends TimedRobot {
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
+
         driveController = new XboxController(0);
         operatorController = new XboxController(1);
 
@@ -62,7 +66,7 @@ public class Robot extends TimedRobot {
                 )
         );
 
-        ParallelDeadlineGroup collectNote = new ParallelDeadlineGroup(
+        collectNote = new ParallelDeadlineGroup(
                 new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
                 new ParallelDeadlineGroup(
                         new IntakeCommand(intakeSystem),
@@ -70,16 +74,9 @@ public class Robot extends TimedRobot {
                 )
         );
 
-        POVButton dPadUp = new POVButton(xboxController, 0);
-        POVButton dPadDown = new POVButton(xboxController, 180);
-
-        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
-        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
-
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
-        new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
-        new JoystickButton(operatorController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
     }
 
     @Override
@@ -127,7 +124,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
-        SmartDashboard.putBoolean("ShootNote Scheduled", shootNoteSpeaker.isScheduled());
+        SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
+        SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
     }
 
     @Override
