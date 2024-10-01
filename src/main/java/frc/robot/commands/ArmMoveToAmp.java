@@ -30,7 +30,7 @@ public class ArmMoveToAmp extends Command {
 
     @Override
     public boolean isFinished() {
-        return armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE);
+        return false;
     }
 
     @Override

@@ -21,8 +21,8 @@ public class Robot extends TimedRobot {
     private ArmSystem armSystem;
     private XboxController driveController;
     private XboxController operatorController;
-    private ParallelCommandGroup cancelAllCommands;
-    private ParallelDeadlineGroup shootToAmp;
+
+    private Command shootToAmp;
     private Command shootNoteSpeaker;
 
     @Override
@@ -33,14 +33,6 @@ public class Robot extends TimedRobot {
         armSystem = new ArmSystem();
         driveController = new XboxController(0);
         operatorController = new XboxController(1);
-
-        shootNoteSpeaker = new ParallelRaceGroup(
-                new ShooterPID(shooterSystem, 5000),
-        JoystickButton Ybutton = new JoystickButton(operatorController, XboxController.Button.kY.value);
-        //shooterSystem.getCurrentCommand().cancel();
-
-        ShooterPID shooterCommand = new ShooterPID(shooterSystem, 5000);
-        ArmMoveToShooterCommand armCommand = new ArmMoveToShooterCommand(armSystem);
 
         shootNoteSpeaker = new ParallelRaceGroup(
                 new ShooterPID(shooterSystem, 5000),
@@ -61,19 +53,16 @@ public class Robot extends TimedRobot {
                 )
         );
 
-        shootToAmp = new ParallelDeadlineGroup(
-                new OuttakeCommand(intakeSystem),
+        shootToAmp = new ParallelRaceGroup(
+                new ArmMoveToAmp(armSystem),
                 new SequentialCommandGroup(
-                        new InstantCommand(() -> System.out.println("In Seq")),
-                        new ParallelDeadlineGroup(
-                                new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE)),
-                                new ArmMoveToAmp(armSystem),
-                                new InstantCommand(() -> System.out.println("In ParDead"))
-                        ),
-                        new InstantCommand(() -> System.out.println("After ParDead"))
+                        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE)),
+                        new ParallelRaceGroup(
+                                new OuttakeCommand(intakeSystem),
+                                Commands.waitSeconds(1)
+                        )
                 )
         );
-        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE));
 
         POVButton dPadUp = new POVButton(operatorController, 0);
         POVButton dPadDown = new POVButton(operatorController, 180);
@@ -82,7 +71,7 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
-        new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
+        new JoystickButton(operatorController, XboxController.Button.kB.value).onTrue(shootToAmp);
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(operatorController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
     }
