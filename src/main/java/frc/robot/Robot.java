@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
     private XboxController operatorController;
     private ParallelCommandGroup cancelAllCommands;
     private ParallelDeadlineGroup shootToAmp;
+    private Command shootNoteSpeaker;
 
     @Override
     public void robotInit() {
@@ -33,11 +34,32 @@ public class Robot extends TimedRobot {
         driveController = new XboxController(0);
         operatorController = new XboxController(1);
 
+        shootNoteSpeaker = new ParallelRaceGroup(
+                new ShooterPID(shooterSystem, 5000),
         JoystickButton Ybutton = new JoystickButton(operatorController, XboxController.Button.kY.value);
         //shooterSystem.getCurrentCommand().cancel();
 
         ShooterPID shooterCommand = new ShooterPID(shooterSystem, 5000);
         ArmMoveToShooterCommand armCommand = new ArmMoveToShooterCommand(armSystem);
+
+        shootNoteSpeaker = new ParallelRaceGroup(
+                new ShooterPID(shooterSystem, 5000),
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In Seq")),
+                        new ParallelDeadlineGroup(
+                                new WaitUntilCommand(()-> shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER) && armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                                new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerRpmReached", shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER))),
+                                new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerArmReached", armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE))),
+                                new ArmMoveToShooterCommand(armSystem),
+                                new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In ParDead"))
+                        ),
+                        new InstantCommand(() -> System.out.println("ShootNoteSpeaker: After ParDead")),
+                        new ParallelRaceGroup(
+                                new OuttakeCommand(intakeSystem),
+                                Commands.waitSeconds(2)
+                        )
+                )
+        );
 
         shootToAmp = new ParallelDeadlineGroup(
                 new OuttakeCommand(intakeSystem),
@@ -53,13 +75,13 @@ public class Robot extends TimedRobot {
         );
         new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE));
 
-
         POVButton dPadUp = new POVButton(operatorController, 0);
         POVButton dPadDown = new POVButton(operatorController, 180);
 
         dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
+        new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
         new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new ShooterPID(shooterSystem, 2000));
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(operatorController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
@@ -96,20 +118,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        ShooterPID shooterPID = new ShooterPID(shooterSystem,5000);
-        shooterPID.schedule();
-
-        ShootOut shootOut =  new ShootOut(shooterSystem);
-        shootOut.schedule();
-
-        OuttakeCommand outtakeCommand = new OuttakeCommand(intakeSystem);
-        outtakeCommand.schedule();
-
-        IntakeCommand intakeCommand = new IntakeCommand(intakeSystem);
-        intakeCommand.schedule();
-
-        ArmMoveToShooterCommand armMoveToShooterCommand = new ArmMoveToShooterCommand(armSystem);
-        armMoveToShooterCommand.schedule();
 
         ArmMoveToFloorCommand armMoveToFloorCommand = new ArmMoveToFloorCommand(armSystem);
         armMoveToFloorCommand.schedule();
@@ -129,6 +137,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
+        SmartDashboard.putBoolean("ShootNote Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("shoot to amp Scheduled", shootToAmp.isScheduled());
     }
 

@@ -26,14 +26,15 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public boolean reachedATargetAngle(double targetAngle) {
-        System.out.println(getAbsEncoderPositionDegrees() + " - " + MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE));
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
 
     public void move(double power) {
-        if ((power < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+        if ((power > 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power < 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+            SmartDashboard.putBoolean("armManualLimit", true);
             stop();
         } else {
+            SmartDashboard.putBoolean("armManualLimit", false);
             motor.set(power);
         }
     }
