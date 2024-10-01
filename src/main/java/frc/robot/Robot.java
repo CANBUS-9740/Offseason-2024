@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -19,14 +20,13 @@ public class Robot extends TimedRobot {
     private ShooterSystem shooterSystem;
     private IntakeSystem intakeSystem;
     private ArmSystem armSystem;
+
     private XboxController driveController;
     private XboxController operatorController;
 
     private Command shootToAmp;
     private Command shootNoteSpeaker;
-    private Command shootToAmp2;
-
-    private double angle;
+    private Command collectNote;
 
     @Override
     public void robotInit() {
@@ -34,8 +34,19 @@ public class Robot extends TimedRobot {
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
+
         driveController = new XboxController(0);
         operatorController = new XboxController(1);
+
+        armSystem.setDefaultCommand(
+                new ParallelCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new WaitUntilCommand(() -> armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                                new IntakeSlowlyCommand(intakeSystem)
+                        ),
+                        new ArmMoveToShooterCommand(armSystem)
+                )
+        );
 
         shootNoteSpeaker = new ParallelRaceGroup(
                 new ShooterPID(shooterSystem, 5000),
@@ -56,6 +67,13 @@ public class Robot extends TimedRobot {
                 )
         );
 
+        collectNote = new ParallelDeadlineGroup(
+                new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
+                new ParallelDeadlineGroup(
+                        new IntakeCommand(intakeSystem),
+                        new ArmMoveToFloorCommand(armSystem)
+                )
+        );
         shootToAmp = new ParallelRaceGroup(
                 new ArmMoveToAmp(armSystem),
                 new SequentialCommandGroup(
@@ -74,9 +92,8 @@ public class Robot extends TimedRobot {
         dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
 
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
-        new JoystickButton(operatorController, XboxController.Button.kB.value).onTrue(shootToAmp);
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
-        new JoystickButton(operatorController, XboxController.Button.kA.value).whileTrue(new IntakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
     }
 
     @Override
@@ -111,13 +128,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
 
-        ArmMoveToFloorCommand armMoveToFloorCommand = new ArmMoveToFloorCommand(armSystem);
-        armMoveToFloorCommand.schedule();
-
-        DriveTeleopCommand driveTeleopCommand = new DriveTeleopCommand(driveSubsystem, driveController);
-        driveTeleopCommand.schedule();
-
-        shootToAmp.schedule();
     }
 
     @Override
@@ -129,6 +139,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
+        SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
+        SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
         SmartDashboard.putBoolean("ShootNote Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("shoot to amp Scheduled", shootToAmp.isScheduled());
     }

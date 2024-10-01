@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSystem;
 
-public class IntakeCommand extends Command {
+public class IntakeSlowlyCommand extends Command {
     private final IntakeSystem intakeSystem;
 
-    public IntakeCommand(IntakeSystem intakeSystem) {
+    public IntakeSlowlyCommand(IntakeSystem intakeSystem) {
         this.intakeSystem = intakeSystem;
 
         addRequirements(intakeSystem);
@@ -16,7 +16,7 @@ public class IntakeCommand extends Command {
     }
 
     public void execute() {
-        intakeSystem.in();
+        intakeSystem.slowIn();
     }
 
     public void end(boolean interrupted) {
