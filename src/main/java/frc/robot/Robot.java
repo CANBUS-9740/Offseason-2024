@@ -74,10 +74,11 @@ public class Robot extends TimedRobot {
                         new ArmMoveToFloorCommand(armSystem)
                 )
         );
+
         shootToAmp = new ParallelRaceGroup(
                 new ArmMoveToAmp(armSystem),
                 new SequentialCommandGroup(
-                        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE)),
+                        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_RELEASE_ANGLE)),
                         new ParallelRaceGroup(
                                 new OuttakeCommand(intakeSystem),
                                 Commands.waitSeconds(1)
@@ -141,8 +142,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
-        SmartDashboard.putBoolean("ShootNote Scheduled", shootNoteSpeaker.isScheduled());
-        SmartDashboard.putBoolean("shoot to amp Scheduled", shootToAmp.isScheduled());
+        SmartDashboard.putBoolean("ShootNoteAmp Scheduled", shootToAmp.isScheduled());
     }
 
     @Override
