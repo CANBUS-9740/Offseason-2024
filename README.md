@@ -532,7 +532,7 @@ There are several work paths which we will follow.
     - Initial implementation [branch](shuffleboard)
         - note: incomplete
         
-- [ ] Arm Default Position
+- [x] Arm Default Position
     - Place arm in shooter position by default, and return it there after collecting note, or shooting to amp.
     - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/13)
        - note: implementation uses this by running a default command on the arm. is this a good approach?
@@ -540,6 +540,8 @@ There are several work paths which we will follow.
 - [ ] Hold Note in Intake
     - Actively hold note in intake by slowly rotating intake wheels. Note may slip out otherwise
     - Implemented along side something else [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
+    - PR merged, with this hold done in the default arm command
+    - Should be added to other arm commands
 
 - [ ] Cancel All
     - Assignee: Liam
@@ -568,7 +570,7 @@ There are several work paths which we will follow.
 
 #### Command Groups
 
-- [ ] Amp Shoot Group
+- [x] Amp Shoot Group
     - Assignee: Keren
     - Command group for shooting to amp
     - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/17)
@@ -581,7 +583,7 @@ There are several work paths which we will follow.
         - note: untested
     - Progress Note (27.9):
         - Tested fixed and merged 
-- [ ] Intake Group
+- [x] Intake Group
     - Assignee: Eduard
     - Command group for collecting note
     - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
@@ -597,6 +599,8 @@ There are several work paths which we will follow.
         - note: untested
     - Progress Note (27.9):
         - Drive is missing the SRX magnetic encoders, waiting for build to fix
+    - Progress Note (1.10):
+        - Encoders in drive placed, they need to be checked though  
  
 - [ ] Vision
     - Implement vision capabilities with limelight
