@@ -14,38 +14,39 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final WPI_TalonSRX leftFrontMotor;
-    private final WPI_VictorSPX rightFrontMotor;
-    private final WPI_VictorSPX leftBackMotor;
-    private final WPI_TalonSRX rightBackMotor;
+    private final WPI_TalonSRX rightFrontMotor;
+    private final WPI_VictorSPX leftFrontMotor;
+    private final WPI_VictorSPX rightBackMotor;
+    private final WPI_TalonSRX leftBackMotor;
     private final Field2d field2d;
     private final DifferentialDriveOdometry differentialDriveOdometry;
     private final DifferentialDrive differentialDrive;
     private final Pigeon2 pigeon2;
 
     public DriveSubsystem() {
-        leftBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
-        rightBackMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
-        leftFrontMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
-        rightFrontMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        rightBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
+        leftBackMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
+        rightFrontMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        leftFrontMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
         pigeon2 = new Pigeon2(RobotMap.PIGEON_ID);
-        leftBackMotor.configFactoryDefault();
         rightBackMotor.configFactoryDefault();
-        leftFrontMotor.configFactoryDefault();
+        leftBackMotor.configFactoryDefault();
         rightFrontMotor.configFactoryDefault();
+        leftFrontMotor.configFactoryDefault();
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
-        leftFrontMotor.setInverted(true);
-        leftBackMotor.setInverted(true);
-        leftFrontMotor.setSensorPhase(true);
+        rightFrontMotor.setInverted(true);
+        rightBackMotor.setInverted(true);
+        rightFrontMotor.setSensorPhase(true);
+        leftBackMotor.setSensorPhase(true);
 
-        leftBackMotor.follow(leftFrontMotor);
-        rightFrontMotor.follow(rightBackMotor);
+        rightBackMotor.follow(rightFrontMotor);
+        leftFrontMotor.follow(leftBackMotor);
 
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d" ,field2d);
 
-        differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
+        differentialDrive = new DifferentialDrive(rightFrontMotor, leftBackMotor);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),
@@ -61,17 +62,17 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftDistancePassedMeters() {
-        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return rightFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
 
     public double getRightDistancePassedMeters() {
-        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return leftBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
 
     private void initialize() {
         pigeon2.reset();
-        leftFrontMotor.setSelectedSensorPosition(0);
-        rightBackMotor.setSelectedSensorPosition(0);//inits
+        rightFrontMotor.setSelectedSensorPosition(0);
+        leftBackMotor.setSelectedSensorPosition(0);//inits
     }
 
     public double getAngleDegrees() {
@@ -84,10 +85,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void stop() {
-        rightBackMotor.stopMotor();
-        rightFrontMotor.stopMotor();
         leftBackMotor.stopMotor();
         leftFrontMotor.stopMotor();
+        rightBackMotor.stopMotor();
+        rightFrontMotor.stopMotor();
     }
 
     private void updateOdometry() {
