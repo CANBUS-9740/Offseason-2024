@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class RobotMap {
@@ -11,6 +13,7 @@ public class RobotMap {
     public static final int PIGEON_ID = 7;
     public static final int DRIVE_CONTROLLER_PORT = 0;
     public static final double TALON_ENCODER_PPR = 4096;
+    public static final double TRACK_WIDTH = 52;//58-(3*2)
 
     public static final double DRIVE_MOTOR_TO_WHEEL_GEAR_RATIO = 8.45;
 
@@ -38,4 +41,6 @@ public class RobotMap {
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
+
+    public static final Pose2d STARTING_DEFAULT_LOCATION = new Pose2d(0,0,new Rotation2d(0));
 }
