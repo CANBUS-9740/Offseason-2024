@@ -33,7 +33,7 @@ public class ArmMoveToAngle extends Command {
 
     @Override
     public boolean isFinished() {
-        if (targetAngle == RobotMap.ARM_FLOOR_ANGLE || targetAngle == RobotMap.ARM_AMP_ANGLE) {
+        if (targetAngle == RobotMap.ARM_FLOOR_ANGLE) {
             return armSystem.reachedATargetAngle(targetAngle);
         } else {
             return false;
