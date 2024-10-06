@@ -525,6 +525,10 @@ There are several work paths which we will follow.
         - note: pr has unrelated changes
             - removal of `isFinished` condition in `OuttakeCommand`
         - note: pr code doesn't achieve what it seeks to
+    - Progress Note (7.10):
+        - tested. Most systems did not show problematic power draws, only momentary draw due to momentary effort
+        - Intake has a consistent 10A draw while running
+        - Liam added current limits to them but did not test [branch](main-phase1-integration-current-limits2)  
 
 - [ ] Shuffleboard
     - Assignee: Martin (delayed due to pathplanner)
@@ -537,7 +541,7 @@ There are several work paths which we will follow.
     - Implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/13)
        - note: implementation uses this by running a default command on the arm. is this a good approach?
        
-- [ ] Hold Note in Intake
+- [x] Hold Note in Intake
     - Actively hold note in intake by slowly rotating intake wheels. Note may slip out otherwise
     - Implemented along side something else [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/14)
     - PR merged, with this hold done in the default arm command
@@ -548,7 +552,7 @@ There are several work paths which we will follow.
     - We need to give the robot operator the ability to cancel automatic commands so that they don't get the robot stuck
     - Initial implementation [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/18)
     
-- [ ] Combine all Arm commands into a single generic command
+- [x] Combine all Arm commands into a single generic command
     - they are all similar just move to different angles.
     
 - [ ] Drive Chassis Drift
@@ -558,12 +562,17 @@ There are several work paths which we will follow.
         - Quick observation showed a huge differance in power drain between the left and right sides
         - Further investigation is necessary
     - A software fix can involve using PID to counteract this drift 
-    - **URGENT**: must be checked as soon as possible to determine if any mechanical changes are needed   
+    - **URGENT**: must be checked as soon as possible to determine if any mechanical changes are needed
+    - Progress Note (7.10):
+        - Testing and seems to be caused by a mechanical problem with the motors and gearbox.
+        - Some of the motors are under strain and have difficulty moving, requiring greater power draw
+        - Build team will check and attempt to fix 
 
-- [ ] Arm Agressive Motion
+- [x] Arm Agressive Motion
     - The arm is moving very aggressively
     - When moving to shooter position, it actually hits the gearbox of its own motor. This has caused a noticeable dent.
-    - Need to lower it gently, perhaps a retuning of the PID is in order. 
+    - Need to lower it gently, perhaps a retuning of the PID is in order.
+    - Was already handled by another branch with cosine function FF
 
 - [ ] Intake Sensor
     - Latest changes removed use of intake sensor for some commands, despite it being wanted to monitor if we have a note. Return usage of sensor and think of a good way to address the reasons for each the use was removed 
@@ -613,9 +622,17 @@ There are several work paths which we will follow.
     - Progress Note (27.9):
         - Oren has started working with the limelight, learning how to configure and read data from it
         - Tom sat with oren and explained the usage of limelight in the competition
-        - Oren needs time to learn and work with limelight in 3D AprilTag Tracking mode 
+        - Oren needs time to learn and work with limelight in 3D AprilTag Tracking mode
+    - Progress Note (7.10):
+        - Good progress, with limelight updating pose based on april tags
+        - Needs use of pose estimator
+        - Needs testing with multiple april tags and odometery testing
+        - Some inaccuracies due to the apriltag recognition errors. Needs addressing as to not fuck up delicate control systems during execution  
  
 - [ ] Auto Shoot
     - Implement auto shoot from any distance
-    - Dependent on Vision/Odometery shoot command group and shooting function 
+    - Dependent on Vision/Odometery shoot command group and shooting function
+    - Progress Note (7.10):
+        - Started initial work, yali and talya working on extracing data from odometery plus orientation to target
+        - [pr](https://github.com/CANBUS-9740/Offseason-2024/pull/27) 
 
