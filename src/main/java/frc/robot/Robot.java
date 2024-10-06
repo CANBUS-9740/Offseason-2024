@@ -1,7 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -96,6 +99,19 @@ public class Robot extends TimedRobot {
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
 
+        Pose2d robot = new Pose2d(4, 5, Rotation2d.fromDegrees(0));
+        Pose2d target = new Pose2d(2, 3, Rotation2d.fromDegrees(0));
+
+        Field2d field2d = new Field2d();
+        SmartDashboard.putData("field2f222", field2d);
+
+        driveSubsystem.setRobotPose(robot);
+        Info info = driveSubsystem.getTargetInfo(target);
+        SmartDashboard.putNumber("distance1", info.getDistance());
+        SmartDashboard.putNumber("angle1", info.getAngleDegrees());
+
+        field2d.setRobotPose(new Pose2d(robot.getX(), robot.getY(), Rotation2d.fromDegrees(info.getAngleDegrees())));
+        field2d.getObject("target").setPose(target);
     }
 
     @Override

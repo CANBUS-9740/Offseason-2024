@@ -5,13 +5,19 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Info;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
+
+import javax.xml.crypto.Data;
 
 public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX leftFrontMotor;
@@ -96,6 +102,31 @@ public class DriveSubsystem extends SubsystemBase {
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
+    }
+
+    public Pose2d getRobotPose() {
+        return differentialDriveOdometry.getPoseMeters();
+    }
+
+    public void setRobotPose(Pose2d pose) {
+        differentialDriveOdometry.resetPosition(
+                pigeon2.getRotation2d(),
+                getLeftDistancePassedMeters(),
+                getRightDistancePassedMeters(),
+                pose
+        );
+    }
+
+    public Info getTargetInfo(Pose2d pose) {
+        Pose2d robot = differentialDriveOdometry.getPoseMeters();
+        double distance = Math.sqrt(Math.pow(robot.getX()- pose.getX(), 2)+Math.pow(robot.getY() - pose.getY(),2));
+        double angle;
+        if(robot.getY() < pose.getY()){
+            angle = Math.toDegrees(Math.asin((pose.getY() - robot.getY()) / distance));
+        } else{
+            angle = Math.toDegrees(Math.asin((robot.getY() - pose.getY()) / distance))-180;
+        }
+        return new Info(distance, angle);
     }
 
     public void periodic() {
