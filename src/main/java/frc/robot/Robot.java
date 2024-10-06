@@ -22,12 +22,10 @@ public class Robot extends TimedRobot {
     private IntakeSystem intakeSystem;
     private ArmSystem armSystem;
     private XboxController xboxController;
-    private LimelightSubsystem limelightSubsystem;
 
     @Override
     public void robotInit() {
         driveSubsystem = new DriveSubsystem();
-        limelightSubsystem = new LimelightSubsystem();
         shooterSystem = new ShooterSystem();
         intakeSystem = new IntakeSystem();
         armSystem = new ArmSystem();
