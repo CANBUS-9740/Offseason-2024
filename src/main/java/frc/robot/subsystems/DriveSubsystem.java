@@ -35,8 +35,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.configFactoryDefault();
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
-        leftFrontMotor.setInverted(true);
-        leftBackMotor.setInverted(true);
+        rightFrontMotor.setInverted(true);
+        rightBackMotor.setInverted(true);
         leftFrontMotor.setSensorPhase(true);
 
         rightBackMotor.follow(rightFrontMotor);
