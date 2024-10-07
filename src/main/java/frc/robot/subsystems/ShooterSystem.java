@@ -33,6 +33,11 @@ public class ShooterSystem extends SubsystemBase {
         motorLB.restoreFactoryDefaults();
         motorRB.restoreFactoryDefaults();
 
+        motorLB.setSmartCurrentLimit(60, 20);
+        motorRT.setSmartCurrentLimit(60,20);
+        motorRB.setSmartCurrentLimit(60,20);
+        motorLT.setSmartCurrentLimit(60,20);
+        // a 50, 20; i 20, 5
 
         encoderLT = motorLT.getEncoder();
         encoderLB = motorLB.getEncoder();
@@ -93,5 +98,11 @@ public class ShooterSystem extends SubsystemBase {
         SmartDashboard.putNumber("ShooterLeftBottomMotor", getLeftBottomVelocityRpm());
         SmartDashboard.putNumber("ShooterRightTopMotor", getRightTopVelocityRpm());
         SmartDashboard.putNumber("ShooterRightBottomMotor", getRightBottomVelocityRpm());
+
+        SmartDashboard.putNumber("ShooterRightBackCurrent", motorRB.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterLeftTopCurrent", motorLT.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterRightTopCurrent", motorRT.getOutputCurrent());
+        SmartDashboard.putNumber("ShooterLeftBackCurrent", motorLB.getOutputCurrent());
+
     }
 }

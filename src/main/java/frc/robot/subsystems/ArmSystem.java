@@ -21,6 +21,8 @@ public class ArmSystem extends SubsystemBase {
         neoEncoder = motor.getEncoder();
         absEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
 
+        motor.setSmartCurrentLimit(50,20);
+
         motor.restoreFactoryDefaults();
 
     }
@@ -64,5 +66,6 @@ public class ArmSystem extends SubsystemBase {
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
         SmartDashboard.putBoolean("ArmAtShooter", reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE));
+        SmartDashboard.putNumber("ArmCurrent", motor.getOutputCurrent());
     }
 }
