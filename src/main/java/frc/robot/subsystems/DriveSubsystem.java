@@ -25,9 +25,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_VictorSPX rightFrontMotor;
     private final WPI_VictorSPX leftBackMotor;
     private final WPI_TalonSRX rightBackMotor;
-    private final Field2d differentialDriveOdometryField;
     private final Field2d differentialDriveOdometryFieldPoseEstimator;
-    private final DifferentialDriveOdometry differentialDriveOdometry;
     private DifferentialDrivePoseEstimator differentialDrivePoseEstimator;
     private final DifferentialDrive differentialDrive;
     private final Pigeon2 pigeon2;
@@ -54,7 +52,6 @@ public class DriveSubsystem extends SubsystemBase {
         networkTableEntryOfBotPose = table.getEntry("botpose_wpiblue");
         networkTableEntryOfExistanceAprilTag = table.getEntry("tv");
 
-        differentialDriveOdometryField = new Field2d();
         differentialDriveOdometryFieldPoseEstimator = new Field2d();
 
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
@@ -67,24 +64,18 @@ public class DriveSubsystem extends SubsystemBase {
         leftBackMotor.follow(leftFrontMotor);
         rightFrontMotor.follow(rightBackMotor);
 
-        SmartDashboard.putData("field2d", differentialDriveOdometryField);
         SmartDashboard.putData("field2dPoseEstimator", differentialDriveOdometryFieldPoseEstimator);
 
         differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
 
-        differentialDriveOdometry = new DifferentialDriveOdometry(
-                pigeon2.getRotation2d(),
-                getLeftDistancePassedMeters(),
-                getRightDistancePassedMeters()
-        );
+
         differentialDrivePoseEstimator = new DifferentialDrivePoseEstimator(
                 new DifferentialDriveKinematics(RobotMap.TRACK_WIDTH),
                 pigeon2.getRotation2d(),
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters(),
-                RobotMap.STARTING_DEFAULT_LOCATION);
-
-
+                RobotMap.STARTING_DEFAULT_LOCATION
+        );
         initialize();
     }
 
@@ -113,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Field2d getDifferentialDriveOdometryField() {
-        return differentialDriveOdometryField;
+        return differentialDriveOdometryFieldPoseEstimator;
     }
 
     public double getLeftDistancePassedMeters() {
@@ -136,6 +127,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void arcadeDrive(double linearSpeed, double rotationSpeed) {
+
         differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
@@ -150,15 +142,6 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdometry() {
         //DifferentialDrivePoseEstimator !!!1
         if (existanceOfAprilTag) {
-            differentialDriveOdometry.resetPosition(
-                    pigeon2.getRotation2d(),
-                    getLeftDistancePassedMeters(),
-                    getRightDistancePassedMeters(),
-                    new Pose2d(
-                            getXFromCamera(),
-                            getYFromCamera(),
-                            new Rotation2d(Units.degreesToRadians(getYawFromCamera()))));
-
             differentialDrivePoseEstimator.resetPosition(
                     pigeon2.getRotation2d(),
                     getLeftDistancePassedMeters(),
@@ -166,17 +149,8 @@ public class DriveSubsystem extends SubsystemBase {
                     new Pose2d(
                             getXFromCamera(),
                             getYFromCamera(),
-                            new Rotation2d(Units.degreesToRadians(getYawFromCamera()))
-                    )
-            );
-
+                            new Rotation2d(Units.degreesToRadians(getYawFromCamera()))));
         }
-
-        differentialDriveOdometry.update(
-                new Rotation2d(Math.toRadians(getAngleDegrees())),
-                getLeftDistancePassedMeters(),
-                getRightDistancePassedMeters()
-        );
         differentialDrivePoseEstimator.update(
                 new Rotation2d(Math.toRadians(getAngleDegrees())),
                 getLeftDistancePassedMeters(),
@@ -185,25 +159,23 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getCurrentXLocation(){
-        return differentialDriveOdometry.getPoseMeters().getX();
+        return differentialDrivePoseEstimator.getEstimatedPosition().getX();
     }
     public double getCurrentYLocation(){
-        return differentialDriveOdometry.getPoseMeters().getY();
+        return differentialDrivePoseEstimator.getEstimatedPosition().getY();
     }
-    public double getCurrentAngleLocation(){
-        return differentialDriveOdometry.getPoseMeters().getRotation().getDegrees();
+    public double getCurrentAngleLocation() {
+        return differentialDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees();
     }
 
 
     public void periodic() {
-        differentialDriveOdometryField.setRobotPose(differentialDriveOdometry.getPoseMeters());
-        differentialDriveOdometryFieldPoseEstimator.setRobotPose(differentialDriveOdometryFieldPoseEstimator.getRobotPose());
+        differentialDriveOdometryFieldPoseEstimator.setRobotPose(differentialDrivePoseEstimator.getEstimatedPosition());
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
-        updateOdometry();
         SmartDashboard.putBoolean("IsTag: ", existanceOfAprilTag);
         SmartDashboard.putNumber("yaw", getYawFromCamera());
-
+        updateOdometry();
     }
 }
 
