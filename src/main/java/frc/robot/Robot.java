@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-
+        new AngleCorretion(driveSubsystem, 90).schedule();
     }
 
     @Override

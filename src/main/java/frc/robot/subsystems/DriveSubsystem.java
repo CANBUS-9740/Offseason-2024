@@ -108,6 +108,10 @@ public class DriveSubsystem extends SubsystemBase {
         return differentialDriveOdometry.getPoseMeters();
     }
 
+    public boolean didGetToAngleDegrees(double setPoint){
+        return MathUtil.isNear(setPoint, getAngleDegrees(), 1.5);
+    }
+
     public void setRobotPose(Pose2d pose) {
         differentialDriveOdometry.resetPosition(
                 pigeon2.getRotation2d(),
