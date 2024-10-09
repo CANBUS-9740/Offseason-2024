@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,8 @@ public class DriveSubsystem extends SubsystemBase {
     private NetworkTableEntry networkTableEntryOfBotPose;
     private NetworkTableEntry networkTableEntryOfExistanceAprilTag;
     private boolean existanceOfAprilTag;
+    private boolean hasDetectedAprilTagInMoment;
+    private Timer timerOfAprilTagDetection;
 
 
     public DriveSubsystem() {
@@ -47,6 +50,9 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.configFactoryDefault();
         rightFrontMotor.configFactoryDefault();
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
+
+        timerOfAprilTagDetection = new Timer();
+        timerOfAprilTagDetection.start();
 
         table = NetworkTableInstance.getDefault().getTable("limelight");
         networkTableEntryOfBotPose = table.getEntry("botpose_wpiblue");
@@ -141,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         //DifferentialDrivePoseEstimator !!!1
-        if (existanceOfAprilTag) {
+        if (existanceOfAprilTag || timerOfAprilTagDetection.get() > 1.5) {
             differentialDrivePoseEstimator.resetPosition(
                     pigeon2.getRotation2d(),
                     getLeftDistancePassedMeters(),
@@ -150,6 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
                             getXFromCamera(),
                             getYFromCamera(),
                             new Rotation2d(Units.degreesToRadians(getYawFromCamera()))));
+            timerOfAprilTagDetection.reset();
         }
         differentialDrivePoseEstimator.update(
                 new Rotation2d(Math.toRadians(getAngleDegrees())),
