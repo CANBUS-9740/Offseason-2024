@@ -29,10 +29,10 @@ import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final WPI_VictorSPX leftFrontMotor;
-    private final WPI_TalonSRX rightFrontMotor;
-    private final WPI_TalonSRX leftBackMotor;
-    private final WPI_VictorSPX rightBackMotor;
+    private final WPI_TalonSRX leftMasterMotor;
+    private final WPI_VictorSPX leftSlaveMotor;
+    private final WPI_TalonSRX rightMasterMotor;
+    private final WPI_VictorSPX rightSlaveMotor;
     private final Pigeon2 pigeon2;
 
     private final DifferentialDrive differentialDrive;
@@ -64,35 +64,35 @@ public class DriveSubsystem extends SubsystemBase {
             );
 
     public DriveSubsystem() {
-        rightBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
-        leftBackMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
-        rightFrontMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
-        leftFrontMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
+        leftMasterMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        leftSlaveMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
+        rightMasterMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
+        rightSlaveMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
 
         pigeon2 = new Pigeon2(RobotMap.PIGEON_ID);
 
-        rightBackMotor.configFactoryDefault();
-        leftBackMotor.configFactoryDefault();
-        rightFrontMotor.configFactoryDefault();
-        leftFrontMotor.configFactoryDefault();
+        leftSlaveMotor.configFactoryDefault();
+        rightMasterMotor.configFactoryDefault();
+        leftMasterMotor.configFactoryDefault();
+        rightSlaveMotor.configFactoryDefault();
 
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
-        rightFrontMotor.setInverted(true);
-        rightBackMotor.setInverted(true);
-        rightFrontMotor.setSensorPhase(true);
-        leftBackMotor.setSensorPhase(true);
+        leftMasterMotor.setInverted(true);
+        leftSlaveMotor.setInverted(true);
+        leftMasterMotor.setSensorPhase(true);
+        rightMasterMotor.setSensorPhase(true);
 
-        rightBackMotor.follow(rightFrontMotor);
-        leftFrontMotor.follow(leftBackMotor);
+        leftSlaveMotor.follow(leftMasterMotor);
+        rightSlaveMotor.follow(rightMasterMotor);
 
-        configureMotorPID(leftFrontMotor);
-        configureMotorPID(rightBackMotor);
+        configureMotorPID(leftMasterMotor);
+        configureMotorPID(rightMasterMotor);
 
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d", field2d);
 
-        differentialDrive = new DifferentialDrive(rightFrontMotor, leftBackMotor);
+        differentialDrive = new DifferentialDrive(leftMasterMotor, rightMasterMotor);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),
@@ -115,7 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
         initialize();
     }
 
-    private static void configureMotorPID(WPI_VictorSPX motor) {
+    private static void configureMotorPID(WPI_TalonSRX motor) {
         motor.config_kP(0, RobotMap.DRIVE_TALON_PID_P);
         motor.config_kI(0, RobotMap.DRIVE_TALON_PID_I);
         motor.config_kD(0, RobotMap.DRIVE_TALON_PID_D);
@@ -140,27 +140,27 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftDistancePassedMeters() {
-        return rightFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return leftMasterMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
 
     public double getRightDistancePassedMeters() {
-        return leftBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return rightMasterMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
     }
 
     public double getLeftSpeedMetersPerSecond() {
-        return rightFrontMotor.getSelectedSensorVelocity() * RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
+        return leftMasterMotor.getSelectedSensorVelocity() * RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
     }
 
     public double getRightSpeedMetersPerSecond() {
-        return leftBackMotor.getSelectedSensorVelocity() * RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
+        return rightMasterMotor.getSelectedSensorVelocity() * RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
     }
 
     public double getLeftOutputVoltageVolts() {
-        return rightFrontMotor.getMotorOutputVoltage();
+        return leftMasterMotor.getMotorOutputVoltage();
     }
 
     public double getRightOutputVoltageVolts() {
-        return leftBackMotor.getMotorOutputVoltage();
+        return rightMasterMotor.getMotorOutputVoltage();
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -173,8 +173,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void initialize() {
         pigeon2.reset();
-        rightFrontMotor.setSelectedSensorPosition(0);
-        leftBackMotor.setSelectedSensorPosition(0);//inits
+        leftMasterMotor.setSelectedSensorPosition(0);
+        rightMasterMotor.setSelectedSensorPosition(0);//inits
     }
 
     public double getAngleDegrees() {
@@ -183,11 +183,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void drivePowerLeft(double power) {
-        rightFrontMotor.set(power);
+        leftMasterMotor.set(power);
     }
 
     public void drivePowerRight(double power) {
-        leftBackMotor.set(power);
+        rightMasterMotor.set(power);
     }
 
     public void driveVoltsLeft(double voltage) {
@@ -199,11 +199,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveSpeedLeft(double metersPerSecond) {
-        rightFrontMotor.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
+        leftMasterMotor.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
     }
 
     public void driveSpeedRight(double metersPerSecond) {
-        leftBackMotor.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
+        rightMasterMotor.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
     }
 
     public void driveWheelSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
@@ -216,10 +216,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void stop() {
-        leftBackMotor.stopMotor();
-        leftFrontMotor.stopMotor();
-        rightBackMotor.stopMotor();
-        rightFrontMotor.stopMotor();
+        leftMasterMotor.stopMotor();
+        leftSlaveMotor.stopMotor();
+        rightMasterMotor.stopMotor();
+        rightSlaveMotor.stopMotor();
     }
 
     private void updateOdometry() {
@@ -252,6 +252,8 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("pigeon", pigeon2.getAngle());
         SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
         SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
+        SmartDashboard.putNumber("DriveLeftSpeed", getLeftSpeedMetersPerSecond());
+        SmartDashboard.putNumber("DriveRightSpeed", getRightSpeedMetersPerSecond());
         SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
         SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
