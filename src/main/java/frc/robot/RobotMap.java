@@ -41,4 +41,15 @@ public class RobotMap {
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
+
+    public static final int CLIMB_RIGHT_MOTOR = 00;
+    public static final int CLIMB_LEFT_MOTOR = 00;
+    public static final int CLIMB_LIMIT_SWITCH_RIGHT = 00;
+    public static final int CLIMB_LIMIT_SWITCH_LEFT = 00;
+    public static final int CLIMB_GEAR_RATIO = 0;
+    public static final int CLIMB_RADIUS_CM = 3;
+    public static final int CLIMB_ENCODER_PPR = 0;
+    public static final double CLIMB_MOVE_POWER = 0.1;
+    public static final double TARGET_STAY_IN_POSITION = 0;
+
 }
