@@ -50,6 +50,5 @@ public class RobotMap {
     public static final int CLIMB_RADIUS_CM = 3;
     public static final int CLIMB_ENCODER_PPR = 0;
     public static final double CLIMB_MOVE_POWER = 0.1;
-    public static final double TARGET_STAY_IN_POSITION = 0;
 
 }
