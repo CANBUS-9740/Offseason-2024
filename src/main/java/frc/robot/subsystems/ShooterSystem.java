@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
 
 import java.util.Map;
+import java.util.OptionalDouble;
 
 public class ShooterSystem extends SubsystemBase {
     private final CANSparkMax motorLT;
@@ -26,6 +28,27 @@ public class ShooterSystem extends SubsystemBase {
     public final double SHOOTER_RPM_KP = 0.0001;
     public final double SHOOTER_RPM_KI = 0.000001;
     public final double SHOOTER_RPM_KD = 0;
+
+
+    // todo: FIND REAL VALUES with calibration
+    // Interpolation function inputs: distance to target in meters
+    private static final double[] INTERPOLATION_X = {
+            0, // NOT REAL VALUE, REMOVE
+            1 // NOT REAL VALUE, REMOVE
+    };
+
+    // todo: FIND REAL VALUES with calibration
+    // Interpolation function outputs: shooter wheel speed in RPM
+    private static final double[] INTERPOLATION_Y = {
+            0, // NOT REAL VALUE, REMOVE
+            1 // NOT REAL VALUE, REMOVE
+    };
+
+    // todo: FIND REAL VALUES with calibration
+    private static final double MIN_FIRING_DISTANCE_METERS = 0.5;
+    private static final double MAX_FIRING_DISTANCE_METERS = 3;
+
+    private final PolynomialFunctionLagrangeForm interpolation;
 
     // Shuffleboard
 
@@ -73,6 +96,8 @@ public class ShooterSystem extends SubsystemBase {
         motorRT.follow(motorLB,true);
         motorLT.follow(motorLB);
 
+        this.interpolation = new PolynomialFunctionLagrangeForm(INTERPOLATION_X, INTERPOLATION_Y);
+
         setUpShuffleboard();
 
         ShuffleboardDashboard.setShooterDataSupplier(() -> new ShuffleboardDashboard.ShooterData(
@@ -114,6 +139,15 @@ public class ShooterSystem extends SubsystemBase {
 
     public void rotatePID(double targetRPM){
         pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    }
+
+    public OptionalDouble calculateFiringSpeedRpm(double distanceMeters) {
+        if (distanceMeters < MIN_FIRING_DISTANCE_METERS || distanceMeters > MAX_FIRING_DISTANCE_METERS) {
+            return OptionalDouble.empty();
+        }
+
+        double result = interpolation.value(distanceMeters);
+        return OptionalDouble.of(distanceMeters);
     }
 
     private void setUpShuffleboard() {

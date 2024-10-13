@@ -1,14 +1,15 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -30,6 +31,9 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.ShooterSystem;
 import frc.robot.utils.ShuffleboardDashboard;
+
+import java.util.OptionalDouble;
+import java.util.Set;
 
 public class Robot extends TimedRobot {
 
@@ -121,21 +125,45 @@ public class Robot extends TimedRobot {
 
         ShuffleboardDashboard.initialize(armSystem, driveSubsystem, intakeSystem, shooterSystem);
 
+        Command autoShootCommand = new DeferredCommand(()-> {
+            Pose2d speakerPose = FieldInfo.getOurSpeakerPose();
+            TargetInfo targetInfo = driveSubsystem.getTargetInfo(speakerPose);
 
-        // todo: REMOVE LATER
-        Pose2d robot = new Pose2d(4, 5, Rotation2d.fromDegrees(0));
-        Pose2d target = new Pose2d(2, 3, Rotation2d.fromDegrees(0));
+            OptionalDouble firingSpeedRpmOptional = shooterSystem.calculateFiringSpeedRpm(targetInfo.getDistance());
+            if (firingSpeedRpmOptional.isEmpty()) {
+                // we have nothing to run so report and just run an empty command (return null)
 
-        Field2d field2d = new Field2d();
-        SmartDashboard.putData("field2f222", field2d);
+                SmartDashboard.putBoolean("AutoFireBadRange", true);
+                DriverStation.reportWarning("AutoFire request out of range", false);
 
-        driveSubsystem.setRobotPose(robot);
-        Info info = driveSubsystem.getTargetInfo(target);
-        SmartDashboard.putNumber("distance1", info.getDistance());
-        SmartDashboard.putNumber("angle1", info.getAngleDegrees());
+                return null;
+            }
 
-        field2d.setRobotPose(new Pose2d(robot.getX(), robot.getY(), Rotation2d.fromDegrees(info.getAngleDegrees())));
-        field2d.getObject("target").setPose(target);
+            // update field display with our target
+            FieldObject2d targetObject = driveSubsystem.getField2d().getObject("AutoFireTarget");
+            targetObject.setPose(speakerPose);
+
+            double firingSpeedRpm = firingSpeedRpmOptional.getAsDouble();
+
+            // some debugging info
+            SmartDashboard.putBoolean("AutoFireBadRange", false);
+            SmartDashboard.putNumber("AutoFireSpeakerX", speakerPose.getX());
+            SmartDashboard.putNumber("AutoFireSpeakerY", speakerPose.getY());
+            SmartDashboard.putNumber("AutoFireTargetDistance", targetInfo.getDistance());
+            SmartDashboard.putNumber("AutoFireTargetAngle", targetInfo.getAngleDegrees());
+            SmartDashboard.putNumber("AutoFireShootSpeed", firingSpeedRpm);
+
+            Command group = new SequentialCommandGroup(
+                // todo: fill this command group with sequence of auto fire
+            );
+
+            // add indications for the command group running to the driver
+            return group
+                    .beforeStarting(()-> SmartDashboard.putBoolean("AutoFireRunning", true))
+                    .finallyDo(()-> SmartDashboard.putBoolean("AutoFireRunning", false));
+        }, Set.of(driveSubsystem, shooterSystem, intakeSystem));
+
+        new JoystickButton(operatorController, XboxController.Button.kBack.value).onTrue(autoShootCommand);
     }
 
     @Override

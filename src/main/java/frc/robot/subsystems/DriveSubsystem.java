@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Info;
+import frc.robot.TargetInfo;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
@@ -88,6 +88,10 @@ public class DriveSubsystem extends SubsystemBase {
                 differentialDriveOdometry.getPoseMeters(),
                 new DifferentialDriveWheelSpeeds(getLeftSpeedMetersPerSecond(), getRightSpeedMetersPerSecond())
         ));
+    }
+
+    public Field2d getField2d() {
+        return field2d;
     }
 
     public double getLeftDistancePassedMeters() {
@@ -201,16 +205,17 @@ public class DriveSubsystem extends SubsystemBase {
         );
     }
 
-    public Info getTargetInfo(Pose2d pose) {
+    public TargetInfo getTargetInfo(Pose2d pose) {
         Pose2d robot = differentialDriveOdometry.getPoseMeters();
-        double distance = Math.sqrt(Math.pow(robot.getX()- pose.getX(), 2)+Math.pow(robot.getY() - pose.getY(),2));
-        double angle;
-        if(robot.getY() < pose.getY()){
-            angle = Math.toDegrees(Math.asin((pose.getY() - robot.getY()) / distance));
-        } else{
-            angle = Math.toDegrees(Math.asin((robot.getY() - pose.getY()) / distance))-180;
-        }
-        return new Info(distance, angle);
+
+        double x = robot.getX() - pose.getX();
+        double y = robot.getY() - pose.getY();
+
+        double distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        double angle = Math.toDegrees(Math.atan2(y, x));
+        angle += 180;
+
+        return new TargetInfo(distance, angle);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package frc.robot;
 
-public class Info {
+public class TargetInfo {
     private double distance;
     private double deltaAngleDegrees;
 
-    public Info(double distance, double deltaAngleDegrees) {
+    public TargetInfo(double distance, double deltaAngleDegrees) {
         this.distance = distance;
         this.deltaAngleDegrees = deltaAngleDegrees;
     }
