@@ -34,7 +34,7 @@ public class RobotMap {
 
     public static final double DRIVE_MOTOR_TO_WHEEL_GEAR_RATIO = 8.45;
 
-    public static final double DRIVE_TALON_PID_P = 0.5;
+    public static final double DRIVE_TALON_PID_P = 8.0;
     public static final double DRIVE_TALON_PID_I = 0.0;
     public static final double DRIVE_TALON_PID_D = 0.0;
     public static final double DRIVE_TALON_PID_F = 0.0;
