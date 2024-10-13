@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -36,19 +38,11 @@ public class DriveSubsystem extends SubsystemBase {
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
         leftFrontMotor.setInverted(true);
-        leftBackMotor.setInverted(true);
+        leftBackMotor.setInverted(InvertType.FollowMaster);
         leftFrontMotor.setSensorPhase(false);
 
         leftBackMotor.follow(leftFrontMotor);
         rightFrontMotor.follow(rightBackMotor);
-
-        /*
-        leftFrontMotor.configPeakCurrentLimit(20);
-        leftFrontMotor.configPeakCurrentDuration(100);
-        leftFrontMotor.configContinuousCurrentLimit(10);
-        rightBackMotor.configPeakCurrentLimit(20);
-        rightBackMotor.configPeakCurrentDuration(100);
-        rightBackMotor.configContinuousCurrentLimit(10);*/
 
         this.field2d = new Field2d();
         SmartDashboard.putData("field2d" ,field2d);
@@ -93,8 +87,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void stop() {
         rightBackMotor.stopMotor();
-        rightFrontMotor.stopMotor();
-        leftBackMotor.stopMotor();
         leftFrontMotor.stopMotor();
     }
 
