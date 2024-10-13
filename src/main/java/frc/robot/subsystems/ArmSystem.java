@@ -21,10 +21,8 @@ public class ArmSystem extends SubsystemBase {
         neoEncoder = motor.getEncoder();
         absEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
 
-        motor.setSmartCurrentLimit(50,20);
-
         motor.restoreFactoryDefaults();
-
+        motor.setSmartCurrentLimit(50,20);
     }
 
     public boolean reachedATargetAngle(double targetAngle) {

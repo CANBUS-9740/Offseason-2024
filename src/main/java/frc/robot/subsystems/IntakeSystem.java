@@ -17,9 +17,8 @@ public class IntakeSystem extends SubsystemBase {
         motor = new CANSparkMax(RobotMap.INTAKE_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
         limitSwitch = new DigitalInput(RobotMap.INTAKE_LIMIT_SWITCH);
 
-        motor.setSmartCurrentLimit(20,5);
-
         motor.restoreFactoryDefaults();
+        motor.setSmartCurrentLimit(20,5);
     }
 
     public void out() {
