@@ -85,10 +85,6 @@ public class DriveSubsystem extends SubsystemBase {
         ));
     }
 
-    public Field2d getField2d() {
-        return field2d;
-    }
-
     public double getLeftDistancePassedMeters() {
         return leftMaster.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
@@ -115,8 +111,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void stop() {
-        rightFollower.stopMotor();
-        leftFollower.stopMotor();
+        rightMaster.stopMotor();
+        leftMaster.stopMotor();
     }
 
     private void setUpShuffleboard() {
