@@ -22,7 +22,7 @@ public class DriveTeleopCommand extends Command {
 
     @Override
     public void execute() {
-        double straightSpeed = xboxController.getLeftY();
+        double straightSpeed = -xboxController.getLeftY();
         double rotationSpeed = xboxController.getRightX();
 
         driveSubsystem.arcadeDrive(straightSpeed, rotationSpeed);
