@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardDashboard;
@@ -20,10 +21,11 @@ import frc.robot.utils.ShuffleboardUtils;
 import java.util.Map;
 
 public class DriveSubsystem extends SubsystemBase {
-    private final WPI_TalonSRX leftFrontMotor;
-    private final WPI_VictorSPX rightFrontMotor;
-    private final WPI_VictorSPX leftBackMotor;
-    private final WPI_TalonSRX rightBackMotor;
+
+    private final WPI_TalonSRX rightFrontMotor;
+    private final WPI_VictorSPX leftFrontMotor;
+    private final WPI_VictorSPX rightBackMotor;
+    private final WPI_TalonSRX leftBackMotor;
     private final Field2d field2d;
     private final DifferentialDriveOdometry differentialDriveOdometry;
     private final DifferentialDrive differentialDrive;
@@ -38,22 +40,27 @@ public class DriveSubsystem extends SubsystemBase {
     private GenericEntry rightSpeedEntry;
 
     public DriveSubsystem() {
-        leftBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
-        rightBackMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
-        leftFrontMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
-        rightFrontMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        rightBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
+        leftBackMotor = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
+        rightFrontMotor = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        leftFrontMotor = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
         pigeon2 = new Pigeon2(RobotMap.PIGEON_ID);
-        leftBackMotor.configFactoryDefault();
         rightBackMotor.configFactoryDefault();
-        leftFrontMotor.configFactoryDefault();
+        leftBackMotor.configFactoryDefault();
         rightFrontMotor.configFactoryDefault();
+        leftFrontMotor.configFactoryDefault();
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
-        leftFrontMotor.setInverted(true);
-        leftBackMotor.setInverted(true);
-        leftFrontMotor.setSensorPhase(true);
+        rightFrontMotor.setInverted(true);
+        rightBackMotor.setInverted(true);
+        rightFrontMotor.setSensorPhase(true);
+        leftBackMotor.setSensorPhase(true);
+
+        rightBackMotor.follow(rightFrontMotor);
+        leftFrontMotor.follow(leftBackMotor);
 
         this.field2d = new Field2d();
+        SmartDashboard.putData("Field" ,field2d);
 
         differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
 
@@ -93,19 +100,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getAngleDegrees() {
-        return (360 - pigeon2.getAngle()) % 360; // the value returned will be from 0 - 360 depending on its location
-        // 0 - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
+        return (360 - pigeon2.getAngle()) % 360;// the value returned will be from 0 - 360 depending on its location
+        // 0  - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
     }
 
-    public void arcadeDrive(double linearSpeed, double rotationSpeed) {
+    public void arcadeDrive(double linearSpeed, double rotationSpeed){
         differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
     public void stop() {
-        rightBackMotor.stopMotor();
-        rightFrontMotor.stopMotor();
         leftBackMotor.stopMotor();
         leftFrontMotor.stopMotor();
+        rightBackMotor.stopMotor();
+        rightFrontMotor.stopMotor();
     }
 
     private void setUpShuffleboard() {

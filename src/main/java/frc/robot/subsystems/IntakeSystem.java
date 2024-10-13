@@ -14,6 +14,7 @@ public class IntakeSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final DigitalInput limitSwitch;
     private static final double DEFAULT_ROTATE_SPEED = 0.6;
+    private static final double SLOW_IN_ROTATE_SPEED = 0.1;
 
     // Shuffleboard
 
@@ -40,6 +41,10 @@ public class IntakeSystem extends SubsystemBase {
 
     public void in() {
         motor.set(DEFAULT_ROTATE_SPEED);
+    }
+
+    public void slowIn() {
+        motor.set(SLOW_IN_ROTATE_SPEED);
     }
 
     public void stop() {

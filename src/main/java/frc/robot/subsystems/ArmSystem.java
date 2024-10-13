@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardDashboard;
@@ -41,11 +42,13 @@ public class ArmSystem extends SubsystemBase {
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
 
-    public void moveToAngle(double output) {
-        if ((output < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || output > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+    public void move(double power) {
+        if ((power > 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power < 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+            SmartDashboard.putBoolean("armManualLimit", true);
             stop();
         } else {
-            motor.set(output);
+            SmartDashboard.putBoolean("armManualLimit", false);
+            motor.set(power);
         }
     }
 
