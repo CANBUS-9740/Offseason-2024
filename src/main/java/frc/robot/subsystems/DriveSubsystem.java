@@ -1,19 +1,27 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.utils.ShuffleboardDashboard;
+import frc.robot.utils.ShuffleboardUtils;
+
+import java.util.Map;
 
 public class DriveSubsystem extends SubsystemBase {
+
     private final WPI_TalonSRX rightFrontMotor;
     private final WPI_VictorSPX leftFrontMotor;
     private final WPI_VictorSPX rightBackMotor;
@@ -22,6 +30,14 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveOdometry differentialDriveOdometry;
     private final DifferentialDrive differentialDrive;
     private final Pigeon2 pigeon2;
+
+    // Shuffleboard
+
+    private GenericEntry xEntry;
+    private GenericEntry yEntry;
+    private GenericEntry angleEntry;
+    private GenericEntry leftSpeedEntry;
+    private GenericEntry rightSpeedEntry;
 
     public DriveSubsystem() {
         rightBackMotor = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
@@ -44,9 +60,9 @@ public class DriveSubsystem extends SubsystemBase {
         leftFrontMotor.follow(leftBackMotor);
 
         this.field2d = new Field2d();
-        SmartDashboard.putData("field2d" ,field2d);
+        SmartDashboard.putData("Field" ,field2d);
 
-        differentialDrive = new DifferentialDrive(rightFrontMotor, leftBackMotor);
+        differentialDrive = new DifferentialDrive(leftFrontMotor, rightBackMotor);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(
                 new Rotation2d(getAngleDegrees()),
@@ -55,6 +71,12 @@ public class DriveSubsystem extends SubsystemBase {
         );
 
         initialize();
+        setUpShuffleboard();
+
+        ShuffleboardDashboard.setDrivetrainDataSupplier(() -> new ShuffleboardDashboard.DrivetrainData(
+                differentialDriveOdometry.getPoseMeters(),
+                new DifferentialDriveWheelSpeeds(getLeftSpeedMetersPerSecond(), getRightSpeedMetersPerSecond())
+        ));
     }
 
     public Field2d getField2d() {
@@ -62,17 +84,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftDistancePassedMeters() {
-        return rightFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return leftFrontMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
     public double getRightDistancePassedMeters() {
-        return leftBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_RADIUS * 2 * Math.PI;
+        return rightBackMotor.getSelectedSensorPosition() / RobotMap.TALON_ENCODER_PPR * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
-    private void initialize() {
-        pigeon2.reset();
-        rightFrontMotor.setSelectedSensorPosition(0);
-        leftBackMotor.setSelectedSensorPosition(0);//inits
+    public double getLeftSpeedMetersPerSecond() {
+        return leftFrontMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
+    }
+
+    public double getRightSpeedMetersPerSecond() {
+        return rightBackMotor.getSelectedSensorVelocity() / RobotMap.TALON_ENCODER_PPR / RobotMap.TALON_ENCODER_TIMEFRAME_SECONDS * RobotMap.DRIVE_WHEEL_CIRCUMFERENCE_METERS;
     }
 
     public double getAngleDegrees() {
@@ -91,6 +115,62 @@ public class DriveSubsystem extends SubsystemBase {
         rightFrontMotor.stopMotor();
     }
 
+    private void setUpShuffleboard() {
+        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
+        tab.add("Field", field2d)
+                .withPosition(0, 0)
+                .withSize(10, 6);
+
+        ShuffleboardLayout listLayout = tab.getLayout("Information", BuiltInLayouts.kList)
+                .withProperties(Map.of("Label position", "TOP"))
+                .withPosition(10, 0)
+                .withSize(3, 6);
+
+        listLayout.add("Drive Subsystem State", this);
+
+        ShuffleboardLayout positionLayout = listLayout.getLayout("Position", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
+
+        angleEntry = ShuffleboardUtils.addRobotAngleWidget(listLayout)
+                .getEntry();
+
+        xEntry = positionLayout.add("X", 0.0)
+                .withPosition(0, 0)
+                .getEntry();
+
+        yEntry = positionLayout.add("Y", 0.0)
+                .withPosition(1, 0)
+                .getEntry();
+
+        ShuffleboardLayout speedsLayout = listLayout.getLayout("Wheel Speeds", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
+
+        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Wheel")
+                .withPosition(0, 0)
+                .getEntry();
+        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Wheel")
+                .withPosition(1, 0)
+                .getEntry();
+    }
+
+    private void initialize() {
+        pigeon2.reset();
+        leftFrontMotor.setSelectedSensorPosition(0);
+        rightBackMotor.setSelectedSensorPosition(0);
+    }
+
+    private void updateShuffleboard() {
+        Pose2d pose2d = differentialDriveOdometry.getPoseMeters();
+
+        xEntry.setDouble(pose2d.getX());
+        yEntry.setDouble(pose2d.getY());
+        angleEntry.setDouble(getAngleDegrees());
+
+        leftSpeedEntry.setDouble(getLeftSpeedMetersPerSecond());
+        rightSpeedEntry.setDouble(getRightSpeedMetersPerSecond());
+    }
+
     private void updateOdometry() {
         differentialDriveOdometry.update(
                 new Rotation2d(Math.toRadians(getAngleDegrees())),
@@ -99,16 +179,10 @@ public class DriveSubsystem extends SubsystemBase {
         );
     }
 
+    @Override
     public void periodic() {
         updateOdometry();
-
-        SmartDashboard.putNumber("angleOfBot", getAngleDegrees());
-        SmartDashboard.putNumber("pigeon" , pigeon2.getAngle());
-        SmartDashboard.putNumber("DriveLeftDistance", getLeftDistancePassedMeters());
-        SmartDashboard.putNumber("DriveRightDistance", getRightDistancePassedMeters());
-        SmartDashboard.putNumber("X:", differentialDriveOdometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y:", differentialDriveOdometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("Angle:", differentialDriveOdometry.getPoseMeters().getRotation().getDegrees());
+        updateShuffleboard();
 
         field2d.setRobotPose(differentialDriveOdometry.getPoseMeters());
     }
