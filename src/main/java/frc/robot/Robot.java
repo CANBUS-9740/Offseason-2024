@@ -6,15 +6,30 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-
-import frc.robot.commands.*;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.AngleCorretion;
+import frc.robot.commands.ArmMoveToAngle;
+import frc.robot.commands.DriveTeleopCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeSlowlyCommand;
+import frc.robot.commands.OuttakeCommand;
+import frc.robot.commands.ShooterPID;
 import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.ShooterSystem;
+import frc.robot.utils.ShuffleboardDashboard;
 
 public class Robot extends TimedRobot {
 
@@ -46,7 +61,7 @@ public class Robot extends TimedRobot {
                                 new WaitUntilCommand(() -> armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
                                 new IntakeSlowlyCommand(intakeSystem)
                         ),
-                        new ArmMoveToShooterCommand(armSystem)
+                        new ArmMoveToAngle(armSystem, RobotMap.ARM_SHOOTER_ANGLE)
                 )
         );
 
@@ -55,10 +70,11 @@ public class Robot extends TimedRobot {
                 new SequentialCommandGroup(
                         new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In Seq")),
                         new ParallelDeadlineGroup(
-                                new WaitUntilCommand(()-> shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER) && armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                                new WaitUntilCommand(() -> shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER) && armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
                                 new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerRpmReached", shooterSystem.reachedRPM(RobotMap.TARGET_RPM_SHOOTER))),
                                 new RunCommand(() -> SmartDashboard.putBoolean("ShootNoteSpeakerArmReached", armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE))),
-                                new ArmMoveToShooterCommand(armSystem),
+                                new ArmMoveToAngle(armSystem, RobotMap.ARM_SHOOTER_ANGLE),
+                                new IntakeSlowlyCommand(intakeSystem),
                                 new InstantCommand(() -> System.out.println("ShootNoteSpeaker: In ParDead"))
                         ),
                         new InstantCommand(() -> System.out.println("ShootNoteSpeaker: After ParDead")),
@@ -70,17 +86,14 @@ public class Robot extends TimedRobot {
         );
 
         collectNote = new ParallelDeadlineGroup(
-                new WaitUntilCommand(() -> intakeSystem.isNoteInside()),
-                new ParallelDeadlineGroup(
-                        new IntakeCommand(intakeSystem),
-                        new ArmMoveToFloorCommand(armSystem)
-                )
+                new IntakeCommand(intakeSystem),
+                new ArmMoveToAngle(armSystem, RobotMap.ARM_FLOOR_ANGLE)
         );
 
         shooterNoteAmp = new ParallelRaceGroup(
-                new ArmMoveToAmp(armSystem),
+                new ArmMoveToAngle(armSystem, RobotMap.ARM_AMP_ANGLE),
                 new SequentialCommandGroup(
-                        new WaitUntilCommand(()-> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_RELEASE_ANGLE)),
+                        new WaitUntilCommand(() -> armSystem.reachedATargetAngle(RobotMap.ARM_AMP_ANGLE)),
                         new ParallelRaceGroup(
                                 new OuttakeCommand(intakeSystem),
                                 Commands.waitSeconds(1)
@@ -88,17 +101,28 @@ public class Robot extends TimedRobot {
                 )
         );
 
+        ParallelCommandGroup cancelAllCommands = new ParallelCommandGroup(
+                new InstantCommand(() -> armSystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> driveSubsystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> intakeSystem.getCurrentCommand().cancel()),
+                new InstantCommand(() -> shooterSystem.getCurrentCommand().cancel())
+        );
         POVButton dPadUp = new POVButton(operatorController, 0);
         POVButton dPadDown = new POVButton(operatorController, 180);
 
-        dPadUp.onTrue(new ArmMoveToShooterCommand(armSystem));
-        dPadDown.onTrue(new ArmMoveToFloorCommand(armSystem));
+        dPadUp.onTrue(new ArmMoveToAngle(armSystem, RobotMap.ARM_SHOOTER_ANGLE));
+        dPadDown.onTrue(new ArmMoveToAngle(armSystem, RobotMap.ARM_FLOOR_ANGLE));
 
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSpeaker);
         new JoystickButton(operatorController, XboxController.Button.kB.value).onTrue(shooterNoteAmp);
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
         new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kStart.value).whileTrue(cancelAllCommands);
 
+        ShuffleboardDashboard.initialize(armSystem, driveSubsystem, intakeSystem, shooterSystem);
+
+
+        // todo: REMOVE LATER
         Pose2d robot = new Pose2d(4, 5, Rotation2d.fromDegrees(0));
         Pose2d target = new Pose2d(2, 3, Rotation2d.fromDegrees(0));
 
@@ -157,6 +181,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        ShuffleboardDashboard.update();
 
         SmartDashboard.putBoolean("ShootNoteSpeaker Scheduled", shootNoteSpeaker.isScheduled());
         SmartDashboard.putBoolean("CollectNote Scheduled", collectNote.isScheduled());
