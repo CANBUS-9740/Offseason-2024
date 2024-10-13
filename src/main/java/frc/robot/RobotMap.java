@@ -12,6 +12,8 @@ public class RobotMap {
     }
 
     public static final double DRIVE_WHEEL_RADIUS = Units.inchesToMeters(3);
+    public static final double DRIVE_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * DRIVE_WHEEL_RADIUS;
+
     public static final Measure<Distance> DRIVE_TRACK_WIDTH = Centimeters.of(60);
 
     public static final int DRIVE_RIGHT_FRONT_MOTOR_ID = 4;
@@ -65,4 +67,8 @@ public class RobotMap {
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
+
+    public static final double INTAKE_WHEEL_RADIUS_METERS = Units.inchesToMeters(1);
+    public static final double INTAKE_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * INTAKE_WHEEL_RADIUS_METERS;
+    public static final double INTAKE_MOTOR_TO_WHEEL_RATIO = 3;
 }
