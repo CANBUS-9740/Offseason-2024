@@ -1,20 +1,20 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.*;
+import com.revrobotics.CANSparkLowLevel;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
+import static frc.robot.RobotMap.NEAR_ANGLE_TOLERANCE;
+
 public class ArmSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final RelativeEncoder neoEncoder;
     private final DutyCycleEncoder absEncoder;
-
-    private final int NEAR_ANGLE_TOLERANCE = 2;
 
     public ArmSystem() {
         motor = new CANSparkMax(RobotMap.ARM_MOTOR_PORT, CANSparkLowLevel.MotorType.kBrushless);
@@ -29,11 +29,13 @@ public class ArmSystem extends SubsystemBase {
         return MathUtil.isNear(targetAngle, getAbsEncoderPositionDegrees(), NEAR_ANGLE_TOLERANCE);
     }
 
-    public void moveToAngle(double output) {
-        if ((output < 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || output > 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+    public void move(double power) {
+        if ((power > 0 && getAbsEncoderPositionDegrees() > RobotMap.ARM_MAX_ANGLE) || power < 0 && getAbsEncoderPositionDegrees() < RobotMap.ARM_MIN_ANGLE){
+            SmartDashboard.putBoolean("armManualLimit", true);
             stop();
         } else {
-            motor.set(output);
+            SmartDashboard.putBoolean("armManualLimit", false);
+            motor.set(power);
         }
     }
 
@@ -61,5 +63,6 @@ public class ArmSystem extends SubsystemBase {
         SmartDashboard.putNumber("ArmNeoEncoderVelocity", getNeoEncoderVelocityRPM());
         SmartDashboard.putNumber("ArmNeoEncoderPosition", getNeoEncoderPositionDegrees());
         SmartDashboard.putNumber("ArmDutyCycleEncoderPosition", getAbsEncoderPositionDegrees());
+        SmartDashboard.putBoolean("ArmAtShooter", reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE));
     }
 }

@@ -12,18 +12,13 @@ public class ShootOut extends Command {
         addRequirements(shooterSystem);
     }
 
-
     public void execute() {
-
         shooterSystem.rotate();
-
     }
-
 
     public void end(boolean interrupted) {
         shooterSystem.stop();
     }
-
 
     public boolean isFinished() {
         return false;
