@@ -30,6 +30,23 @@ public class ShooterSystem extends SubsystemBase {
     public final double SHOOTER_RPM_KD = 0;
 
 
+    // process for interpolation calibration
+    // 1. Position the robot so that the shooter is looking at the speaker and the heading is perpendicular to the speaker.
+    // 2. Put the robot as close as possible to the speaker. Choose the minimal distance you believe the robot may be able to score from.
+    // 3. Startup the robot, and move to test mode were you can control the shooter speed.
+    // 4. Give a sample speed to the test mode input and check that the shooter is able to reach this speed.
+    //      4.1. If the shooter is not close (10-20 RPM error), re-tune shooter PID
+    // 5. Measure your distance to the target (horizontal from the center of the robot) with a tape measure.
+    // 6. Select a tryout speed and feed to the shooter. Wait until the shooter reaches that speed.
+    // 7. Insert note and fire it. See if you missed by firing too far or too short.
+    // 8. Try another speed. Higher speed if last try was too short or smaller speed if too far.
+    // 9. Repeat 7. and 8. until you hit the target.
+    // 10. Write down the firing distance and found firing step.
+    // 11. Move the robot backwards 30cm and try again from step 5.
+    //      11.1. If the firing falls short and max speed was reached, then you have reached the maximum firing range
+    // 12. Insert written down values (sorted from big to small) into INTERPOLATION_X and INTERPOLATION_Y. Make sure
+    //   that the index in the array are corresponding to the same measurement.
+
     // todo: FIND REAL VALUES with calibration
     // Interpolation function inputs: distance to target in meters
     private static final double[] INTERPOLATION_X = {
