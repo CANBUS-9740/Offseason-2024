@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
     private Command shootNoteSpeaker;
     private Command collectNote;
 
+    private double requestTestShootSpeed;
+
     @Override
     public void robotInit() {
         driveSubsystem = new DriveSubsystem();
@@ -164,6 +166,9 @@ public class Robot extends TimedRobot {
         }, Set.of(driveSubsystem, shooterSystem, intakeSystem));
 
         new JoystickButton(operatorController, XboxController.Button.kBack.value).onTrue(autoShootCommand);
+
+        SmartDashboard.putNumber("TestFiringSpeed", 0);
+        requestTestShootSpeed = 0;
     }
 
     @Override
@@ -198,12 +203,27 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-
+        requestTestShootSpeed = 0;
     }
 
     @Override
     public void testPeriodic() {
+        double newFiringSpeed = SmartDashboard.getNumber("TestFiringSpeed", 0);
+        if (newFiringSpeed != requestTestShootSpeed && newFiringSpeed > 0) {
+            requestTestShootSpeed = newFiringSpeed;
+            shooterSystem.rotatePID(requestTestShootSpeed);
+        }
 
+        if (shooterSystem.reachedRPM(requestTestShootSpeed)) {
+            SmartDashboard.putBoolean("TestReachedSpeed", true);
+        } else {
+            SmartDashboard.putBoolean("TestReachedSpeed", false);
+        }
+    }
+
+    @Override
+    public void testExit() {
+        shooterSystem.stop();
     }
 
     @Override
