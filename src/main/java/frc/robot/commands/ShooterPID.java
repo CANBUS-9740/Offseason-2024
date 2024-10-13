@@ -17,7 +17,9 @@ public class ShooterPID extends Command {
         shooterSystem.rotatePID(targetRPM);
     }
 
-    public void execute() {}
+    public void execute() {
+
+    }
 
     public void end(boolean interrupted) {
         shooterSystem.stop();

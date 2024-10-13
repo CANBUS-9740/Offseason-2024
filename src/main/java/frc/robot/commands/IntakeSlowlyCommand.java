@@ -1,14 +1,12 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSystem;
 
-public class OuttakeCommand extends Command {
+public class IntakeSlowlyCommand extends Command {
     private final IntakeSystem intakeSystem;
 
-    public OuttakeCommand(IntakeSystem intakeSystem) {
+    public IntakeSlowlyCommand(IntakeSystem intakeSystem) {
         this.intakeSystem = intakeSystem;
 
         addRequirements(intakeSystem);
@@ -18,7 +16,7 @@ public class OuttakeCommand extends Command {
     }
 
     public void execute() {
-        intakeSystem.out();
+        intakeSystem.slowIn();
     }
 
     public void end(boolean interrupted) {
