@@ -30,6 +30,7 @@ public class ArmSystem extends SubsystemBase {
         absEncoder = new DutyCycleEncoder(RobotMap.ARM_ENCODER_PORT);
 
         motor.restoreFactoryDefaults();
+        motor.setSmartCurrentLimit(50,20);
 
         setUpShuffleboard();
 

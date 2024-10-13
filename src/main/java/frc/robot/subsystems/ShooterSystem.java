@@ -52,6 +52,11 @@ public class ShooterSystem extends SubsystemBase {
 
         motorRT.setInverted(true);
         motorRB.setInverted(true);
+        motorLB.setSmartCurrentLimit(60, 20);
+        motorRT.setSmartCurrentLimit(60,20);
+        motorRB.setSmartCurrentLimit(60,20);
+        motorLT.setSmartCurrentLimit(60,20);
+        // a 50, 20; i 20, 5
 
         encoderLT = motorLT.getEncoder();
         encoderLB = motorLB.getEncoder();

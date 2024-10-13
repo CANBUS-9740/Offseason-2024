@@ -26,6 +26,7 @@ public class IntakeSystem extends SubsystemBase {
         limitSwitch = new DigitalInput(RobotMap.INTAKE_LIMIT_SWITCH);
 
         motor.restoreFactoryDefaults();
+        motor.setSmartCurrentLimit(20,5);
 
         setUpShuffleboard();
 
@@ -86,4 +87,5 @@ public class IntakeSystem extends SubsystemBase {
     public void periodic() {
         updateShuffleboard();
     }
+
 }
