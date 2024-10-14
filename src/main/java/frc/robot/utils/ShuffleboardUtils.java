@@ -27,8 +27,7 @@ public class ShuffleboardUtils {
 
     public static SimpleWidget addArmAngleWidget(ShuffleboardContainer container) {
         return container.add("Arm Angle", 0.0)
-                .withWidget(BuiltInWidgets.kGyro)
-                .withProperties(Map.of("Counter clockwise", true));
+                .withWidget(BuiltInWidgets.kGyro);
     }
 
     public static SimpleWidget addIntakeMotorSpeedWidget(ShuffleboardContainer container) {
