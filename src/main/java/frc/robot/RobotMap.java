@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -41,6 +42,8 @@ public class RobotMap {
     public static final double DRIVE_TALON_PID_I = 0.0;
     public static final double DRIVE_TALON_PID_D = 0.0;
     public static final double DRIVE_TALON_PID_F = 0.0;
+
+    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.0, 1.0, Units.rotationsToRadians(2), Units.rotationsToRadians(1));
 
     public final static int ARM_MOTOR_PORT = 8;
     public final static int ARM_ENCODER_PORT = 0;

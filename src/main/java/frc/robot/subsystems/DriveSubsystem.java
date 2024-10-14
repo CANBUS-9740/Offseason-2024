@@ -59,7 +59,6 @@ public class DriveSubsystem extends SubsystemBase {
     private NetworkTableEntry networkTableEntryOfBotPose;
     private NetworkTableEntry networkTableEntryOfExistanceAprilTag;
     private boolean existanceOfAprilTag;
-    private boolean hasDetectedAprilTagInMoment;
     private Timer timerOfAprilTagDetection;
 
     private final SysIdRoutine routine =
@@ -380,6 +379,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return routine.dynamic(direction);
+    }
+
+    // PathPlanner
+
+    public Command pathfindTo(Pose2d pose2d) {
+        return AutoBuilder.pathfindToPose(pose2d, RobotMap.PATH_CONSTRAINTS, 0.0, 1.0);
     }
 
     @Override
