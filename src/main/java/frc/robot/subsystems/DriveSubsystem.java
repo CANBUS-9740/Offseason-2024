@@ -37,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_VictorSPX leftFollower;
     private final WPI_VictorSPX rightFollower;
     private final WPI_TalonSRX leftMaster;
-    private final Field2d field2d;
+    private final Field2d field2dOdometry;
     private final DifferentialDrivePoseEstimator differentialDriveOdometry;
     private final DifferentialDrive differentialDrive;
     private final Pigeon2 pigeon2;
@@ -83,8 +83,8 @@ public class DriveSubsystem extends SubsystemBase {
         rightFollower.follow(rightMaster);
         leftFollower.follow(leftMaster);
 
-        this.field2d = new Field2d();
-        SmartDashboard.putData("Field" ,field2d);
+
+        field2dOdometry = new Field2d();
 
         differentialDrive = new DifferentialDrive(leftMaster, rightMaster);
 
@@ -95,6 +95,8 @@ public class DriveSubsystem extends SubsystemBase {
                 getRightDistancePassedMeters(),
                 RobotMap.STARTING_DEFAULT_LOCATION
         );
+
+
 
         initialize();
         setUpShuffleboard();
@@ -113,6 +115,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
+        field2dOdometry.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
+        SmartDashboard.putData("CameraField" , field2dOdometry);
     }
 
     public double getLeftDistancePassedMeters() {
@@ -148,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void setUpShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        tab.add("Field", field2d)
+        tab.add("CameraField", field2dOdometry)
                 .withPosition(0, 0)
                 .withSize(10, 6);
 
@@ -203,7 +207,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         //DifferentialDrivePoseEstimator !!!1
-        if (existanceOfAprilTag || timerOfAprilTagDetection.get() > 1.5) {
+        if (existanceOfAprilTag && timerOfAprilTagDetection.get() > 1.5) {
             differentialDriveOdometry.resetPosition(
                     pigeon2.getRotation2d(),
                     getLeftDistancePassedMeters(),
@@ -238,13 +242,17 @@ public class DriveSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("DriveLeftCurrent", leftMaster.getStatorCurrent());
         SmartDashboard.putNumber("DriveRightCurrent", rightMaster.getStatorCurrent());
+        SmartDashboard.putNumber("Position2dX", differentialDriveOdometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Position2dY", differentialDriveOdometry.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("Position2dDegree", differentialDriveOdometry.getEstimatedPosition().getRotation().getDegrees());
+
 
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
         SmartDashboard.putBoolean("IsTag: ", existanceOfAprilTag);
         SmartDashboard.putNumber("yaw", getYawFromCamera());
 
-        field2d.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
+        field2dOdometry.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
     }
 
     private double getXFromCamera() {
