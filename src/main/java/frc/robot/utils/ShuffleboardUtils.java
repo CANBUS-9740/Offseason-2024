@@ -40,7 +40,7 @@ public class ShuffleboardUtils {
     public static SimpleWidget addShooterSpeedWidget(ShuffleboardContainer container, String title) {
         return container.add(title, 0.0)
                 .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 2000));
+                .withProperties(Map.of("min", 0, "max", 6000));
     }
 
     public static ShuffleboardLayout getArmIntakeShooterSubsystemsLayout() {
