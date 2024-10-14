@@ -56,17 +56,17 @@ public class ShuffleboardDashboard {
 
         tab.add("Field", field2d)
                 .withPosition(0, 0)
-                .withSize(7, 4);
+                .withSize(5, 3);
 
         robotAngleEntry = ShuffleboardUtils.addRobotAngleWidget(tab)
-                .withPosition(0, 4)
+                .withPosition(0, 3)
                 .withSize(2, 2)
                 .getEntry();
 
         ShuffleboardLayout wheelSpeedsLayout = tab.getLayout("Wheel Speeds", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1))
-                .withPosition(2, 4)
-                .withSize(5, 2);
+                .withPosition(2, 3)
+                .withSize(3, 2);
 
         leftWheelSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(wheelSpeedsLayout, "Left Wheel")
                 .withPosition(0, 0)
@@ -77,32 +77,32 @@ public class ShuffleboardDashboard {
 
         ShuffleboardLayout subsystemsLayout = tab.getLayout("Subsystem States", BuiltInLayouts.kList)
                 .withProperties(Map.of("Label position", "TOP"))
-                .withPosition(7, 0)
-                .withSize(2, 6);
+                .withPosition(5, 0)
+                .withSize(2, 5);
 
         subsystemsLayout.add("Arm Subsystem", armSystem);
         subsystemsLayout.add("Drivetrain Subsystem", driveSubsystem);
         subsystemsLayout.add("Intake Subsystem", intakeSystem);
         subsystemsLayout.add("Shooter Subsystem", shooterSystem);
 
+        noteInsideEntry = tab.add("Note Inside", false)
+                .withPosition(5, 4)
+                .withSize(2, 1)
+                .getEntry();
+
+        intakeMotorSpeedEntry = ShuffleboardUtils.addIntakeMotorSpeedWidget(tab)
+                .withPosition(7, 0)
+                .withSize(2, 2)
+                .getEntry();
+
         armAngleEntry = ShuffleboardUtils.addArmAngleWidget(tab)
                 .withPosition(9, 0)
                 .withSize(2, 2)
                 .getEntry();
 
-        noteInsideEntry = tab.add("Note Inside", false)
-                .withPosition(11, 0)
-                .withSize(2, 2)
-                .getEntry();
-
-        intakeMotorSpeedEntry = ShuffleboardUtils.addIntakeMotorSpeedWidget(tab)
-                .withPosition(9, 2)
-                .withSize(4, 1)
-                .getEntry();
-
         ShuffleboardLayout shooterSpeedsLayout = tab.getLayout("Shooter Speeds", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 2))
-                .withPosition(9, 3)
+                .withPosition(7, 2)
                 .withSize(4, 3);
 
         shooterTopLeftSpeedEntry = ShuffleboardUtils.addShooterSpeedWidget(shooterSpeedsLayout, "Top Left")
