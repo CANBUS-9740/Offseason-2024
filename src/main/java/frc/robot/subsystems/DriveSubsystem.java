@@ -6,21 +6,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -110,8 +111,6 @@ public class DriveSubsystem extends SubsystemBase {
         networkTableEntryOfBotPose = table.getEntry("botpose_wpiblue");
         networkTableEntryOfExistanceAprilTag = table.getEntry("tv");
 
-        differentialDriveOdometryFieldPoseEstimator = new Field2d();
-
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
     }
@@ -192,7 +191,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateShuffleboard() {
-        Pose2d pose2d = differentialDriveOdometry.getPoseMeters();
+        Pose2d pose2d = differentialDriveOdometry.getEstimatedPosition();
 
         xEntry.setDouble(pose2d.getX());
         yEntry.setDouble(pose2d.getY());
