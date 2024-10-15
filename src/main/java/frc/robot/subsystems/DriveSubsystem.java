@@ -48,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final Pigeon2 pigeon2;
 
-    private final Field2d field2dOdometry;
+    private final Field2d field2d;
     private final DifferentialDrivePoseEstimator differentialDriveOdometry;
     private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(RobotMap.DRIVE_TRACK_WIDTH);
     private final DifferentialDrive differentialDrive;
@@ -90,6 +90,8 @@ public class DriveSubsystem extends SubsystemBase {
     private GenericEntry angleEntry;
     private GenericEntry leftSpeedEntry;
     private GenericEntry rightSpeedEntry;
+    private GenericEntry leftPositionEntry;
+    private GenericEntry rightPositionEntry;
 
     public DriveSubsystem() {
         leftMaster = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
@@ -120,7 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
         leftFollower.follow(leftMaster);
 
 
-        field2dOdometry = new Field2d();
+        field2d = new Field2d();
 
         differentialDrive = new DifferentialDrive(leftMaster, rightMaster);
 
@@ -135,7 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
         configureMotorPID(leftMaster);
         configureMotorPID(rightMaster);
 
-        PathPlannerLogging.setLogActivePathCallback(poses -> field2dOdometry.getObject("PathPlannerPoses").setPoses(poses));
+        PathPlannerLogging.setLogActivePathCallback(poses -> field2d.getObject("PathPlannerPoses").setPoses(poses));
 
         AutoBuilder.configureRamsete(
                 this::getRobotPose,
@@ -164,8 +166,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
-        field2dOdometry.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
-        SmartDashboard.putData("CameraField", field2dOdometry);
     }
 
     private static void configureMotorPID(WPI_TalonSRX motor) {
@@ -176,7 +176,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Field2d getField2d() {
-        return field2dOdometry;
+        return field2d;
     }
 
     public Pose2d getRobotPose() {
@@ -274,7 +274,7 @@ public class DriveSubsystem extends SubsystemBase {
     private void setUpShuffleboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        tab.add("CameraField", field2dOdometry)
+        tab.add("Field", field2d)
                 .withPosition(0, 0)
                 .withSize(10, 6);
 
@@ -302,10 +302,20 @@ public class DriveSubsystem extends SubsystemBase {
         ShuffleboardLayout speedsLayout = listLayout.getLayout("Wheel Speeds", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
 
-        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Wheel")
+        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Speed")
                 .withPosition(0, 0)
                 .getEntry();
-        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Wheel")
+        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Speed")
+                .withPosition(1, 0)
+                .getEntry();
+
+        ShuffleboardLayout positionsLayout = listLayout.getLayout("Wheel Positions", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
+
+        leftPositionEntry = positionsLayout.add("Left Position", 0.0)
+                .withPosition(0, 0)
+                .getEntry();
+        rightPositionEntry = positionsLayout.add("Right Position", 0.0)
                 .withPosition(1, 0)
                 .getEntry();
     }
@@ -325,6 +335,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftSpeedEntry.setDouble(getLeftSpeedMetersPerSecond());
         rightSpeedEntry.setDouble(getRightSpeedMetersPerSecond());
+        leftPositionEntry.setDouble(getLeftDistancePassedMeters());
+        rightPositionEntry.setDouble(getRightDistancePassedMeters());
     }
 
     private void updateOdometry() {
@@ -407,7 +419,7 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("IsTag: ", existanceOfAprilTag);
         SmartDashboard.putNumber("yaw", getYawFromCamera());
 
-        field2dOdometry.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
+        field2d.setRobotPose(getRobotPose());
     }
 }
 
