@@ -21,7 +21,8 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder encoderRT;
     private final RelativeEncoder encoderLB;
     private final RelativeEncoder encoderRB;
-    private final SparkPIDController pid;
+    private final SparkPIDController pidLeft;
+    private final SparkPIDController pidRight;
     public  final double SHOOTER_ROTATE_SPEED = 0.5;
     public final double SHOOTER_RPM_KP = 0.0001;
     public final double SHOOTER_RPM_KI = 0.000001;
@@ -52,6 +53,7 @@ public class ShooterSystem extends SubsystemBase {
 
         motorRT.setInverted(true);
         motorRB.setInverted(true);
+
         motorLB.setSmartCurrentLimit(60, 20);
         motorRT.setSmartCurrentLimit(60,20);
         motorRB.setSmartCurrentLimit(60,20);
@@ -63,14 +65,18 @@ public class ShooterSystem extends SubsystemBase {
         encoderRT = motorRT.getEncoder();
         encoderRB = motorRB.getEncoder();
 
-        pid = motorLB.getPIDController();
+        pidLeft = motorLB.getPIDController();
+        pidRight = motorRB.getPIDController();
 
-        pid.setP(SHOOTER_RPM_KP,0);
-        pid.setI(SHOOTER_RPM_KI, 0);
-        pid.setD(SHOOTER_RPM_KD, 0);
+        pidRight.setP(SHOOTER_RPM_KP,0);
+        pidRight.setI(SHOOTER_RPM_KI, 0);
+        pidRight.setD(SHOOTER_RPM_KD, 0);
 
-        motorRB.follow(motorLB, true);
-        motorRT.follow(motorLB,true);
+        pidLeft.setP(SHOOTER_RPM_KP,0);
+        pidLeft.setI(SHOOTER_RPM_KI, 0);
+        pidLeft.setD(SHOOTER_RPM_KD, 0);
+
+        motorRT.follow(motorRB);
         motorLT.follow(motorLB);
 
         setUpShuffleboard();
@@ -112,8 +118,9 @@ public class ShooterSystem extends SubsystemBase {
         return encoderRB.getVelocity();
     }
 
-    public void rotatePID(double targetRPM){
-        pid.setReference(targetRPM, CANSparkBase.ControlType.kVelocity);
+    public void rotatePID(double targetRPMRight, double targetRPLeft){
+        pidRight.setReference(targetRPMRight, CANSparkBase.ControlType.kVelocity);
+        pidLeft.setReference(targetRPLeft, CANSparkBase.ControlType.kVelocity);
     }
 
     private void setUpShuffleboard() {
@@ -149,8 +156,16 @@ public class ShooterSystem extends SubsystemBase {
         rightBottomSpeed.setDouble(getRightBottomVelocityRpm());
     }
 
-    public boolean reachedRPM(double rpm){
+    public boolean reachedRPMRight(double rpm){
         return MathUtil.isNear(rpm, getLeftBottomVelocityRpm(),15);
+    }
+
+    public boolean reachedRPMRLeft(double rpm){
+        return MathUtil.isNear(rpm, getRightBottomVelocityRpm(),15);
+    }
+
+    public boolean reachedRPM(double rpmRight, double rpmLeft){
+        return reachedRPMRight(rpmRight) && reachedRPMRLeft(rpmLeft);
     }
 
     @Override

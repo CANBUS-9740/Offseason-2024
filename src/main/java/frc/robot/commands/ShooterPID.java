@@ -5,16 +5,19 @@ import frc.robot.subsystems.ShooterSystem;
 
 public class ShooterPID extends Command {
     private final ShooterSystem shooterSystem;
-    private final double targetRPM;
+    private final double targetRPMRight;
+    private final double targetRPMLeft;
 
-    public ShooterPID(ShooterSystem shooterSystem, double targetRPM){
+    public ShooterPID(ShooterSystem shooterSystem, double targetRPMRight, double targetRPMLeft){
         this.shooterSystem = shooterSystem;
-        this.targetRPM = targetRPM;
+        this.targetRPMRight = targetRPMRight;
+        this.targetRPMLeft = targetRPMLeft;
+
         addRequirements(shooterSystem);
     }
 
     public void initialize() {
-        shooterSystem.rotatePID(targetRPM);
+        shooterSystem.rotatePID(targetRPMRight, targetRPMLeft);
     }
 
     public void execute() {

@@ -43,7 +43,8 @@ public class RobotMap {
     public static final int SHOOTER_MOTOR_LEFT_BOTTOM = 12;
     public static final int SHOOTER_MOTOR_RIGHT_TOP = 15;
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
-    public static final int TARGET_RPM_SHOOTER = 5000;
+    public static final int TARGET_RPM_SHOOTER_RIGHT = 5500;
+    public static final int TARGET_RPM_SHOOTER_LEFT = 6000;
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
