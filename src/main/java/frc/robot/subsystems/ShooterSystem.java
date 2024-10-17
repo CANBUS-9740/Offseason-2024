@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -79,7 +77,8 @@ public class ShooterSystem extends SubsystemBase {
                 getLeftTopVelocityRpm(),
                 getRightTopVelocityRpm(),
                 getLeftBottomVelocityRpm(),
-                getRightBottomVelocityRpm()
+                getRightBottomVelocityRpm(),
+                reachedRPM(RobotMap.TARGET_RPM_SHOOTER)
         ));
     }
 
@@ -150,7 +149,7 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public boolean reachedRPM(double rpm){
-        return MathUtil.isNear(rpm, getLeftBottomVelocityRpm(),15);
+        return getLeftBottomVelocityRpm() > rpm;
     }
 
     @Override
