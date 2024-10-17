@@ -29,13 +29,13 @@ public class RobotMap {
     public final static double ARM_MIN_ANGLE = 8;
     public final static double ARM_MAX_ANGLE = 195;
     public final static double ABSOLUTE_ENCODER_ZERO_OFFSET = 214 / 360.0;
-    public final static double ARM_PID_P = 0.007;
+    public final static double ARM_PID_P = 0.01;
     public final static double ARM_PID_I = 0.005;
     public final static double ARM_PID_D = 0.0;
     public final static int ARM_PID_I_ZONE = 10;
     public final static double ARM_PID_K_GRAVITY = 0.03;
     public final static int NEAR_ANGLE_TOLERANCE = 5;
-    public final static double ARM_AMP_ANGLE = 138;
+    public final static double ARM_AMP_ANGLE = 128;
     public final static double ARM_AMP_RELEASE_ANGLE = 130;
 
 
@@ -43,7 +43,9 @@ public class RobotMap {
     public static final int SHOOTER_MOTOR_LEFT_BOTTOM = 12;
     public static final int SHOOTER_MOTOR_RIGHT_TOP = 15;
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
-    public static final int TARGET_RPM_SHOOTER = 5000;
+    public static final int TARGET_RPM_SHOOTER_FAST = 5500;
+    public static final int TARGET_RPM_SHOOTER_SLOW = 2000;
+    public static final int TARGET_RPM_WIGGLE_ROOM_SHOOTER = 50;
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
