@@ -79,7 +79,7 @@ public class ShooterSystem extends SubsystemBase {
                 getRightTopVelocityRpm(),
                 getLeftBottomVelocityRpm(),
                 getRightBottomVelocityRpm(),
-                reachedRPM(RobotMap.TARGET_RPM_SHOOTER)
+                reachedRPM(RobotMap.TARGET_RPM_SHOOTER_FAST)
         ));
     }
 
