@@ -69,8 +69,8 @@ public class IntakeSystem extends SubsystemBase {
                 .getEntry();
 
         noteInsideEntry = tab.add("Note Inside", false)
-                .withPosition(0, 5)
-                .withSize(13, 1)
+                .withPosition(0, 4)
+                .withSize(11, 1)
                 .getEntry();
 
         ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();

@@ -27,8 +27,7 @@ public class ShuffleboardUtils {
 
     public static SimpleWidget addArmAngleWidget(ShuffleboardContainer container) {
         return container.add("Arm Angle", 0.0)
-                .withWidget(BuiltInWidgets.kGyro)
-                .withProperties(Map.of("Counter clockwise", true));
+                .withWidget(BuiltInWidgets.kGyro);
     }
 
     public static SimpleWidget addIntakeMotorSpeedWidget(ShuffleboardContainer container) {
@@ -40,13 +39,13 @@ public class ShuffleboardUtils {
     public static SimpleWidget addShooterSpeedWidget(ShuffleboardContainer container, String title) {
         return container.add(title, 0.0)
                 .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 0, "max", 2000));
+                .withProperties(Map.of("min", 0, "max", 6000));
     }
 
     public static ShuffleboardLayout getArmIntakeShooterSubsystemsLayout() {
         return getArmIntakeShooterTab().getLayout("Subsystems", BuiltInLayouts.kGrid)
                 .withPosition(7, 0)
-                .withSize(6, 2)
+                .withSize(4, 4)
                 .withProperties(Map.of("Number of columns", 3, "Number of rows", 1));
     }
 }

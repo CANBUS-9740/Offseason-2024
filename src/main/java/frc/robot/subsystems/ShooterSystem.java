@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,7 +78,8 @@ public class ShooterSystem extends SubsystemBase {
                 getLeftTopVelocityRpm(),
                 getRightTopVelocityRpm(),
                 getLeftBottomVelocityRpm(),
-                getRightBottomVelocityRpm()
+                getRightBottomVelocityRpm(),
+                reachedRPM(RobotMap.TARGET_RPM_SHOOTER_FAST)
         ));
     }
 
@@ -125,8 +127,8 @@ public class ShooterSystem extends SubsystemBase {
 
         ShuffleboardLayout speedsLayout = tab.getLayout("Shooter Motor Speeds RPM", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 2))
-                .withPosition(7, 2)
-                .withSize(6, 3);
+                .withPosition(3, 1)
+                .withSize(4, 3);
 
         leftTopSpeed = ShuffleboardUtils.addShooterSpeedWidget(speedsLayout, "Left Top")
                 .withPosition(0, 0)
