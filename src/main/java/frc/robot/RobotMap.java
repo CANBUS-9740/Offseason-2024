@@ -34,14 +34,15 @@ public class RobotMap {
             1.0
                     / TALON_ENCODER_TIMEFRAME_SECONDS
                     / TALON_ENCODER_PPR
-                    / (DRIVE_WHEEL_RADIUS * 2.0 * Math.PI);
+                    * DRIVE_WHEEL_CIRCUMFERENCE_METERS;
 
     public static final double DRIVE_MOTOR_TO_WHEEL_GEAR_RATIO = 8.45;
 
-    public static final double DRIVE_TALON_PID_P = 8.0;
-    public static final double DRIVE_TALON_PID_I = 0.0;
-    public static final double DRIVE_TALON_PID_D = 0.0;
+    public static final double DRIVE_TALON_PID_P = 1.2;
+    public static final double DRIVE_TALON_PID_I = 0.01;
+    public static final double DRIVE_TALON_PID_D = 0.15;
     public static final double DRIVE_TALON_PID_F = 0.0;
+    public static final double DRIVE_TALON_PID_IZONE = 0.1;
 
     public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.0, 1.0, Units.rotationsToRadians(2), Units.rotationsToRadians(1));
 

@@ -137,7 +137,8 @@ public class DriveSubsystem extends SubsystemBase {
         configureMotorPID(leftMaster);
         configureMotorPID(rightMaster);
 
-        PathPlannerLogging.setLogActivePathCallback(poses -> field2d.getObject("PathPlannerPoses").setPoses(poses));
+        PathPlannerLogging.setLogTargetPoseCallback(pose -> field2d.getObject("PathPlannerTarget").setPose(pose));
+        PathPlannerLogging.setLogActivePathCallback(poses -> field2d.getObject("PathPlannerPath").setPoses(poses));
 
         AutoBuilder.configureRamsete(
                 this::getRobotPose,
@@ -173,6 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
         motor.config_kI(0, RobotMap.DRIVE_TALON_PID_I);
         motor.config_kD(0, RobotMap.DRIVE_TALON_PID_D);
         motor.config_kF(0, RobotMap.DRIVE_TALON_PID_F);
+        motor.config_IntegralZone(0, RobotMap.DRIVE_TALON_PID_IZONE);
     }
 
     public Field2d getField2d() {
@@ -246,10 +248,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveSpeedLeft(double metersPerSecond) {
+        SmartDashboard.putNumber("LeftTargetSpeed", metersPerSecond);
         leftMaster.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
     }
 
     public void driveSpeedRight(double metersPerSecond) {
+        SmartDashboard.putNumber("RightTargetSpeed", metersPerSecond);
         rightMaster.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
     }
 
