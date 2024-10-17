@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.*;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -149,7 +150,7 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public boolean reachedRPM(double rpm){
-        return getLeftBottomVelocityRpm() > rpm;
+        return MathUtil.isNear(rpm, getLeftBottomVelocityRpm(),15);
     }
 
     @Override
