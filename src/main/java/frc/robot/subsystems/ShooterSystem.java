@@ -150,7 +150,7 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public boolean reachedRPM(double rpm) {
-        return getLeftBottomVelocityRpm() > (rpm - RobotMap.TARGET_RPM_WIGGLE_ROOM_SHOOTER);
+        return getRightBottomVelocityRpm() > (rpm - RobotMap.TARGET_RPM_WIGGLE_ROOM_SHOOTER);
     }
 
     @Override
