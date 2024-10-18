@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.VideoCamera;
@@ -20,16 +21,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.ArmMoveToAngle;
-import frc.robot.commands.DriveTeleopCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.IntakeSlowlyCommand;
-import frc.robot.commands.OuttakeCommand;
-import frc.robot.commands.ShooterPID;
+import frc.robot.commands.*;
 import frc.robot.subsystems.ArmSystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.ShooterSystem;
+import frc.robot.utils.ShuffleboardAutoTab;
 import frc.robot.utils.ShuffleboardDashboard;
 
 public class Robot extends TimedRobot {
@@ -133,12 +130,17 @@ public class Robot extends TimedRobot {
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSlow);
         new JoystickButton(operatorController, XboxController.Button.kY.value).onTrue(shooterNoteAmp);
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
-        new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(operatorController, XboxController.Button.kStart.value).onTrue(cancelAllCommands);
 
         setUpCameras();
+
+        registerNamedCommands();
+
         ShuffleboardDashboard.setRobotDataSupplier(() -> new ShuffleboardDashboard.RobotData(RobotController.getBatteryVoltage()));
         ShuffleboardDashboard.initialize(frontCamera, backCamera);
+
+        ShuffleboardAutoTab.initialize();
     }
 
     @Override
@@ -160,15 +162,21 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopExit() {
-        driveSubsystem.setDefaultCommand(null);
+        driveSubsystem.removeDefaultCommand();
     }
 
     @Override
     public void autonomousInit() {
+        ShuffleboardAutoTab.getAutonomousCommand().schedule();
     }
 
     @Override
     public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void autonomousExit() {
+        CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
@@ -209,5 +217,35 @@ public class Robot extends TimedRobot {
         enumerateVideoModes(frontCamera);
         System.out.println("========== BACK CAMERA");
         enumerateVideoModes(backCamera);
+    }
+
+    private void registerNamedCommands() {
+        NamedCommands.registerCommand("PickUpNote", Commands.sequence(
+                Commands.race(
+                        Commands.waitSeconds(4),
+                        Commands.deadline(
+                                new IntakeCommand(intakeSystem),
+                                new ArmMoveToAngle(armSystem, RobotMap.ARM_FLOOR_ANGLE),
+                                new DriveSpeedCommand(0.5, driveSubsystem)
+                        )
+                ),
+                Commands.deadline(
+                        Commands.waitUntil(() -> armSystem.reachedATargetAngle(RobotMap.ARM_SHOOTER_ANGLE)),
+                        new ArmMoveToAngle(armSystem, RobotMap.ARM_SHOOTER_ANGLE)
+                )
+        ));
+        NamedCommands.registerCommand("ShootNote", shootNoteSpeaker);
+        NamedCommands.registerCommand("MoveForwardABit", Commands.deadline(
+                Commands.waitSeconds(1.5),
+                new DriveSpeedCommand(0.2, driveSubsystem)
+        ));
+        NamedCommands.registerCommand("MoveBackABit", Commands.deadline(
+                Commands.waitSeconds(1.5),
+                new DriveSpeedCommand(-0.2, driveSubsystem)
+        ));
+        NamedCommands.registerCommand("MoveBackABunch", Commands.deadline(
+                Commands.waitSeconds(2.0),
+                new DriveSpeedCommand(-0.5, driveSubsystem)
+        ));
     }
 }

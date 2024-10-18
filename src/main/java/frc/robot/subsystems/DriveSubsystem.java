@@ -1,14 +1,19 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -16,31 +21,37 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotMap;
 import frc.robot.utils.ShuffleboardDashboard;
 import frc.robot.utils.ShuffleboardUtils;
 
 import java.util.Map;
 
-public class DriveSubsystem extends SubsystemBase {
+import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
-    private final WPI_TalonSRX rightMaster;
-    private final WPI_VictorSPX leftFollower;
-    private final WPI_VictorSPX rightFollower;
+public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonSRX leftMaster;
+    private final WPI_VictorSPX leftFollower;
+    private final WPI_TalonSRX rightMaster;
+    private final WPI_VictorSPX rightFollower;
+
+    private final Pigeon2 pigeon2;
+
     private final Field2d field2d;
     private final DifferentialDrivePoseEstimator differentialDriveOdometry;
+    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(RobotMap.DRIVE_TRACK_WIDTH);
     private final DifferentialDrive differentialDrive;
-    private final Pigeon2 pigeon2;
 
     // vision
     private NetworkTable table;
@@ -48,8 +59,29 @@ public class DriveSubsystem extends SubsystemBase {
     private NetworkTableEntry networkTableEntryOfBotPose;
     private NetworkTableEntry networkTableEntryOfExistanceAprilTag;
     private boolean existanceOfAprilTag;
-    private boolean hasDetectedAprilTagInMoment;
     private Timer timerOfAprilTagDetection;
+
+    private final SysIdRoutine routine =
+            new SysIdRoutine(
+                    new SysIdRoutine.Config(),
+                    new SysIdRoutine.Mechanism(
+                            voltage -> {
+                                driveVoltsLeft(voltage.in(Volts));
+                                driveVoltsRight(voltage.in(Volts));
+                            },
+                            log -> {
+                                log.motor("drive-left")
+                                        .voltage(Volts.of(getLeftOutputVoltageVolts()))
+                                        .linearPosition(Meters.of(getLeftDistancePassedMeters()))
+                                        .linearVelocity(MetersPerSecond.of(getLeftSpeedMetersPerSecond()));
+                                log.motor("drive-right")
+                                        .voltage(Volts.of(getRightOutputVoltageVolts()))
+                                        .linearPosition(Meters.of(getRightDistancePassedMeters()))
+                                        .linearVelocity(MetersPerSecond.of(getRightSpeedMetersPerSecond()));
+                            },
+                            this
+                    )
+            );
 
 
     // Shuffleboard
@@ -58,22 +90,28 @@ public class DriveSubsystem extends SubsystemBase {
     private GenericEntry angleEntry;
     private GenericEntry leftSpeedEntry;
     private GenericEntry rightSpeedEntry;
+    private GenericEntry leftPositionEntry;
+    private GenericEntry rightPositionEntry;
 
     public DriveSubsystem() {
-        rightFollower = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
         leftMaster = new WPI_TalonSRX(RobotMap.DRIVE_LEFT_BACK_MOTOR_ID);
-        rightMaster = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
         leftFollower = new WPI_VictorSPX(RobotMap.DRIVE_LEFT_FRONT_MOTOR_ID);
+        rightMaster = new WPI_TalonSRX(RobotMap.DRIVE_RIGHT_FRONT_MOTOR_ID);
+        rightFollower = new WPI_VictorSPX(RobotMap.DRIVE_RIGHT_BACK_MOTOR_ID);
+
         pigeon2 = new Pigeon2(RobotMap.PIGEON_ID);
-        rightFollower.configFactoryDefault();
-        leftMaster.configFactoryDefault();
-        rightMaster.configFactoryDefault();
+
         leftFollower.configFactoryDefault();
+        rightMaster.configFactoryDefault();
+        leftMaster.configFactoryDefault();
+        rightFollower.configFactoryDefault();
+
         pigeon2.getConfigurator().apply(new Pigeon2Configuration());
 
         rightMaster.setInverted(true);
         rightFollower.setInverted(true);
         leftMaster.setSensorPhase(true);
+        rightMaster.setSensorPhase(true);
 
         rightMaster.setNeutralMode(NeutralMode.Brake);
         rightFollower.setNeutralMode(NeutralMode.Brake);
@@ -83,24 +121,40 @@ public class DriveSubsystem extends SubsystemBase {
         rightFollower.follow(rightMaster);
         leftFollower.follow(leftMaster);
 
-        this.field2d = new Field2d();
-        SmartDashboard.putData("Field" ,field2d);
+
+        field2d = new Field2d();
 
         differentialDrive = new DifferentialDrive(leftMaster, rightMaster);
 
         differentialDriveOdometry = new DifferentialDrivePoseEstimator(
-                new DifferentialDriveKinematics(RobotMap.TRACK_WIDTH),
+                kinematics,
                 pigeon2.getRotation2d(),
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters(),
                 RobotMap.STARTING_DEFAULT_LOCATION
         );
 
+        configureMotorPID(leftMaster);
+        configureMotorPID(rightMaster);
+
+        PathPlannerLogging.setLogTargetPoseCallback(pose -> field2d.getObject("PathPlannerTarget").setPose(pose));
+        PathPlannerLogging.setLogActivePathCallback(poses -> field2d.getObject("PathPlannerPath").setPoses(poses));
+
+        AutoBuilder.configureRamsete(
+                this::getRobotPose,
+                this::resetPose,
+                this::getChassisSpeeds,
+                this::driveChassisSpeeds,
+                new ReplanningConfig(),
+                () -> DriverStation.getAlliance().filter(value -> value == DriverStation.Alliance.Red).isPresent(),
+                this
+        );
+
         initialize();
         setUpShuffleboard();
 
         ShuffleboardDashboard.setDrivetrainDataSupplier(() -> new ShuffleboardDashboard.DrivetrainData(
-                differentialDriveOdometry.getEstimatedPosition(),
+                getRobotPose(),
                 new DifferentialDriveWheelSpeeds(getLeftSpeedMetersPerSecond(), getRightSpeedMetersPerSecond())
         ));
 
@@ -113,6 +167,47 @@ public class DriveSubsystem extends SubsystemBase {
 
         botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
         existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
+    }
+
+    private static void configureMotorPID(WPI_TalonSRX motor) {
+        motor.config_kP(0, RobotMap.DRIVE_TALON_PID_P);
+        motor.config_kI(0, RobotMap.DRIVE_TALON_PID_I);
+        motor.config_kD(0, RobotMap.DRIVE_TALON_PID_D);
+        motor.config_kF(0, RobotMap.DRIVE_TALON_PID_F);
+        motor.config_IntegralZone(0, RobotMap.DRIVE_TALON_PID_IZONE);
+    }
+
+    public Field2d getField2d() {
+        return field2d;
+    }
+
+    public Pose2d getRobotPose() {
+        return differentialDriveOdometry.getEstimatedPosition();
+    }
+
+    public double getLeftOutputVoltageVolts() {
+        return leftMaster.getMotorOutputVoltage();
+    }
+
+    public double getRightOutputVoltageVolts() {
+        return rightMaster.getMotorOutputVoltage();
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getLeftSpeedMetersPerSecond(), getRightSpeedMetersPerSecond());
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return kinematics.toChassisSpeeds(getWheelSpeeds());
+    }
+
+    private void resetPose(Pose2d pose) {
+        differentialDriveOdometry.resetPosition(
+                Rotation2d.fromDegrees(getAngleDegrees()),
+                getLeftDistancePassedMeters(),
+                getRightDistancePassedMeters(),
+                pose
+        );
     }
 
     public double getLeftDistancePassedMeters() {
@@ -136,7 +231,42 @@ public class DriveSubsystem extends SubsystemBase {
         // 0  - degree after initializing, 359 - one degree to the right, 1 - one degree to the left// 90 will be 90 degrees to the left
     }
 
-    public void arcadeDrive(double linearSpeed, double rotationSpeed){
+    public void drivePowerLeft(double power) {
+        leftMaster.set(power);
+    }
+
+    public void drivePowerRight(double power) {
+        rightMaster.set(power);
+    }
+
+    public void driveVoltsLeft(double voltage) {
+        drivePowerLeft(voltage / RobotController.getBatteryVoltage());
+    }
+
+    public void driveVoltsRight(double voltage) {
+        drivePowerRight(voltage / RobotController.getBatteryVoltage());
+    }
+
+    public void driveSpeedLeft(double metersPerSecond) {
+        SmartDashboard.putNumber("LeftTargetSpeed", metersPerSecond);
+        leftMaster.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
+    }
+
+    public void driveSpeedRight(double metersPerSecond) {
+        SmartDashboard.putNumber("RightTargetSpeed", metersPerSecond);
+        rightMaster.set(ControlMode.Velocity, metersPerSecond / RobotMap.TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND);
+    }
+
+    public void driveWheelSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
+        driveSpeedLeft(wheelSpeeds.leftMetersPerSecond);
+        driveSpeedRight(wheelSpeeds.rightMetersPerSecond);
+    }
+
+    public void driveChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        driveWheelSpeeds(kinematics.toWheelSpeeds(chassisSpeeds));
+    }
+
+    public void arcadeDrive(double linearSpeed, double rotationSpeed) {
         differentialDrive.arcadeDrive(linearSpeed, rotationSpeed);
     }
 
@@ -176,10 +306,20 @@ public class DriveSubsystem extends SubsystemBase {
         ShuffleboardLayout speedsLayout = listLayout.getLayout("Wheel Speeds", BuiltInLayouts.kGrid)
                 .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
 
-        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Wheel")
+        leftSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Left Speed")
                 .withPosition(0, 0)
                 .getEntry();
-        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Wheel")
+        rightSpeedEntry = ShuffleboardUtils.addDrivetrainWheelSpeedWidget(speedsLayout, "Right Speed")
+                .withPosition(1, 0)
+                .getEntry();
+
+        ShuffleboardLayout positionsLayout = listLayout.getLayout("Wheel Positions", BuiltInLayouts.kGrid)
+                .withProperties(Map.of("Number of columns", 2, "Number of rows", 1));
+
+        leftPositionEntry = positionsLayout.add("Left Position", 0.0)
+                .withPosition(0, 0)
+                .getEntry();
+        rightPositionEntry = positionsLayout.add("Right Position", 0.0)
                 .withPosition(1, 0)
                 .getEntry();
     }
@@ -199,11 +339,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftSpeedEntry.setDouble(getLeftSpeedMetersPerSecond());
         rightSpeedEntry.setDouble(getRightSpeedMetersPerSecond());
+        leftPositionEntry.setDouble(getLeftDistancePassedMeters());
+        rightPositionEntry.setDouble(getRightDistancePassedMeters());
     }
 
     private void updateOdometry() {
         //DifferentialDrivePoseEstimator !!!1
-        if (existanceOfAprilTag || timerOfAprilTagDetection.get() > 1.5) {
+        if (existanceOfAprilTag && timerOfAprilTagDetection.get() > 1.5 && DriverStation.isDisabled()) {
             differentialDriveOdometry.resetPosition(
                     pigeon2.getRotation2d(),
                     getLeftDistancePassedMeters(),
@@ -219,32 +361,6 @@ public class DriveSubsystem extends SubsystemBase {
                 getLeftDistancePassedMeters(),
                 getRightDistancePassedMeters()
         );
-    }
-
-    public double getCurrentXLocation(){
-        return differentialDriveOdometry.getEstimatedPosition().getX();
-    }
-    public double getCurrentYLocation(){
-        return differentialDriveOdometry.getEstimatedPosition().getY();
-    }
-    public double getCurrentAngleLocation() {
-        return differentialDriveOdometry.getEstimatedPosition().getRotation().getDegrees();
-    }
-
-    @Override
-    public void periodic() {
-        updateOdometry();
-        updateShuffleboard();
-
-        SmartDashboard.putNumber("DriveLeftCurrent", leftMaster.getStatorCurrent());
-        SmartDashboard.putNumber("DriveRightCurrent", rightMaster.getStatorCurrent());
-
-        botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
-        existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
-        SmartDashboard.putBoolean("IsTag: ", existanceOfAprilTag);
-        SmartDashboard.putNumber("yaw", getYawFromCamera());
-
-        field2d.setRobotPose(differentialDriveOdometry.getEstimatedPosition());
     }
 
     private double getXFromCamera() {
@@ -269,6 +385,45 @@ public class DriveSubsystem extends SubsystemBase {
 
     private double getYawFromCamera() {
         return botPoseArray[5];
+    }
+
+    // SysId Stuff
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return routine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return routine.dynamic(direction);
+    }
+
+    // PathPlanner
+
+    public Command pathfindTo(Pose2d pose2d) {
+        return AutoBuilder.pathfindToPose(pose2d, RobotMap.PATH_CONSTRAINTS, 0.0, 1.0);
+    }
+
+    @Override
+    public void periodic() {
+        updateOdometry();
+        updateShuffleboard();
+
+        SmartDashboard.putNumber("DriveLeftCurrent", leftMaster.getStatorCurrent());
+        SmartDashboard.putNumber("DriveRightCurrent", rightMaster.getStatorCurrent());
+        SmartDashboard.putNumber("DriveLeftVoltage", leftMaster.getMotorOutputVoltage());
+        SmartDashboard.putNumber("DriveRightVoltage", rightMaster.getMotorOutputVoltage());
+
+        SmartDashboard.putNumber("Position2dX", differentialDriveOdometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Position2dY", differentialDriveOdometry.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("Position2dDegree", differentialDriveOdometry.getEstimatedPosition().getRotation().getDegrees());
+
+        botPoseArray = networkTableEntryOfBotPose.getDoubleArray(new double[6]);
+        existanceOfAprilTag = networkTableEntryOfExistanceAprilTag.getInteger(0) == 1;
+
+        SmartDashboard.putBoolean("IsTag: ", existanceOfAprilTag);
+        SmartDashboard.putNumber("yaw", getYawFromCamera());
+
+        field2d.setRobotPose(getRobotPose());
     }
 }
 
