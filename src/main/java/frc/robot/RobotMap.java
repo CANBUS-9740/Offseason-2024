@@ -24,11 +24,9 @@ public class RobotMap {
     public static final int DRIVE_LEFT_FRONT_MOTOR_ID = 2;
     public static final int DRIVE_LEFT_BACK_MOTOR_ID = 3;
     public static final int PIGEON_ID = 7;
-    public static final int DRIVE_CONTROLLER_PORT = 0;
 
     public static final double TALON_ENCODER_PPR = 4096;
     public static final double TALON_ENCODER_TIMEFRAME_SECONDS = 0.1;
-    public static final double TRACK_WIDTH = 52;//58-(3*2)
 
     public static final double TALON_ENCODER_VELOCITY_TO_METERS_PER_SECOND =
             1.0
@@ -46,23 +44,24 @@ public class RobotMap {
 
     public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.0, 1.0, Units.rotationsToRadians(2), Units.rotationsToRadians(1));
 
-    public final static int ARM_MOTOR_PORT = 8;
-    public final static int ARM_ENCODER_PORT = 0;
-    public final static double ARM_GEAR_RATIO = 100 / 1;
-    public final static int ARM_NEO_ENCODER_CPR = 42;
-    public final static double ARM_SHOOTER_ANGLE = 194;
-    public final static double ARM_FLOOR_ANGLE = 11;
-    public final static double ARM_MIN_ANGLE = 8;
-    public final static double ARM_MAX_ANGLE = 195;
-    public final static double ABSOLUTE_ENCODER_ZERO_OFFSET = 214 / 360.0;
-    public final static double ARM_PID_P = 0.009;
-    public final static double ARM_PID_I = 0.005;
-    public final static double ARM_PID_D = 0.0;
-    public final static int ARM_PID_I_ZONE = 10;
-    public final static double ARM_PID_K_GRAVITY = 0.03;
-    public final static int NEAR_ANGLE_TOLERANCE = 5;
-    public final static double ARM_AMP_ANGLE = 128;
-    public final static double ARM_AMP_RELEASE_ANGLE = 130;
+    public static final int ARM_MOTOR_PORT = 8;
+    public static final int ARM_ENCODER_PORT = 0;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    public static final double ARM_GEAR_RATIO = 100.0 / 1.0;
+    public static final int ARM_NEO_ENCODER_CPR = 42;
+    public static final double ARM_SHOOTER_ANGLE = 194;
+    public static final double ARM_FLOOR_ANGLE = 11;
+    public static final double ARM_MIN_ANGLE = 8;
+    public static final double ARM_MAX_ANGLE = 195;
+    public static final double ABSOLUTE_ENCODER_ZERO_OFFSET = 214 / 360.0;
+    public static final double ARM_PID_P = 0.009;
+    public static final double ARM_PID_I = 0.005;
+    public static final double ARM_PID_D = 0.0;
+    public static final int ARM_PID_I_ZONE = 10;
+    public static final double ARM_PID_K_GRAVITY = 0.03;
+    public static final int NEAR_ANGLE_TOLERANCE = 5;
+    public static final double ARM_AMP_ANGLE = 128;
+    public static final double ARM_AMP_RELEASE_ANGLE = 130;
 
 
     public static final int SHOOTER_MOTOR_LEFT_TOP = 13;
@@ -75,8 +74,6 @@ public class RobotMap {
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;
 
-    public static final double INTAKE_WHEEL_RADIUS_METERS = Units.inchesToMeters(1);
-    public static final double INTAKE_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * INTAKE_WHEEL_RADIUS_METERS;
     public static final double INTAKE_MOTOR_TO_WHEEL_RATIO = 3;
 
     public static final Pose2d STARTING_DEFAULT_LOCATION = new Pose2d(0,0,new Rotation2d(0));
