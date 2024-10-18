@@ -345,7 +345,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private void updateOdometry() {
         //DifferentialDrivePoseEstimator !!!1
-        if (existanceOfAprilTag && timerOfAprilTagDetection.get() > 1.5) {
+        if (existanceOfAprilTag && timerOfAprilTagDetection.get() > 1.5 && DriverStation.isDisabled()) {
             differentialDriveOdometry.resetPosition(
                     pigeon2.getRotation2d(),
                     getLeftDistancePassedMeters(),
