@@ -280,12 +280,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         tab.add("Field", field2d)
                 .withPosition(0, 0)
-                .withSize(10, 6);
+                .withSize(8, 5);
 
         ShuffleboardLayout listLayout = tab.getLayout("Information", BuiltInLayouts.kList)
                 .withProperties(Map.of("Label position", "TOP"))
-                .withPosition(10, 0)
-                .withSize(3, 6);
+                .withPosition(8, 0)
+                .withSize(3, 5);
 
         listLayout.add("Drive Subsystem State", this);
 

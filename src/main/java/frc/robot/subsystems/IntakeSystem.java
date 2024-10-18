@@ -13,7 +13,7 @@ import frc.robot.utils.ShuffleboardUtils;
 public class IntakeSystem extends SubsystemBase {
     private final CANSparkMax motor;
     private final DigitalInput limitSwitch;
-    private static final double DEFAULT_ROTATE_SPEED = 0.7;
+    private static final double DEFAULT_ROTATE_SPEED = 0.9;
     private static final double SLOW_IN_ROTATE_SPEED = 0.1;
 
     // Shuffleboard
@@ -69,8 +69,8 @@ public class IntakeSystem extends SubsystemBase {
                 .getEntry();
 
         noteInsideEntry = tab.add("Note Inside", false)
-                .withPosition(0, 5)
-                .withSize(13, 1)
+                .withPosition(0, 4)
+                .withSize(11, 1)
                 .getEntry();
 
         ShuffleboardLayout subsystemsLayout = ShuffleboardUtils.getArmIntakeShooterSubsystemsLayout();
