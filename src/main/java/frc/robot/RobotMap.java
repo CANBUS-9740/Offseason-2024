@@ -42,6 +42,12 @@ public class RobotMap {
     public static final double DRIVE_TALON_PID_F = 0.0;
     public static final double DRIVE_TALON_PID_IZONE = 0.1;
 
+    public static final double ROTATION_P = 0.01;
+    public static final double ROTATION_I = 0.015;
+    public static final double ROTATION_D = 0.0;
+    public static final double ROTATION_POSITION_TOLERANCE = 10;
+    public static final double ROTATION_VELOCITY_TOLERANCE = 5;
+
     public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.0, 1.0, Units.rotationsToRadians(2), Units.rotationsToRadians(1));
 
     public static final int ARM_MOTOR_PORT = 8;
@@ -70,7 +76,7 @@ public class RobotMap {
     public static final int SHOOTER_MOTOR_RIGHT_BOTTOM = 14;
     public static final int TARGET_RPM_SHOOTER_FAST = 5500;
     public static final int TARGET_RPM_SHOOTER_SLOW = 2000;
-    public static final int TARGET_RPM_WIGGLE_ROOM_SHOOTER = 50;
+    public static final int TARGET_RPM_WIGGLE_ROOM_SHOOTER = 200;
 
     public static final int INTAKE_MOTOR = 9;
     public static final int INTAKE_LIMIT_SWITCH = 5;

@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.7195297848292784,
-      "y": 6.799079450542602
-    },
-    "rotation": 60.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -24,15 +18,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Left Start to Left Note"
+            "waitTime": 3.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "PickUpNote"
+            "name": "PathfindToLocalBottomThird"
           }
         }
       ]
