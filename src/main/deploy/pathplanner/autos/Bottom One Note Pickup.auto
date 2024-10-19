@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "MoveForwardABit"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Start to Bottom Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TurnTo0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PickUpNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.65,
-        "y": 5.551334914282045
+        "x": 0.7326519309804619,
+        "y": 6.90470160405396
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4,
-        "y": 5.551334914282045
+        "x": 0.8826519309804622,
+        "y": 7.164509225189291
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Start"
     },
     {
       "anchor": {
-        "x": 1.4849666549919036,
-        "y": 5.551334914282045
+        "x": 1.7180179050965347,
+        "y": 7.013874053338484
       },
       "prevControl": {
-        "x": 1.7349666549919036,
-        "y": 5.551334914282045
+        "x": 1.137127458688445,
+        "y": 7.013874053338484
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Note Pick Up"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 0.75,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -42,10 +42,10 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": true,
+  "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 59.81349985531486,
     "velocity": 0
   },
   "useDefaultConstraints": false

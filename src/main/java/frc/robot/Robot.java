@@ -4,6 +4,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.cscore.VideoCamera;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -26,6 +28,7 @@ import frc.robot.subsystems.ArmSystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSystem;
 import frc.robot.subsystems.ShooterSystem;
+import frc.robot.utils.KeyPositions;
 import frc.robot.utils.ShuffleboardAutoTab;
 import frc.robot.utils.ShuffleboardDashboard;
 
@@ -222,7 +225,7 @@ public class Robot extends TimedRobot {
     private void registerNamedCommands() {
         NamedCommands.registerCommand("PickUpNote", Commands.sequence(
                 Commands.race(
-                        Commands.waitSeconds(4),
+                        Commands.waitSeconds(4.5),
                         Commands.deadline(
                                 new IntakeCommand(intakeSystem),
                                 new ArmMoveToAngle(armSystem, RobotMap.ARM_FLOOR_ANGLE),
@@ -237,15 +240,43 @@ public class Robot extends TimedRobot {
         NamedCommands.registerCommand("ShootNote", shootNoteSpeaker);
         NamedCommands.registerCommand("MoveForwardABit", Commands.deadline(
                 Commands.waitSeconds(1.5),
-                new DriveSpeedCommand(0.2, driveSubsystem)
+                new DriveSpeedCommand(0.25, driveSubsystem)
         ));
         NamedCommands.registerCommand("MoveBackABit", Commands.deadline(
                 Commands.waitSeconds(1.5),
-                new DriveSpeedCommand(-0.2, driveSubsystem)
+                new DriveSpeedCommand(-0.25, driveSubsystem)
+        ));
+        NamedCommands.registerCommand("MoveForwardABunch", Commands.deadline(
+                Commands.waitSeconds(2.0),
+                new DriveSpeedCommand(0.5, driveSubsystem)
         ));
         NamedCommands.registerCommand("MoveBackABunch", Commands.deadline(
                 Commands.waitSeconds(2.0),
                 new DriveSpeedCommand(-0.5, driveSubsystem)
         ));
+        NamedCommands.registerCommand("TurnTo0", Commands.runOnce(() -> {
+            new TurnToAngleCommand(Rotation2d.fromDegrees(0), true, driveSubsystem).schedule();
+        }));
+        NamedCommands.registerCommand("TurnTo180", Commands.runOnce(() -> {
+            new TurnToAngleCommand(Rotation2d.fromDegrees(180), true, driveSubsystem).schedule();
+        }));
+        NamedCommands.registerCommand("TurnToFourthCenterNote", Commands.runOnce(() -> {
+            new TurnToAngleCommand(driveSubsystem.getRobotPose().getTranslation().minus(KeyPositions.getFourthCenterNote().getTranslation()).getAngle(), true, driveSubsystem).schedule();
+        }));
+        NamedCommands.registerCommand("PathfindToLocalTopNote", Commands.runOnce(() -> {
+            driveSubsystem.pathfindTo(KeyPositions.getLocalTopNote()).schedule();
+        }));
+        NamedCommands.registerCommand("PathfindToLocalMiddleNote", Commands.runOnce(() -> {
+            driveSubsystem.pathfindTo(KeyPositions.getLocalMiddleNote()).schedule();
+        }));
+        NamedCommands.registerCommand("PathfindToLocalTopThird", Commands.runOnce(() -> {
+            driveSubsystem.pathfindTo(KeyPositions.getLocalTopThird()).schedule();
+        }));
+        NamedCommands.registerCommand("PathfindToLocalBottomThird", Commands.runOnce(() -> {
+            driveSubsystem.pathfindTo(KeyPositions.getLocalBottomThird()).schedule();
+        }));
+        NamedCommands.registerCommand("PathfindToHalfLocalBottomThirdHalfFourthCenterNote", Commands.runOnce(() -> {
+            driveSubsystem.pathfindTo(new Pose2d(KeyPositions.getLocalBottomThird().getTranslation().plus(KeyPositions.getFourthCenterNote().getTranslation()).div(2), new Rotation2d())).schedule();
+        }));
     }
 }
