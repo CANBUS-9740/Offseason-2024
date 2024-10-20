@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
         new JoystickButton(operatorController, XboxController.Button.kX.value).onTrue(shootNoteSlow);
         new JoystickButton(operatorController, XboxController.Button.kY.value).onTrue(shooterNoteAmp);
         new JoystickButton(operatorController, XboxController.Button.kA.value).onTrue(collectNote);
-        new JoystickButton(operatorController, XboxController.Button.kY.value).whileTrue(new OuttakeCommand(intakeSystem));
+        new JoystickButton(operatorController, XboxController.Button.kB.value).whileTrue(new OuttakeCommand(intakeSystem));
         new JoystickButton(operatorController, XboxController.Button.kStart.value).onTrue(cancelAllCommands);
 
         setUpCameras();
